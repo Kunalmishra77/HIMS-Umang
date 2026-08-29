@@ -1,13 +1,15 @@
 {
-  "name": "umang-hims",
+  "name": "umang-hospital-hims",
   "version": "0.1.0",
   "private": true,
+  "description": "OPD patient journey for Umang Hospital — registration, reception, nursing, consultation, billing.",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "vitest run"
+    "test": "vitest run",
+    "reachability": "node scripts/reachability.mjs"
   },
   "dependencies": {
     "@fontsource/carlito": "^5.2.8",
@@ -15,7 +17,6 @@
     "@hookform/resolvers": "^5.2.2",
     "@supabase/ssr": "^0.12.0",
     "@supabase/supabase-js": "^2.110.0",
-    "@tabler/icons-react": "^3.44.0",
     "clsx": "^2.1.1",
     "framer-motion": "^12.38.0",
     "lucide-react": "^1.14.0",
@@ -41,7 +42,6 @@
     "eslint": "^9",
     "eslint-config-next": "16.2.4",
     "pg": "^8.22.0",
-    "puppeteer-core": "^25.0.4",
     "tailwindcss": "^4",
     "typescript": "^5",
     "vitest": "^4.1.9"

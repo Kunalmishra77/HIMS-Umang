@@ -21,7 +21,24 @@
 - **Teleconsult is cut on both sides:** neither `/doctor/online` nor `/patient/teleconsult` ships.
 - **TypeScript always.** No `any` unless truly unavoidable. Functional components only. Tailwind classes, no inline style objects for reused styles. No comments unless the WHY is non-obvious.
 - **Next.js is not the version you know.** Read `node_modules/next/dist/docs/` before writing any Next.js code (per `AGENTS.md`).
-- **Every task ends green:** `npx tsc --noEmit` must pass before the task's commit. Tasks that state additional gates must pass those too.
+- **Every task ends green:** `npx tsc --noEmit` and `npm run build` must both exit 0 before the task's commit, and from Task 4 onward `node scripts/reachability.mjs` must report `DEAD: 0`.
+- **`npm run lint` and `npm run test` are NO-REGRESSION gates, not pass gates.** Neither passes on the Gov-HIMS source and neither ever did — measured on the untouched source repo:
+  - **lint baseline: 602 problems (294 errors, 308 warnings).** The target must not exceed this, nor introduce a violation of a rule the source did not already violate. (After Task 4 the target sits at 281 problems / 194 errors — lower, because half the tree is gone.)
+  - **vitest: gate on the 6 hermetic suites only.** The suite splits in two. Six suites touch nothing external and pass deterministically — measured green 3 runs out of 3, 24/24 tests:
+
+    ```
+    src/__tests__/manifest.test.ts
+    src/lib/__tests__/opd-doctors.test.ts
+    src/lib/api/__tests__/core-fallback.test.ts
+    src/lib/intake/__tests__/register.test.ts
+    src/lib/supabase/__tests__/client.test.ts
+    src/store/__tests__/useLabOrdersStore.setRealIds.test.ts
+    ```
+
+    **These six are the binding gate and must be green.** Run them explicitly rather than running the whole suite.
+
+    The other 17 assert against the **live shared Supabase project** and are **advisory only** — they are nondeterministic here, not merely failing: three consecutive full runs produced three different failure sets (7, then 10, then 11 failing files) with no code change between them, which is connection/timeout racing under parallel execution against a shared remote database. Several also encode schema expectations that predate the `tenant_foundation` migration's `branch_id`/`hospital_id` columns and fail identically on the untouched source. Do not gate on them and do not chase them; note new failures, but only a hermetic-suite failure blocks.
+  - Treating either as a pass gate would make Task 12 unsatisfiable. Repairing them is pre-existing Gov-HIMS debt and is out of scope, recorded as follow-up.
 - **Commit after every task.** Conventional Commits (`chore:`, `feat:`, `refactor:`, `docs:`). Work happens on branch `chore/opd-extraction` in the target repo; `main` receives it at the end.
 
 ---
@@ -300,11 +317,13 @@ files under src/ are reachable from it. Baseline on the unpruned tree:
 Remove the 24 excluded portals and the excluded sub-pages of the five kept ones. The build **will** break here — `AppShell` and `login` still reference deleted routes. That is expected and is repaired in Task 4; the two tasks are split because a reviewer can meaningfully reject the route manifest without rejecting the nav rewrite.
 
 **Files:**
-- Delete: 27 top-level directories under `src/app/`, `src/app/api/admin/`, and named sub-pages of reception / nurse / doctor / patient
+- Delete: 27 top-level directories under `src/app/` (24 excluded portals + the consent, journey and family-track utility routes), `src/app/api/admin/`, and named sub-pages of reception / nurse / doctor / patient
 
 **Interfaces:**
 - Consumes: nothing.
-- Produces: an `src/app/` tree containing only manifest routes. `npx tsc --noEmit` is **expected to fail** at end of task.
+- Produces: an `src/app/` tree containing only manifest routes.
+
+**Note on the build state.** This task was originally written expecting `tsc --noEmit` to fail here, with Task 4 restoring green. That premise was wrong and is corrected: routes in this codebase are referenced only as **plain string literals** (no `typedRoutes`, no static imports of page modules), so deleting a route produces no type error at all. `tsc` stays green through this task. What deletion actually produces is links that 404 at runtime, which TypeScript cannot see — Task 4's `manifest.test.ts` is the guard for those.
 
 - [ ] **Step 1: Delete the excluded top-level portals**
 
@@ -354,7 +373,16 @@ cd "/e/Umang Hospital HIMS"
 npx tsc --noEmit 2>&1 | head -40
 ```
 
-Expected: FAIL. Errors should be confined to `src/components/layout/AppShell.tsx`, `src/app/login/page.tsx`, and files importing deleted modules. **If an error names a file you expected to keep** (for example a kept patient page importing a deleted component), record it — Task 8's sweep resolves genuinely-orphaned imports, but a kept *page* with a broken import means the manifest is wrong and must be raised before continuing.
+Expected: **exit 0.** Nothing imports a page module statically, so route deletion breaks no types.
+
+First delete the stale `.next/` build artifact — it holds generated route validators from Task 1's pre-deletion build and will emit hundreds of phantom errors otherwise:
+
+```bash
+cd "/e/Umang Hospital HIMS"
+rm -rf .next && npx tsc --noEmit; echo "tsc exit: $?"
+```
+
+**If any error appears, read it carefully.** An error in a file you expected to keep — a kept page importing a deleted component — means the route manifest is wrong. Record it and raise it rather than fixing it; Task 8's sweep handles genuinely-orphaned files, but a broken kept *page* is a manifest defect.
 
 - [ ] **Step 5: Commit**
 
@@ -363,15 +391,17 @@ cd "/e/Umang Hospital HIMS"
 git add -A
 git commit -q -m "refactor: delete out-of-scope routes and their test suites
 
-Removes the 24 excluded portals (admin, secretary, cmo, lab, radiology,
+Removes the 24 excluded portals plus 3 non-portal utility routes (admin, secretary, cmo, lab, radiology,
 pharmacy, hr, vendor-manager, insurance, bloodbank, ambulance, audit, bmw,
 cssd, dietary, emergency, feedback, inventory, mortuary, ot, quality,
 discharge, housekeeping, admission, consent, journey, family-track) and the
 excluded sub-pages of the five kept portals, including teleconsult on both
 the doctor and patient sides.
 
-Build is intentionally red: AppShell and login still enumerate the deleted
-routes. Repaired in the next commit."
+tsc stays green: routes are referenced as plain string literals, so deletion
+breaks no types. It instead leaves dangling links that 404 at runtime, in
+AppShell, CommandPalette, login and several kept pages. Task 4 repairs them
+and adds the test that catches them, since TypeScript cannot."
 ```
 
 ---
@@ -384,7 +414,11 @@ Rewrite the three files that enumerate every role, and restore a green build.
 - Modify: `src/types/roles.ts` (whole file)
 - Modify: `src/components/layout/AppShell.tsx` (delete `PHARMACY_SECTIONS`, `RADIOLOGY_SECTIONS`, `CMO_SECTIONS`, `SECRETARY_SECTIONS`; rewrite `navByRole`, `ROLE_LABELS`, `sectionsByRole`; prune `PATIENT_SECTIONS`, `RECEPTION_SECTIONS`, `DOCTOR_SECTIONS` entries pointing at deleted routes)
 - Modify: `src/app/login/page.tsx:12-42` (`ROLE_DASHBOARD`)
+- Modify: `src/components/layout/CommandPalette.tsx` — 24 of its 29 route entries point at deleted portals
+- Modify: `src/app/doctor/consultation/page.tsx`, `src/app/doctor/dashboard/page.tsx` (→ `/doctor/beds`), `src/app/reception/dashboard/page.tsx` (→ `/reception/beds`), `src/app/patient/consultations/page.tsx` (→ `/patient/teleconsult`), `src/app/patient/followup/page.tsx` (→ `/patient/pharmacy`), `src/components/clinical/CriticalValueBanner.tsx` (→ `/audit/log`), `src/components/patient/dashboard/LiveVisitStatusCard.tsx`, `src/components/patient/dashboard/QuickActionsDrawer.tsx` (→ `/patient/teleconsult`)
 - Create: `src/__tests__/manifest.test.ts`
+
+**Why this task covers more than the two registry files.** Task 3 was expected to leave the build red, and it did not: `tsc --noEmit` exits 0 after the route deletions, because **routes are referenced as plain string literals everywhere** — no `typedRoutes`, no static imports of page modules. Deleting a route therefore produces no compile error at all; it produces a link that 404s at runtime. TypeScript cannot catch any of this, so `manifest.test.ts` is the only guard, and it must scan every kept file rather than just `AppShell` and `login`.
 
 **Interfaces:**
 - Consumes: the pruned `src/app/` tree from Task 3.
@@ -403,10 +437,61 @@ import { ALL_ROLES } from '@/types/roles'
 const APP = path.join(process.cwd(), 'src/app')
 
 const EXPECTED_ROLES = ['doctor', 'nurse', 'reception', 'billing', 'admin', 'patient']
+
+// Every route this project actually ships, as segment arrays. A '[param]'
+// segment matches any single literal segment; '(group)' segments are routing-
+// only and do not appear in URLs.
+const shippedRoutes = (): string[][] => {
+  const out: string[][] = []
+  const walk = (dir: string, segs: string[]) => {
+    for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
+      if (!e.isDirectory()) continue
+      const next = e.name.startsWith('(') ? segs : [...segs, e.name]
+      const d = path.join(dir, e.name)
+      if (fs.existsSync(path.join(d, 'page.tsx')) || fs.existsSync(path.join(d, 'route.ts'))) {
+        out.push(next)
+      }
+      walk(d, next)
+    }
+  }
+  if (fs.existsSync(path.join(APP, 'page.tsx'))) out.push([])
+  walk(APP, [])
+  return out
+}
+
+const routeMatches = (route: string[], link: string): boolean => {
+  const segs = link.split('/').filter(Boolean)
+  if (segs.length !== route.length) return false
+  return route.every((r, i) => (r.startsWith('[') ? true : r === segs[i]))
+}
+
+// Internal links, read only from contexts that actually navigate. Narrow on
+// purpose: a broad scan for any '/foo' string produces false positives from
+// class names, asset paths and API URLs.
+const internalLinks = (src: string): string[] => {
+  const pats = [
+    /href=["'](\/[a-z0-9/[\]-]*)["']/g,
+    /href:\s*["'](\/[a-z0-9/[\]-]*)["']/g,
+    /router\.(?:push|replace|prefetch)\(\s*["'](\/[a-z0-9/[\]-]*)["']/g,
+    /redirect\(\s*["'](\/[a-z0-9/[\]-]*)["']/g,
+  ]
+  const found = new Set<string>()
+  for (const p of pats) for (const m of src.matchAll(p)) found.add(m[1])
+  return [...found].filter((l) => l !== '/' && !l.startsWith('/api/'))
+}
+
+const sourceFiles = (dir = path.join(process.cwd(), 'src'), out: string[] = []): string[] => {
+  for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
+    const p = path.join(dir, e.name)
+    if (e.isDirectory()) sourceFiles(p, out)
+    else if (/\.tsx?$/.test(e.name) && !p.includes('__tests__')) out.push(p)
+  }
+  return out
+}
 const REMOVED_PORTALS = [
   'admin', 'admission', 'ambulance', 'audit', 'bloodbank', 'bmw', 'cmo', 'consent',
   'cssd', 'dietary', 'discharge', 'emergency', 'family-track', 'feedback',
-  'housekeeping', 'hr', 'insurance', 'inventory', 'journey', 'lab', 'mortuary',
+  'housekeeping', 'hr', 'insurance', 'inventory', 'lab', 'mortuary',
   'ot', 'pharmacy', 'quality', 'radiology', 'secretary', 'vendor-manager',
 ]
 
@@ -427,20 +512,19 @@ describe('route manifest', () => {
     expect(fs.existsSync(path.join(APP, 'patient/teleconsult'))).toBe(false)
   })
 
-  it('resolves every AppShell nav href to a real route directory', () => {
-    const shell = fs.readFileSync(
-      path.join(process.cwd(), 'src/components/layout/AppShell.tsx'), 'utf8')
-    const hrefs = [...shell.matchAll(/href:\s*'([^']+)'/g)].map((m) => m[1])
-    expect(hrefs.length).toBeGreaterThan(0)
-    const broken = hrefs.filter((h) => !fs.existsSync(path.join(APP, h.replace(/^\//, ''))))
-    expect(broken).toEqual([])
-  })
+  it('has no internal link anywhere that points at a route this project does not ship', () => {
+    const routes = shippedRoutes()
+    expect(routes.length).toBeGreaterThan(10)
 
-  it('resolves every login ROLE_DASHBOARD target to a real route directory', () => {
-    const login = fs.readFileSync(path.join(APP, 'login/page.tsx'), 'utf8')
-    const targets = [...login.matchAll(/:\s*"(\/[a-z-]+(?:\/[a-z-]+)*)"/g)].map((m) => m[1])
-    expect(targets.length).toBeGreaterThan(0)
-    const broken = targets.filter((t) => !fs.existsSync(path.join(APP, t.replace(/^\//, ''))))
+    const broken: string[] = []
+    for (const file of sourceFiles()) {
+      const src = fs.readFileSync(file, 'utf8')
+      for (const link of internalLinks(src)) {
+        if (!routes.some((r) => routeMatches(r, link))) {
+          broken.push(`${path.relative(process.cwd(), file)} -> ${link}`)
+        }
+      }
+    }
     expect(broken).toEqual([])
   })
 })
@@ -554,6 +638,27 @@ const sectionsByRole: Partial<Record<Role, { header: string; items: NavItem[] }[
 
 8. Remove now-unused `lucide-react` icon imports from the import block ending at line ~17. Do not guess — let `npm run lint` in Step 7 name them.
 
+- [ ] **Step 5b: Repair every other dangling internal link**
+
+`tsc` cannot help here — routes are string literals — so the test from Step 1 is your worklist. Run it and fix what it names.
+
+`src/components/layout/CommandPalette.tsx` is the largest: 24 of its 29 route entries point at deleted portals. Delete those command entries; keep the five that still resolve (`/billing/refunds`, `/checkin`, `/doctor/dashboard`, `/reception/appointments`, `/reception/opd`) and add entries for the shipped routes a user would want to jump to.
+
+The rest are individual links in kept files. For each, the fix is to **remove the link and the UI affordance that offers it** — a button that navigates nowhere is worse than no button:
+
+| File | Dangling target |
+|---|---|
+| `src/app/doctor/consultation/page.tsx` | `/doctor/beds` |
+| `src/app/doctor/dashboard/page.tsx` | `/doctor/beds` |
+| `src/app/reception/dashboard/page.tsx` | `/reception/beds` |
+| `src/app/patient/consultations/page.tsx` | `/patient/teleconsult` |
+| `src/app/patient/followup/page.tsx` | `/patient/pharmacy` |
+| `src/components/clinical/CriticalValueBanner.tsx` | `/audit/log` |
+| `src/components/patient/dashboard/LiveVisitStatusCard.tsx` | `/patient/teleconsult` |
+| `src/components/patient/dashboard/QuickActionsDrawer.tsx` | `/patient/teleconsult` |
+
+Files the reachability report already lists as dead (`components/admin/*`, `components/insurance/LiveCashlessMonitor.tsx`, `components/clinical/EarlyWarningBanner.tsx`, `components/patient/dashboard/{LiveJourneyCard,QuickActions}.tsx`) are **not** your problem — Task 8 deletes them wholesale. Do not edit them.
+
 - [ ] **Step 6: Run the test to verify it passes**
 
 ```bash
@@ -567,7 +672,8 @@ Expected: PASS, 5 tests.
 
 ```bash
 cd "/e/Umang Hospital HIMS"
-npx tsc --noEmit && npm run lint
+npx tsc --noEmit; echo "tsc: $?"
+npm run lint 2>&1 | tail -3   # <= 602 problems, no new rule violated
 ```
 
 Fix each remaining error. Expect two shapes: unused icon imports in `AppShell.tsx` (delete them), and files importing modules deleted in Task 3 — for a **kept page**, that import must be removed and its UI adjusted; for an out-of-scope component, leave it, Task 8 deletes the file wholesale.
@@ -704,7 +810,9 @@ If Step 1's list contains a symbol from a module named for deletion, **keep that
 
 ```bash
 cd "/e/Umang Hospital HIMS"
-npx tsc --noEmit && npx vitest run && node scripts/reachability.mjs | head -3
+npx tsc --noEmit; echo "tsc: $?"
+npx vitest run src/__tests__/manifest.test.ts src/lib/__tests__/opd-doctors.test.ts src/lib/api/__tests__/core-fallback.test.ts src/lib/intake/__tests__/register.test.ts src/lib/supabase/__tests__/client.test.ts src/store/__tests__/useLabOrdersStore.setRealIds.test.ts   # the 6 hermetic suites: must be green
+node scripts/reachability.mjs | head -3
 ```
 
 Expected: `tsc` passes, tests pass, `DEAD` rises again.
@@ -728,13 +836,13 @@ imports; every retained export keeps its current name, so no consumer changes."
 `messages/{en,hi}/index.ts` import all 46 locale namespaces. They are auto-generated, so the fix is delete-then-regenerate.
 
 **Files:**
-- Delete: 31 namespace JSON files from each of `messages/en/` and `messages/hi/`
+- Delete: 30 namespace JSON files from each of `messages/en/` and `messages/hi/`
 - Regenerate: `messages/en/index.ts`, `messages/hi/index.ts` (via `scripts/i18n-barrel.mjs`)
 - Create: `src/__tests__/i18n-namespaces.test.ts`
 
 **Interfaces:**
 - Consumes: Task 6's pruned data layer.
-- Produces: both locale barrels exporting the same 15 namespaces — `abha`, `checkin`, `discovery`, `doctor`, `intake`, `labs`, `landing`, `nav`, `notify`, `nurse`, `orderSets`, `p`, `patient`, `reception`, `ui`. `src/i18n/request.ts` is unchanged.
+- Produces: both locale barrels exporting the same 16 namespaces — `abha`, `checkin`, `discovery`, `doctor`, `intake`, `journey`, `labs`, `landing`, `nav`, `notify`, `nurse`, `orderSets`, `p`, `patient`, `reception`, `ui`. `src/i18n/request.ts` is unchanged.
 
 - [ ] **Step 1: Write the failing test**
 
@@ -747,8 +855,8 @@ import path from 'node:path'
 
 const ROOT = process.cwd()
 const KEPT = [
-  'abha', 'checkin', 'discovery', 'doctor', 'intake', 'labs', 'landing', 'nav',
-  'notify', 'nurse', 'orderSets', 'p', 'patient', 'reception', 'ui',
+  'abha', 'checkin', 'discovery', 'doctor', 'intake', 'journey', 'labs', 'landing',
+  'nav', 'notify', 'nurse', 'orderSets', 'p', 'patient', 'reception', 'ui',
 ]
 
 const walk = (dir: string, out: string[] = []): string[] => {
@@ -806,7 +914,7 @@ cd "/e/Umang Hospital HIMS"
 npx vitest run src/__tests__/i18n-namespaces.test.ts
 ```
 
-Expected: FAIL — 46 namespace files found where 15 were expected.
+Expected: FAIL — 46 namespace files found where 16 were expected.
 
 - [ ] **Step 3: Delete the out-of-scope namespaces from both locales**
 
@@ -816,14 +924,14 @@ for loc in en hi; do
   (cd "$loc" && rm -f admin.json admission.json ai.json ambulance.json audit.json \
     billing.json bloodbank.json bmw.json cmo.json common.json consent.json cssd.json \
     dietary.json discharge.json emergency.json family-track.json feedback.json \
-    housekeeping.json hr.json insurance.json inventory.json journey.json lab.json \
+    housekeeping.json hr.json insurance.json inventory.json lab.json \
     mortuary.json ot.json pharmacy.json quality.json radiology.json roles.json \
     secretary.json vendor-manager.json)
 done
 ls -1 en/*.json | wc -l && ls -1 hi/*.json | wc -l
 ```
 
-Expected: `15` and `15`.
+Expected: `16` and `16`.
 
 Note `nav.json` is **kept** — it holds the `item.*`, `section.*` **and** `role.*` keys `AppShell` reads via `useTranslations('nav')`. `roles.json` is a separate, unreferenced namespace and is deleted.
 
@@ -835,15 +943,17 @@ node scripts/i18n-barrel.mjs
 head -5 messages/en/index.ts && grep -c "^  \"" messages/en/index.ts
 ```
 
-Expected: the `AUTO-GENERATED` header, and `15` keys.
+Expected: the `AUTO-GENERATED` header, and `16` keys.
 
-If `scripts/i18n-barrel.mjs` hardcodes a namespace list rather than reading the directory, update that list to the 15 kept names before rerunning.
+If `scripts/i18n-barrel.mjs` hardcodes a namespace list rather than reading the directory, update that list to the 16 kept names before rerunning.
 
 - [ ] **Step 5: Verify**
 
 ```bash
 cd "/e/Umang Hospital HIMS"
-npx vitest run src/__tests__/i18n-namespaces.test.ts && npx tsc --noEmit && npm run build
+npx vitest run src/__tests__/i18n-namespaces.test.ts
+npx tsc --noEmit; echo "tsc: $?"
+npm run build; echo "build: $?"
 ```
 
 Expected: 4 tests pass; `tsc` and `build` succeed.
@@ -855,9 +965,9 @@ A `MISSING_MESSAGE` error at runtime means a kept page reads a deleted namespace
 ```bash
 cd "/e/Umang Hospital HIMS"
 git add -A
-git commit -q -m "refactor: prune i18n to the 15 in-scope namespaces
+git commit -q -m "refactor: prune i18n to the 16 in-scope namespaces
 
-Deletes 31 out-of-scope namespace files from both en and hi and regenerates
+Deletes 30 out-of-scope namespace files from both en and hi and regenerates
 the auto-generated barrels, which previously imported all 46 and so made the
 whole message catalogue reachable.
 
@@ -917,7 +1027,12 @@ Expected final: `DEAD: 0`, `UNRESOLVED imports: (none)`.
 
 ```bash
 cd "/e/Umang Hospital HIMS"
-npx tsc --noEmit && npm run lint && npm run build && npx vitest run
+rm -rf .next
+npx tsc --noEmit; echo "tsc: $?"
+npm run build; echo "build: $?"
+node scripts/reachability.mjs | head -3
+npm run lint 2>&1 | tail -3      # <= 602 problems, no new rule violated
+npx vitest run src/__tests__/manifest.test.ts src/lib/__tests__/opd-doctors.test.ts src/lib/api/__tests__/core-fallback.test.ts src/lib/intake/__tests__/register.test.ts src/lib/supabase/__tests__/client.test.ts src/store/__tests__/useLabOrdersStore.setRealIds.test.ts   # the 6 hermetic suites: must be green
 ```
 
 Expected: all four pass.
@@ -1041,7 +1156,9 @@ Expected: PASS, 6 tests.
 
 ```bash
 cd "/e/Umang Hospital HIMS"
-npx tsc --noEmit && npx vitest run && node scripts/reachability.mjs | head -3
+npx tsc --noEmit; echo "tsc: $?"
+npx vitest run src/__tests__/manifest.test.ts src/lib/__tests__/opd-doctors.test.ts src/lib/api/__tests__/core-fallback.test.ts src/lib/intake/__tests__/register.test.ts src/lib/supabase/__tests__/client.test.ts src/store/__tests__/useLabOrdersStore.setRealIds.test.ts   # the 6 hermetic suites: must be green
+node scripts/reachability.mjs | head -3
 ```
 
 Expected: `tsc` passes (a failure names the kept caller of a removed action — restore it), tests pass including `useLabOrdersStore.setRealIds.test.ts`, `DEAD` is 0 or reveals newly-orphaned fulfilment helpers.
@@ -1106,7 +1223,9 @@ export const metadata: Metadata = {
 
 ```bash
 cd "/e/Umang Hospital HIMS"
-npx tsc --noEmit && npx vitest run && npm run build
+npx tsc --noEmit; echo "tsc: $?"
+npm run build; echo "build: $?"
+npx vitest run src/__tests__/manifest.test.ts src/lib/__tests__/opd-doctors.test.ts src/lib/api/__tests__/core-fallback.test.ts src/lib/intake/__tests__/register.test.ts src/lib/supabase/__tests__/client.test.ts src/store/__tests__/useLabOrdersStore.setRealIds.test.ts   # the 6 hermetic suites: must be green
 ```
 
 Expected: all pass, including the i18n namespace test.
@@ -1233,6 +1352,84 @@ cat .env.example
 
 Confirm every value is blank before committing.
 
+- [ ] **Step 6a: Project-wide brand sweep — replace "Agentix HIMS" with "Umang Hospital"**
+
+Task 10 rebranded the landing page only. The product identity is everywhere else: **89 occurrences across 50 files** (63 in `src/`, 26 in `messages/`). Every step of the OPD journey still says Agentix:
+
+| Touchpoint | File |
+|---|---|
+| Login heading — "Sign in — Agentix HIMS" | `src/app/login/page.tsx` |
+| Check-in kiosk logo + alt text | `src/app/checkin/page.tsx` |
+| **Voice agent greeting** — Asha introduces herself as "the AI receptionist at Agentix HIMS" | `src/app/api/intake/turn/route.ts`, `src/ai-services/intake-assistant.ts` |
+| **Printed tax invoice** and downloadable documents | `src/app/patient/billing/page.tsx`, `src/app/patient/downloads/page.tsx` |
+| Public patient-tracking page | `messages/{en,hi}/p.json` |
+| ABHA consent `hiuName` (the name shown to the patient when consenting) | `src/app/abha/page.tsx` |
+| WhatsApp assistant replies | `src/ai-services/whatsapp-assistant.ts` |
+| Registration welcome screen | `messages/{en,hi}/intake.json` |
+
+Replace every user-visible occurrence with **Umang Hospital**. Work through `grep -rn "Agentix" src messages` until it returns nothing — comments included, since a comment naming the old product is stale documentation here too.
+
+Three judgement calls while you go:
+
+1. **`src/app/checkin/page.tsx` references `/Agentix logo-health.svg`.** Repoint it at `/Umang-logo.webp` so Step 6b can delete the Agentix asset. Do this before Step 6b, or the reference-count check will keep the file.
+2. **Claims that stop being true for one hospital.** `messages/{en,hi}/doctor.json` says beds are "Live across Agentix HIMS branches". Umang Hospital is a single hospital in this build — reword so it does not claim a multi-branch network.
+3. **Keep Hindi Hindi.** Both locales change together, key-for-key; `i18n-namespaces.test.ts` enforces parity. "Umang Hospital" may stay Latin script inside Hindi strings (as "Agentix HIMS" did) — do not machine-transliterate it.
+
+Then add a regression guard so this cannot creep back. Create `src/__tests__/branding.test.ts`:
+
+```ts
+import { describe, expect, it } from 'vitest'
+import fs from 'node:fs'
+import path from 'node:path'
+
+// The old product name must not survive anywhere a user or a maintainer reads.
+const FORBIDDEN = ['Agentix']
+
+const walk = (dir: string, out: string[] = []): string[] => {
+  for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
+    const p = path.join(dir, e.name)
+    if (e.isDirectory()) walk(p, out)
+    else if (/\.(ts|tsx|json)$/.test(e.name)) out.push(p)
+  }
+  return out
+}
+
+describe('branding', () => {
+  it('no file under src/ or messages/ mentions the old product name', () => {
+    const roots = ['src', 'messages'].map((d) => path.join(process.cwd(), d))
+    const offenders: string[] = []
+    for (const root of roots) {
+      for (const file of walk(root)) {
+        const text = fs.readFileSync(file, 'utf8')
+        for (const term of FORBIDDEN) {
+          if (text.includes(term)) {
+            offenders.push(`${path.relative(process.cwd(), file)} -> ${term}`)
+          }
+        }
+      }
+    }
+    expect(offenders).toEqual([])
+  })
+})
+```
+
+Run it BEFORE the sweep to confirm it goes RED naming the 50 files, then after to confirm GREEN. It joins the binding suite set.
+
+- [ ] **Step 6b: Prune stale brand assets from `public/`**
+
+The rebrand in Task 10 leaves Gov-HIMS/Agentix assets behind. Remove the ones nothing references:
+
+```bash
+cd "/e/Umang Hospital HIMS"
+for f in public/*; do
+  n=$(grep -rlF "$(basename "$f")" src messages 2>/dev/null | wc -l)
+  printf '%3d  %s
+' "$n" "$f"
+done
+```
+
+Delete every asset reporting `0`. Expect `Agentix logo-health.svg`, `Agentix-logo-favicon.ico`, `download-ayushman-card.jpg` and `peoplesuniversitylogo.png` among them — the last is a university logo with no place in a hospital product. **Keep `Umang-logo.webp`** and anything with a non-zero count. Next.js's own `file.svg`/`globe.svg`/`next.svg`/`vercel.svg` are scaffold leftovers; delete them too if unreferenced.
+
 - [ ] **Step 7: Prune the inherited docs tree**
 
 Task 1's mirror copied Gov-HIMS's entire `docs/` directory, including its specs and roughly seven phases of implementation plans for portals this project does not ship.
@@ -1241,6 +1438,8 @@ Task 1's mirror copied Gov-HIMS's entire `docs/` directory, including its specs 
 cd "/e/Umang Hospital HIMS/docs"
 ls -R | head -60
 ```
+
+Also prune the root `specs/` and `context/` directories, which are Gov-HIMS agent artefacts carried over by the mirror.
 
 Keep only what describes **this** project: this extraction's own spec and plan (copy them in from the source repo's `docs/superpowers/{specs,plans}/2026-08-29-umang-opd-extraction*`), plus any design-system or design-language document the shipped UI still relies on. Delete the Gov-HIMS phase plans, the reviews, and the specs for lab, pharmacy, radiology, IPD, OT and the government cockpits.
 
@@ -1262,7 +1461,12 @@ Delete `CMO_COCKPIT_BUILD_SPEC.md`, `HEALTH_SECRETARY_BUILD_SPEC.md`, `PROJECT-O
 ```bash
 cd "/e/Umang Hospital HIMS"
 rm -rf node_modules package-lock.json && npm install
-npx tsc --noEmit && npm run lint && npm run build && npx vitest run && npm run reachability | head -3
+rm -rf .next
+npx tsc --noEmit; echo "tsc: $?"
+npm run build; echo "build: $?"
+node scripts/reachability.mjs | head -3
+npm run lint 2>&1 | tail -3      # <= 602 problems, no new rule violated
+npx vitest run src/__tests__/manifest.test.ts src/lib/__tests__/opd-doctors.test.ts src/lib/api/__tests__/core-fallback.test.ts src/lib/intake/__tests__/register.test.ts src/lib/supabase/__tests__/client.test.ts src/store/__tests__/useLabOrdersStore.setRealIds.test.ts   # the 6 hermetic suites: must be green
 ```
 
 Expected: all pass; `DEAD: 0`. The clean reinstall proves no removed dependency was still needed.
@@ -1301,10 +1505,15 @@ The acceptance criterion. Nothing here is optional — the extraction is complet
 
 ```bash
 cd "/e/Umang Hospital HIMS"
-npx tsc --noEmit && npm run lint && npm run build && npx vitest run && npm run reachability | head -3
+rm -rf .next
+npx tsc --noEmit; echo "tsc: $?"
+npm run build; echo "build: $?"
+node scripts/reachability.mjs | head -3
+npm run lint 2>&1 | tail -3      # <= 602 problems, no new rule violated
+npx vitest run src/__tests__/manifest.test.ts src/lib/__tests__/opd-doctors.test.ts src/lib/api/__tests__/core-fallback.test.ts src/lib/intake/__tests__/register.test.ts src/lib/supabase/__tests__/client.test.ts src/store/__tests__/useLabOrdersStore.setRealIds.test.ts   # the 6 hermetic suites: must be green
 ```
 
-Expected: five green results, `DEAD: 0`. **Record the actual output.** Do not proceed on a partial pass.
+Expected: `tsc: 0`, `build: 0`, `DEAD: 0`; lint at or below the 602-problem baseline with no newly-violated rule; the 6 hermetic vitest suites all green. **Record the actual output.** Do not proceed on a partial pass.
 
 - [ ] **Step 2: Confirm demo accounts exist for the five portal roles**
 

@@ -16,7 +16,8 @@ Landing → Registration (voice or form) → Reception → Nurse/Vitals
 ```
 
 Five staff-facing surfaces survive: Patient, Reception, Nurse, Doctor, Billing.
-Everything else in the source system — 24 other portals — is removed.
+Everything else is removed: 24 other portals, plus the consent, journey and
+family-track utility routes — 27 top-level route directories in all.
 
 ## Decisions
 
