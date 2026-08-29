@@ -133,7 +133,7 @@ export default function AbhaSandboxPage() {
   const [consentRequests, setConsentRequests] = useState<MockConsentRequest[]>([
     {
       id: "REQ-2026-004",
-      hiuName: "Agentix HIMS",
+      hiuName: "Umang Hospital",
       patientAddress: "ramesh.kumar@abdm",
       dataTypes: ["DiagnosticReport", "MedicationRequest"],
       purpose: "Care Management",
@@ -294,7 +294,7 @@ export default function AbhaSandboxPage() {
     const newId = `REQ-2026-00${consentRequests.length + 5}`
     const newRequest: MockConsentRequest = {
       id: newId,
-      hiuName: "Agentix HIMS",
+      hiuName: "Umang Hospital",
       patientAddress: targetAbhaAddress.trim().toLowerCase(),
       dataTypes: reqDataTypes,
       purpose: reqPurpose,

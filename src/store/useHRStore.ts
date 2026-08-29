@@ -29,9 +29,9 @@ export type BranchId = 'BRANCH_MAIN' | 'BRANCH_WHITEFIELD' | 'BRANCH_INDIRANAGAR
 export const DEFAULT_BRANCH: BranchId = 'BRANCH_MAIN'
 
 export const BRANCH_LABEL: Record<BranchId, string> = {
-  BRANCH_MAIN:        'Agentix HIMS — MG Road',
-  BRANCH_WHITEFIELD:  'Agentix HIMS — Whitefield',
-  BRANCH_INDIRANAGAR: 'Agentix HIMS — Indiranagar',
+  BRANCH_MAIN:        'Umang Hospital — MG Road',
+  BRANCH_WHITEFIELD:  'Umang Hospital — Whitefield',
+  BRANCH_INDIRANAGAR: 'Umang Hospital — Indiranagar',
 }
 
 // ─── Enums ──────────────────────────────────────────────────────────────

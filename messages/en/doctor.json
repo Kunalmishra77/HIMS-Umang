@@ -94,7 +94,7 @@
   },
   "beds": {
     "title": "Bed Availability",
-    "subtitle": "Live across Agentix HIMS branches — find a bed when your ward is full",
+    "subtitle": "Live bed availability — find a bed when your ward is full",
     "thisBranch": "· This branch",
     "currentLocation": "Current location",
     "kmAway": "{km} km away",

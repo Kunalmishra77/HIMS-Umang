@@ -2,8 +2,8 @@
 // The flow is data-driven; consultation type (in-person vs video) drives the branch.
 
 export const HOSPITAL = {
-  name: 'Agentix HIMS',
-  fullName: 'Agentix HIMS',
+  name: 'Umang Hospital',
+  fullName: 'Umang Hospital',
   address: 'Bhanpur, Bhopal Bypass Road, Bhopal',
   phone: '0755-4005000',
 } as const

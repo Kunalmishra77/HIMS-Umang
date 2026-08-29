@@ -79,7 +79,7 @@ export default function LoginPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <form onSubmit={handleSubmit} className="w-full max-w-sm space-y-4 rounded-xl border border-border bg-surface p-8 shadow-sm">
-        <h1 className="text-xl font-semibold text-foreground">Sign in — Agentix HIMS</h1>
+        <h1 className="text-xl font-semibold text-foreground">Sign in — Umang Hospital</h1>
         <div className="space-y-1">
           <label className="text-sm font-medium text-foreground" htmlFor="email">Email</label>
           <Input id="email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />

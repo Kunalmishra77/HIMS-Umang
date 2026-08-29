@@ -16,7 +16,7 @@ const BP_TREND = [
 const HEALTH_SCORE = 78
 
 const TIMELINE = [
-  { icon: UserPlus, tint: 'bg-surface-sunken text-accent', title: 'Registered at Agentix HIMS', sub: 'Permanent UHID issued · Dec 2025' },
+  { icon: UserPlus, tint: 'bg-surface-sunken text-accent', title: 'Registered at Umang Hospital', sub: 'Permanent UHID issued · Dec 2025' },
   { icon: Stethoscope, tint: 'bg-primary-soft text-accent', title: 'OPD consultation — General Medicine', sub: 'Dr. Priya Nair · Jan 2026' },
   { icon: FlaskConical, tint: 'bg-primary-soft text-accent', title: 'Lab investigations', sub: 'CBC · Lipid profile · Feb 2026' },
   { icon: Pill, tint: 'bg-amber-50 text-amber-600', title: 'Prescription updated', sub: 'Antihypertensive started · Mar 2026' },

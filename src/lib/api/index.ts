@@ -1,4 +1,4 @@
-/* Agentix HIMS — API public surface.
+/* Umang Hospital — API public surface.
  *
  * Stores import from '@/lib/api' and call typed async methods backed by Supabase
  * (via `_core.table()`), with a localStorage fallback only for tables that don't

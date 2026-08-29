@@ -1,6 +1,6 @@
 {
   "rewrite": {
-    "registered": "आप Agentix HIMS में रजिस्टर हो गए हैं",
+    "registered": "आप Umang Hospital में रजिस्टर हो गए हैं",
     "erArrival": "आप इमरजेंसी विभाग पहुँच गए हैं",
     "triaged": "ट्राएज जाँच पूरी हुई",
     "claimed": "आपके डॉक्टर अब आपको देख रहे हैं",
@@ -51,7 +51,7 @@
     "resendLink": "अस्पताल से लिंक दोबारा भेजने को कहें"
   },
   "notFound": {
-    "title": "Agentix HIMS",
+    "title": "Umang Hospital",
     "body": "पेशेंट ID <mono>{uhid}</mono> नहीं मिली। अपने SMS का लिंक चेक करें — UHID ऐसे दिखते हैं <sampleMono>{sample}</sampleMono>।",
     "call": "अस्पताल को कॉल करें"
   },
@@ -88,5 +88,5 @@
     "body": "अपने पेशेंट को लेकर किसी भी ज़रूरी चिंता के लिए, पहले नर्सिंग स्टेशन पर ड्यूटी डॉक्टर से बात करें।",
     "phone": "+91 80 1234 0000"
   },
-  "footer": "Agentix HIMS · यह एक लाइव ट्रैकिंग पेज है · हर 10 सेकंड में अपडेट"
+  "footer": "Umang Hospital · यह एक लाइव ट्रैकिंग पेज है · हर 10 सेकंड में अपडेट"
 }

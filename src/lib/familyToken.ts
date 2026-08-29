@@ -1,4 +1,4 @@
-/* Agentix HIMS — Family-tracking access token (frontend pattern)
+/* Umang Hospital — Family-tracking access token (frontend pattern)
  *
  * The public `/p/<uhid>` family-tracking page must not treat the UHID as the
  * sole credential (it is guessable/enumerable). This module issues a small,

@@ -34,8 +34,8 @@ export default function CheckinPage() {
           style={{ background: "linear-gradient(185deg, rgba(11,18,32,0.28) 0%, rgba(11,18,32,0.22) 32%, rgba(11,18,32,0.78) 100%)" }}
         />
         <img
-          src="/Agentix logo-health.svg"
-          alt="Agentix HIMS"
+          src="/Umang-logo.webp"
+          alt="Umang Hospital"
           className="absolute top-10 left-10 xl:top-14 xl:left-14 h-11 w-auto object-contain brightness-0 invert"
         />
         <div className="absolute inset-x-0 bottom-0 p-10 xl:p-14">
@@ -63,7 +63,7 @@ export default function CheckinPage() {
         >
           {/* Mobile brand */}
           <div className="flex items-center justify-between mb-8 lg:mb-0">
-            <img src="/Agentix logo-health.svg" alt="Agentix HIMS" className="lg:hidden h-10 w-auto object-contain" />
+            <img src="/Umang-logo.webp" alt="Umang Hospital" className="lg:hidden h-10 w-auto object-contain" />
             <div className="ml-auto"><LocaleToggle /></div>
           </div>
 

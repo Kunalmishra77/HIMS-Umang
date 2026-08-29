@@ -198,7 +198,7 @@ export function promptFor(slot: SlotId, f: IntakeForm, lang: Lang = 'en'): strin
 function prompt(slot: SlotId, f: IntakeForm, lang: Lang): string {
   if (lang === 'hi') {
     switch (slot) {
-      case 'name': return 'नमस्ते! मैं आशा हूँ, Agentix HIMS की AI रिसेप्शनिस्ट। आपका नाम बताइए।'
+      case 'name': return 'नमस्ते! मैं आशा हूँ, Umang Hospital की AI रिसेप्शनिस्ट। आपका नाम बताइए।'
       case 'age': return 'और आपकी उम्र?'
       case 'gender': return 'आपका जेंडर बताइए — पुरुष, महिला या अन्य।'
       case 'phone': return 'अपना मोबाइल नंबर बताइए।'
@@ -208,7 +208,7 @@ function prompt(slot: SlotId, f: IntakeForm, lang: Lang): string {
     }
   }
   switch (slot) {
-    case 'name': return 'Hello, I’m Asha, the AI receptionist at Agentix HIMS. May I have your name?'
+    case 'name': return 'Hello, I’m Asha, the AI receptionist at Umang Hospital. May I have your name?'
     case 'age': return 'And your age?'
     case 'gender': return 'Your gender — male, female, or other?'
     case 'phone': return 'Please tell me your mobile number.'

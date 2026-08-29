@@ -1,4 +1,4 @@
-/* Agentix HIMS — Clinical order sets (Track A · reduce journey friction)
+/* Umang Hospital — Clinical order sets (Track A · reduce journey friction)
  *
  * One-click protocol bundles for the doctor console. Selecting a set stages a
  * diagnosis + labs + imaging + medications (+ optional admission) into the

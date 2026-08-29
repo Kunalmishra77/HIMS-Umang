@@ -151,7 +151,7 @@ export function FamilyInviteCard({ className }: { className?: string }) {
   }
 
   const messagePreview =
-    `${currentUser?.name?.split(' ')[0] ?? 'Your loved one'} has invited you to follow their hospital visit at Agentix HIMS.\n\n` +
+    `${currentUser?.name?.split(' ')[0] ?? 'Your loved one'} has invited you to follow their hospital visit at Umang Hospital.\n\n` +
     `You'll see ward, condition, and wait-time updates in real-time — no medical details, fully consented.\n\n` +
     `Tap to open: ${trackUrl}`
 

@@ -263,7 +263,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         {/* Brand Header */}
         <div className="h-[68px] flex items-center px-4 flex-shrink-0 border-b border-border-light">
           <div className="flex items-center overflow-hidden whitespace-nowrap w-full pl-2">
-            <img src="/Agentix logo-health.svg" alt="Agentix HIMS" className={cn("w-auto object-contain", collapsed ? "h-8" : "h-10")} />
+            <img src="/Umang-logo.webp" alt="Umang Hospital" className={cn("w-auto object-contain", collapsed ? "h-8" : "h-10")} />
           </div>
         </div>
 

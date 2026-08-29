@@ -1,4 +1,4 @@
-/* Agentix HIMS — Mock API / Repository Boundary · Phase 1
+/* Umang Hospital — Mock API / Repository Boundary · Phase 1
  *
  * One typed, async, zod-validated layer between the UI/Zustand stores and the
  * real REST API that will replace it in Phase 2. Browser-persisted via

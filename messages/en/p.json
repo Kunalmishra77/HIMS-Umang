@@ -1,6 +1,6 @@
 {
   "rewrite": {
-    "registered": "You're registered at Agentix HIMS",
+    "registered": "You're registered at Umang Hospital",
     "erArrival": "You arrived at the Emergency department",
     "triaged": "Triage assessment complete",
     "claimed": "Your doctor is now reviewing you",
@@ -51,7 +51,7 @@
     "resendLink": "Ask hospital to resend link"
   },
   "notFound": {
-    "title": "Agentix HIMS",
+    "title": "Umang Hospital",
     "body": "Patient ID <mono>{uhid}</mono> not found. Check the link from your SMS — UHIDs look like <sampleMono>{sample}</sampleMono>.",
     "call": "Call hospital"
   },
@@ -88,5 +88,5 @@
     "body": "For urgent concerns about your patient, speak with the duty doctor at the nursing station first.",
     "phone": "+91 80 1234 0000"
   },
-  "footer": "Agentix HIMS · This is a live tracking page · Updates every 10 seconds"
+  "footer": "Umang Hospital · This is a live tracking page · Updates every 10 seconds"
 }

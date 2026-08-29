@@ -13,10 +13,10 @@ import { cn } from "@/lib/utils"
 
 /* ── Stage model ───────────────────────────────────────────────────────────
    Department touchpoints roll up into the patient-facing journey stages the
-   Agentix HIMS flow presents. The flow renders as a centred vertical
+   Umang Hospital flow presents. The flow renders as a centred vertical
    flowchart: milestone banner pills, white content cards with category icon +
    tag chips, connector dots between nodes, and a CTA at the close of each stage
-   — mirroring the Agentix HIMS journey design. */
+   — mirroring the Umang Hospital journey design. */
 
 type StageKey =
   | 'registration' | 'emergency' | 'triage' | 'consultation' | 'diagnostics'
@@ -102,7 +102,7 @@ interface Props {
 }
 
 /**
- * Agentix HIMS patient journey flow — a centred vertical flowchart of a
+ * Umang Hospital patient journey flow — a centred vertical flowchart of a
  * patient's path through the hospital. Reads every department store via
  * aggregateJourney, groups the chronological stream into journey stages, and
  * renders milestone banners, content cards with category chips, connector dots,

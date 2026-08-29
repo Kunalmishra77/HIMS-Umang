@@ -17,7 +17,7 @@ function downloadDoc(d: { name: string; category: string; date: string; size: st
       <div class="info-item"><span class="info-label">Date</span><span class="info-value">${d.date}</span></div>
       ${d.amount ? `<div class="info-item"><span class="info-label">Amount</span><span class="info-value">${d.amount}</span></div>` : ''}
     </div>
-    <p class="muted">This is a system-generated document from Agentix HIMS.</p>`
+    <p class="muted">This is a system-generated document from Umang Hospital.</p>`
   printableHtml(d.name, html)
 }
 

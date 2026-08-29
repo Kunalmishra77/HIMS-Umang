@@ -226,7 +226,7 @@ export function IntakeFlow() {
   const showBack = history.length > 0 && current !== 'success' && current !== 'welcome'
   
   const headerTitle = current === 'welcome' || current === 'success'
-    ? <Image src="/Agentix logo-health.svg" alt="Agentix HIMS" width={180} height={36} className="h-9 w-auto" priority />
+    ? <Image src="/Umang-logo.webp" alt="Umang Hospital" width={126} height={36} className="h-9 w-auto" priority />
     : current === 'voice' ? t('shell.headerVoice')
     : t('shell.headerCheckin')
 
