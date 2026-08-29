@@ -147,6 +147,29 @@ it has never returned zero problems on this codebase.
 - `npm run lint` and the full `vitest run` are not clean — see Verification.
 - Some seeded demo data (IPD/ICU rows) predates this extraction and is
   Gov-HIMS-shaped, not OPD-shaped — a side effect of the shared database.
+- **A settled bill is not patient-visible from Postgres.**
+  `patients.auth_user_id` is never set anywhere in `src/`, so patient-owned
+  RLS policies such as `bills_read_own` can never fire for a real signed-in
+  patient, and `/patient/billing` reads `usePatientOrdersStore` (local
+  state) rather than the `bills` table. This is pre-existing Gov-HIMS
+  behaviour, not a consequence of this extraction — `auth_user_id` is unused
+  the same way in the source repo. User-visible symptom: a patient can pay
+  their OPD bill at the billing desk and it will settle correctly in
+  Postgres, but that patient's own `/patient/billing` page will never show
+  it — it shows fixed local demo data instead.
+- **Appointments do not persist to Postgres.** `lib/api/appointments.ts` was
+  found dead in Task 6 and removed; the reception, patient and discovery
+  booking pages all run on `usePatientStore` local state instead. This is
+  pre-existing Gov-HIMS behaviour, not a consequence of this extraction —
+  the same dead-code path existed there too. User-visible symptom: an
+  appointment booked in the UI looks booked in that browser tab, but does
+  not survive a cross-device reload (another portal, or the same portal on
+  another machine, will never see it).
+- The patient identifier shown in the UI is **derived, not persisted**:
+  `patients.uhid` is `NULL` for most rows, and `lib/uhid.ts`'s
+  `deriveUhid()` computes a stable `PUH-YYYY-NNNNN` from the patient id
+  wherever a canonical UHID was never captured. This is correct by design,
+  not a bug — a `NULL` `uhid` on a freshly registered patient is expected.
 
 ---
 
