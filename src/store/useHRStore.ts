@@ -10,7 +10,7 @@ import { getSupabaseClient } from '@/lib/supabase/client'
 // One source of truth for every human in the hospital:
 //   • Staff directory (replaces hardcoded USERS/MOCK_STAFF/DIRECTORY/STAT_DOCTORS)
 //   • Shifts (compatible with existing roster page)
-//   • Duty assignments (promoted out of local state in /admin/duty)
+//   • Duty assignments (promoted out of local, page-level state)
 //   • Leave requests (existing, expanded with audit + decided-by)
 //   • Swap requests (NEW)
 //   • Sick calls + replacement workflow (NEW)
@@ -743,8 +743,7 @@ const SEED_DUTY: DutyAssignment[] = [
   { id: seedId('DU'), staffId: 'RAD-304', date: today(), shift: 'Morning', ward: 'Radiology',     assignedBy: 'ADM-01', assignedAt: new Date(Date.now() - 2 * 86400000).toISOString() },
 ]
 
-// Default dept minimums — migrated from /admin/staffing hardcoded list.
-// Edit via /admin/coverage UI (Phase 3 M3.1).
+// Default dept minimums — migrated from a hardcoded staffing list.
 const SEED_DEPT_MINIMUMS: DeptMinimum[] = [
   { department: 'Emergency Room',  min: 2, ideal: 4, roles: ['emergency', 'nurse'], perShift: true },
   { department: 'ICU',             min: 3, ideal: 5, roles: ['doctor', 'nurse'], perShift: true },

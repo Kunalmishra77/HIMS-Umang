@@ -213,7 +213,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   const renderItem = (item: NavItem) => {
     // Exact match wins; prefix match only when no more-specific nav item also matches,
-    // preventing the root route (/secretary) from staying active on every sub-page.
+    // preventing a shared root route from staying active on every sub-page.
     const isActive =
       pathname === item.href ||
       (pathname.startsWith(item.href + '/') &&

@@ -88,18 +88,27 @@ function detectTime(text: string): { value: string } | undefined {
 }
 
 // ── Routing: which page best fulfils the intent ───────────────────────────
-function destinationFor(action: CopilotAction, object?: CopilotObject): { route: string; label: string } {
-  if (action === "schedule" && object?.kind === "imaging")     return { route: "/radiology/inbox",   label: "Open radiology inbox to schedule" }
+// Every branch must resolve to a route this OPD-only build actually ships
+// (see src/__tests__/manifest.test.ts). Several source concepts — radiology,
+// IPD, insurance/pre-auth, discharge — were cut entirely and have no shipped
+// analog; those branches return undefined rather than guessing a nearby but
+// wrong page. CommandPalette/CopilotPreviewCard already treat a missing
+// destination as inert (no destination line shown, acceptCopilot() is a
+// no-op without one) — the same safety valve as an "unknown" action.
+function destinationFor(action: CopilotAction, object?: CopilotObject): { route: string; label: string } | undefined {
+  // Imaging/labs are doctor-ordered directly during the consultation now —
+  // there is no separate radiology/lab portal to schedule or order through.
+  if (action === "schedule" && object?.kind === "imaging")     return { route: "/doctor/consultation", label: "Open consultation to order imaging" }
   if (action === "schedule" && object?.kind === "appointment") return { route: "/reception/appointments", label: "Open appointments to schedule" }
-  if (action === "order"    && object?.kind === "lab")         return { route: "/doctor/ipd",         label: "Open IPD to raise lab order" }
-  if (action === "order"    && object?.kind === "imaging")     return { route: "/radiology/inbox",   label: "Open radiology inbox to order" }
-  if (action === "draft"    && object?.kind === "preauth")     return { route: "/insurance/preauth", label: "Open pre-auth desk" }
-  if (action === "draft"    && object?.kind === "discharge_summary") return { route: "/discharge/dashboard", label: "Open discharge desk" }
-  if (action === "discharge")                                  return { route: "/discharge/dashboard", label: "Open discharge desk" }
-  if (action === "show"     && /denial/i.test(object?.value ?? "")) return { route: "/insurance/dashboard", label: "Open insurance dashboard" }
-  if (action === "show"     && object?.kind === "list")        return { route: "/doctor/ipd",         label: "Open IPD list" }
-  if (action === "summarise")                                  return { route: "/doctor/ipd",         label: "Open patient chart to summarise" }
-  if (action === "find")                                       return { route: "/admin/patients",     label: "Open patient directory" }
+  if (action === "order"    && object?.kind === "lab")         return { route: "/doctor/consultation", label: "Open consultation to raise lab order" }
+  if (action === "order"    && object?.kind === "imaging")     return { route: "/doctor/consultation", label: "Open consultation to order imaging" }
+  if (action === "draft"    && object?.kind === "preauth")     return undefined // insurance/TPA cut — no shipped surface
+  if (action === "draft"    && object?.kind === "discharge_summary") return undefined // IPD/discharge cut — no shipped surface
+  if (action === "discharge")                                  return undefined // IPD/discharge cut — no shipped surface
+  if (action === "show"     && /denial/i.test(object?.value ?? "")) return undefined // insurance/claims cut — no shipped surface
+  if (action === "show"     && object?.kind === "list")        return { route: "/doctor/records",     label: "Open patient records" }
+  if (action === "summarise")                                  return { route: "/doctor/records",     label: "Open patient chart to summarise" }
+  if (action === "find")                                       return { route: "/reception/patients", label: "Open patient directory" }
   return { route: "/doctor/dashboard", label: "Open doctor dashboard" }
 }
 
@@ -134,7 +143,7 @@ export function parseIntent(
   }
 
   const destination = destinationFor(action, object)
-  if (action !== "unknown") reasoning.push(`Best surface: ${destination.label}.`)
+  if (destination) reasoning.push(`Best surface: ${destination.label}.`)
 
   // Clamp & polish.
   confidence = Math.max(0, Math.min(0.98, confidence))

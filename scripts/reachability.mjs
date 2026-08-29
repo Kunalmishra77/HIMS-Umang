@@ -12,6 +12,7 @@ const KEEP_ROUTES = [
   'src/app/page.tsx', 'src/app/layout.tsx', 'src/app/globals.css',
   'src/app/actions', 'src/middleware.ts', 'src/i18n',
   'src/app/login', 'src/app/checkin', 'src/app/p', 'src/app/discovery', 'src/app/abha',
+  'src/app/journey',
   'src/app/billing',
   'src/app/reception/layout.tsx',
   ...['dashboard', 'register', 'opd', 'queue', 'appointments', 'patients', 'journey',

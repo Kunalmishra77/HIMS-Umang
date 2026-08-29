@@ -3,7 +3,7 @@
  * This module:
  *   1. owns the audit table (so audit survives F5)
  *   2. exposes the bridge callback that the in-memory useAuditStore will register
- *   3. supports read queries for the /audit/* surfaces
+ *   3. supports read queries for audit-trail surfaces
  */
 import { z } from 'zod'
 import { id as newId, isoNow, registerAuditBridge, table, type AuditEmit } from './_core'

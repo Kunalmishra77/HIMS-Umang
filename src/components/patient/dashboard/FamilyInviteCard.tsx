@@ -17,6 +17,7 @@ import { Send, MessageCircle, UserPlus, X, Check, Phone, Sparkles, Clock } from 
 import { useAuthStore } from "@/store/useAuthStore"
 import { useAuditStore } from "@/store/useAuditStore"
 import { usePatientStore } from "@/store/usePatientStore"
+import { useFamilyTokenStore } from "@/store/useFamilyTokenStore"
 
 type InviteStatus = "sent" | "delivered" | "accepted"
 
@@ -31,7 +32,7 @@ interface Invite {
 
 const RELATIONS = ["Spouse", "Parent", "Child", "Sibling", "Friend", "Guardian"] as const
 
-const DEMO_TOKEN = "demo-family-token-meera-001"
+const DEMO_PATIENT_ID = "PT-20394"
 const LS_KEY = "agentix.patient.familyInvites"
 
 function loadInvites(): Invite[] {
@@ -59,7 +60,16 @@ export function FamilyInviteCard({ className }: { className?: string }) {
   const patients     = usePatientStore((s) => s.patients)
   const audit         = useAuditStore((s) => s.log)
   const me            = patients.find((p) => p.id === currentUser?.id)
-  const token         = me?.familyAccessToken ?? DEMO_TOKEN
+  // The link must point at /p/[uhid] with a token that page actually
+  // validates (lib/familyToken.ts) — usePatientStore's own familyAccessToken
+  // (a bare crypto.randomUUID(), used elsewhere for the reception-side
+  // family-viewable-status gate) is a DIFFERENT, incompatible token. Mint a
+  // real signed one via useFamilyTokenStore, same as FamilyTrackingCard.tsx.
+  // /p/[uhid] looks patients up by .id despite the route's [uhid] param name
+  // (see that page's own lookup: `s.patients.find(p => p.id === upUhid)`).
+  const uhid          = me?.id ?? currentUser?.id ?? DEMO_PATIENT_ID
+  const issueFamilyTrackToken = useFamilyTokenStore((s) => s.issue)
+  const familyTrackRecord     = useFamilyTokenStore((s) => s.records[uhid.toUpperCase()])
 
   const [invites, setInvites] = useState<Invite[]>([])
   const [showForm, setShowForm] = useState(false)
@@ -70,7 +80,17 @@ export function FamilyInviteCard({ className }: { className?: string }) {
   // Hydrate from LS on mount (browser-only).
   useEffect(() => { setInvites(loadInvites()) }, [])
 
-  const trackUrl = useMemo(() => (typeof window !== "undefined" ? `${window.location.origin}/family-track/${token}` : ''), [token])
+  // Ensure a consented, unexpired tracker token exists for this patient's own share link.
+  useEffect(() => {
+    if (!familyTrackRecord || familyTrackRecord.expiresAt <= Date.now()) {
+      issueFamilyTrackToken(uhid, me?.name ?? currentUser?.name ?? "Patient", { consent: true })
+    }
+  }, [uhid, familyTrackRecord, me?.name, currentUser?.name, issueFamilyTrackToken])
+
+  const trackUrl = useMemo(
+    () => (typeof window !== "undefined" && familyTrackRecord ? `${window.location.origin}/p/${uhid}?t=${familyTrackRecord.token}` : ''),
+    [uhid, familyTrackRecord],
+  )
 
   function sendInvite() {
     const digits = phone.replace(/\D/g, '')

@@ -34,6 +34,15 @@ const routeMatches = (route: string[], link: string): boolean => {
   return route.every((r, i) => (r.startsWith('[') ? true : r === segs[i]))
 }
 
+// A shipped route "starts with" a template literal's static leading segments
+// — the interpolated part (patient id, uhid, ...) fills in whatever comes
+// after. '[param]' segments in that leading portion match anything, same as
+// routeMatches.
+const prefixMatches = (route: string[], prefixSegs: string[]): boolean => {
+  if (route.length < prefixSegs.length) return false
+  return prefixSegs.every((s, i) => route[i] === s || route[i]?.startsWith('['))
+}
+
 // Internal links, read only from contexts that actually navigate. Narrow on
 // purpose: a broad scan for any '/foo' string produces false positives from
 // class names, asset paths and API URLs.
@@ -49,6 +58,24 @@ const internalLinks = (src: string): string[] => {
   return [...found].filter((l) => l !== '/' && !l.startsWith('/api/'))
 }
 
+// Template-literal navigation — `router.push(\`/journey/${id}\`)`,
+// `href={\`/nurse/patients/${id}\`}` — is invisible to internalLinks() (it
+// only matches a string literal immediately after href=/href:/router.push/
+// redirect). Same four call contexts, but capturing the STATIC prefix up to
+// the first interpolation; the char class already excludes '$' and '?', so
+// it naturally stops there without extra handling.
+const templatePrefixes = (src: string): string[] => {
+  const pats = [
+    /href=\{`(\/[a-z0-9/[\]-]*)\$\{/g,
+    /href:\s*`(\/[a-z0-9/[\]-]*)\$\{/g,
+    /router\.(?:push|replace|prefetch)\(\s*`(\/[a-z0-9/[\]-]*)\$\{/g,
+    /redirect\(\s*`(\/[a-z0-9/[\]-]*)\$\{/g,
+  ]
+  const found = new Set<string>()
+  for (const p of pats) for (const m of src.matchAll(p)) found.add(m[1])
+  return [...found]
+}
+
 const sourceFiles = (dir = path.join(process.cwd(), 'src'), out: string[] = []): string[] => {
   for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
     const p = path.join(dir, e.name)
@@ -57,12 +84,34 @@ const sourceFiles = (dir = path.join(process.cwd(), 'src'), out: string[] = []):
   }
   return out
 }
+
+// Top-level portals/routes Task 3 deleted. A closed set — every name here is
+// a route this project provably does not ship, so a source file containing
+// '/<name>' as a path segment anywhere (comment, object literal, template
+// literal, wherever) is unconditionally a bug, not a false positive. Does
+// NOT include sub-paths of a kept portal (e.g. the former /doctor/ipd) —
+// those names ('ipd', 'beds', 'online', 'teleconsult', ...) are common
+// enough as ordinary words/abbreviations that a segment-anywhere scan for
+// them would false-positive; those are covered by the routeMatches /
+// prefixMatches checks above instead, which validate against real shipped
+// routes rather than a keyword list. 'journey' is NOT in this list — Task 4
+// fix round 2 restored src/app/journey/[patientId] as the reception journey
+// board's per-patient detail view.
 const REMOVED_PORTALS = [
   'admin', 'admission', 'ambulance', 'audit', 'bloodbank', 'bmw', 'cmo', 'consent',
   'cssd', 'dietary', 'discharge', 'emergency', 'family-track', 'feedback',
-  'housekeeping', 'hr', 'insurance', 'inventory', 'journey', 'lab', 'mortuary',
+  'housekeeping', 'hr', 'insurance', 'inventory', 'lab', 'mortuary',
   'ot', 'pharmacy', 'quality', 'radiology', 'secretary', 'vendor-manager',
 ]
+
+// Matches '/<name>' as a genuine path segment, not a substring of a longer
+// word or a longer real path: the character before '/' must not be part of
+// an identifier, a relative import ('./hr', '../lab') or another path
+// segment ('/patient/feedback' must NOT match 'feedback'), and the character
+// after the name must end the segment (another '/', a quote/backtick, '?',
+// ')', '}', or end of string).
+const removedPortalHit = (src: string, name: string): boolean =>
+  new RegExp(`(?<![\\w./-])/${name}(?=[/'"\`?)}]|$)`, 'm').test(src)
 
 describe('role manifest', () => {
   it('ships exactly the six approved roles', () => {
@@ -95,5 +144,36 @@ describe('route manifest', () => {
       }
     }
     expect(broken).toEqual([])
+  })
+
+  it('has no template-literal navigation whose static prefix matches no shipped route', () => {
+    const routes = shippedRoutes()
+    expect(routes.length).toBeGreaterThan(10)
+
+    const broken: string[] = []
+    for (const file of sourceFiles()) {
+      const src = fs.readFileSync(file, 'utf8')
+      for (const prefix of templatePrefixes(src)) {
+        const segs = prefix.split('/').filter(Boolean)
+        if (segs.length === 0) continue
+        if (!routes.some((r) => prefixMatches(r, segs))) {
+          broken.push(`${path.relative(process.cwd(), file)} -> \`${prefix}\${...}\``)
+        }
+      }
+    }
+    expect(broken).toEqual([])
+  })
+
+  it('never mentions a removed portal as a path segment anywhere in source', () => {
+    const hits: string[] = []
+    for (const file of sourceFiles()) {
+      const src = fs.readFileSync(file, 'utf8')
+      for (const name of REMOVED_PORTALS) {
+        if (removedPortalHit(src, name)) {
+          hits.push(`${path.relative(process.cwd(), file)} -> /${name}`)
+        }
+      }
+    }
+    expect(hits).toEqual([])
   })
 })

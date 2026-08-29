@@ -8,6 +8,7 @@ import { QRCodeSVG } from "qrcode.react"
 import { NeonBadge } from "@/components/ui/neon-badge"
 import { effectiveTriage, consultFee, HOSPITAL, DURATION_OPTIONS, formatApptDate, type IntakeForm, type StepId } from "@/lib/intake/data"
 import { speak, spokenTime } from "@/lib/voiceScribe"
+import { useFamilyTokenStore } from "@/store/useFamilyTokenStore"
 import { cn } from "@/lib/utils"
 
 function fmtDate(iso: string) {
@@ -131,6 +132,23 @@ export function SuccessStep({ form, token, familyToken, wait, uhid, patientId, a
     }
   }, [announce, uhid, token, first, voice, lang, apptDateLabel, apptDateEn, form.apptTime])
 
+  // The family-tracking QR/share link must point at /p/[uhid] with a token that
+  // page actually validates (see lib/familyToken.ts) — usePatientStore's own
+  // familyToken (a bare crypto.randomUUID(), used for the reception-side
+  // family-viewable-status gate) is a DIFFERENT, incompatible token. Mint a
+  // real signed one via useFamilyTokenStore, same as FamilyTrackingCard.tsx,
+  // keyed by patientId (the field /p/[uhid] actually looks patients up by,
+  // despite the route's [uhid] param name — see that page's own patient
+  // lookup: `s.patients.find(p => p.id === upUhid)`).
+  const issueFamilyTrackToken = useFamilyTokenStore(s => s.issue)
+  useEffect(() => {
+    if (patientId && familyToken) issueFamilyTrackToken(patientId, form.name, { consent: true })
+  }, [patientId, familyToken, form.name, issueFamilyTrackToken])
+  const familyTrackRecord = useFamilyTokenStore(s => (patientId ? s.records[patientId.toUpperCase()] : undefined))
+  const familyTrackUrl = (patientId && familyTrackRecord)
+    ? `${typeof window !== 'undefined' ? window.location.origin : ''}/p/${patientId}?t=${familyTrackRecord.token}`
+    : undefined
+
   // Online check-in slip: appointment + token only (no UHID, no fee — those come
   // later at the hospital after Aadhaar verification).
   const tokenSlip = [
@@ -225,13 +243,13 @@ export function SuccessStep({ form, token, familyToken, wait, uhid, patientId, a
             </div>
           )}
 
-          {familyToken && (
+          {familyTrackUrl && (
             <div className="w-full bg-white rounded-[20px] p-4 shadow-[0_4px_16px_rgba(0,0,0,0.05)] mb-5 flex items-center gap-4">
-              <QRCodeSVG value={`${typeof window !== 'undefined' ? window.location.origin : ''}/family-track/${familyToken}`} size={84} level="M" className="rounded-md flex-shrink-0" />
+              <QRCodeSVG value={familyTrackUrl} size={84} level="M" className="rounded-md flex-shrink-0" />
               <div className="text-left flex-1 min-w-0">
                 <p className="text-[13px] font-bold text-slate-900 flex items-center gap-1.5"><QrCode className="h-4 w-4 text-[#B84A16]" /> Family tracking</p>
                 <p className="text-[11px] text-slate-400 mt-0.5 mb-2">Scan for live status. No medical data.</p>
-                <button onClick={() => { const url = `${window.location.origin}/family-track/${familyToken}`; if (navigator.share) navigator.share({ title: 'Patient Status', url }); else navigator.clipboard.writeText(url) }}
+                <button onClick={() => { const url = familyTrackUrl; if (navigator.share) navigator.share({ title: 'Patient Status', url }); else navigator.clipboard.writeText(url) }}
                   className="inline-flex items-center gap-1.5 text-[12px] font-semibold text-[#B84A16] active:opacity-60">
                   <Share2 className="h-3.5 w-3.5" /> Share with family
                 </button>
