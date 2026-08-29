@@ -2,8 +2,6 @@ import { useMemo } from 'react'
 import {
   useLabOrdersStore,
   flatTests,
-  TECH_RAVI,
-  DR_PATHO,
   type FlatSample,
   type LabOrder,
 } from '@/store/useLabOrdersStore'
@@ -11,9 +9,12 @@ import { LAB_CATALOG } from '@/lib/labCatalog'
 
 // Back-compat surface for legacy consumers of the old flat-sample lab store.
 // New code should read `useLabOrdersStore` directly — this shim exists so
-// reception/diagnostics, admin/dashboard, doctor/inbox, ResultsTicker, etc.
-// keep working without edits while the lab module is rebuilt around the
-// richer LabOrder model.
+// doctor/dashboard, doctor/inbox, ResultsTicker's former callers, etc. keep
+// working without edits while the lab module is rebuilt around the richer
+// LabOrder model. advanceStatus/acknowledgeCritical (the bench-pipeline
+// simulation ResultsTicker used to drive) were removed with Task 9's order
+// boundary — this project creates lab orders but no portal fulfils them, so
+// nothing here may advance a test past 'ordered'.
 export type LabSample = FlatSample
 
 interface LegacyLabStore {
@@ -26,8 +27,6 @@ interface LegacyLabStore {
     priority?: 'Routine' | 'Urgent'
     orderedBy?: string
   }) => void
-  advanceStatus: (id: string) => void
-  acknowledgeCritical: (id: string, doctorName: string) => void
   acknowledgeResult: (id: string) => void
 }
 
@@ -60,21 +59,6 @@ const addOrderFromDoctor: LegacyLabStore['addOrderFromDoctor'] = (o) => {
   })
 }
 
-const advanceStatus: LegacyLabStore['advanceStatus'] = (id) => {
-  const orders = useLabOrdersStore.getState().orders
-  const test = orders.flatMap(o => o.tests).find(t => t.id === id)
-  if (!test) return
-  const s = useLabOrdersStore.getState()
-  if (test.status === 'awaiting_collection') s.collectOrder(test.orderId, 'Auto')
-  else if (test.status === 'on_bench' || test.status === 'collected') s.claim(test.id, TECH_RAVI)
-  else if (test.status === 'in_progress') s.finishEntry(test.id, TECH_RAVI)
-  else if (test.status === 'entered') s.verifyTest(test.id, DR_PATHO)
-  else if (test.status === 'verified') s.releaseTest(test.id)
-}
-
-const acknowledgeCritical: LegacyLabStore['acknowledgeCritical'] = (id, doctorName) =>
-  useLabOrdersStore.getState().logCallback(id, 'Lab', doctorName)
-
 const acknowledgeResult: LegacyLabStore['acknowledgeResult'] = (id) =>
   useLabOrdersStore.getState().ackResult(id)
 
@@ -84,8 +68,6 @@ function legacyFor(orders: LabOrder[]): LegacyLabStore {
     pendingTests: samples.filter(s => s.status !== 'Completed').length,
     samples,
     addOrderFromDoctor,
-    advanceStatus,
-    acknowledgeCritical,
     acknowledgeResult,
   }
 }

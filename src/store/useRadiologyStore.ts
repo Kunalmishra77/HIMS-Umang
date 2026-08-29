@@ -2,16 +2,16 @@ import { useMemo } from 'react'
 import {
   useRadiologyStudiesStore,
   flatScans,
-  RAD_RAVI,
-  RAD_DRKHAN,
-  RAD_DRGUPTA,
   type FlatScan,
   type RadiologyStudy,
 } from '@/store/useRadiologyStudiesStore'
 import { RADIOLOGY_CATALOG, type Modality } from '@/lib/radiologyCatalog'
 
 // Back-compat surface for legacy consumers of the old flat RadiologyScan store.
-// New code should read `useRadiologyStudiesStore` directly.
+// New code should read `useRadiologyStudiesStore` directly. advanceStatus (the
+// RIS-pipeline simulation ResultsTicker used to drive) was removed with Task
+// 9's order boundary — this project creates imaging orders but no portal
+// fulfils them, so nothing here may advance a study past 'ordered'.
 export type RadiologyScan = FlatScan
 
 interface LegacyRadStore {
@@ -25,7 +25,6 @@ interface LegacyRadStore {
     priority?: 'Routine' | 'Urgent'
     orderedBy?: string
   }) => void
-  advanceStatus: (id: string) => void
   acknowledgeScan: (id: string) => void
 }
 
@@ -67,19 +66,6 @@ const addOrderFromDoctor: LegacyRadStore['addOrderFromDoctor'] = (o) => {
   })
 }
 
-const advanceStatus: LegacyRadStore['advanceStatus'] = (id) => {
-  const s = useRadiologyStudiesStore.getState()
-  const study = s.studies.find(x => x.id === id)
-  if (!study) return
-  if (study.status === 'ordered') s.schedule(id, new Date().toISOString())
-  else if (study.status === 'scheduled') s.markArrived(id)
-  else if (study.status === 'arrived') s.claimAcquisition(id, RAD_RAVI)
-  else if (study.status === 'acquiring') s.markAcquired(id)
-  else if (study.status === 'acquired') s.claimReading(id, RAD_DRKHAN)
-  else if (study.status === 'reading') s.submitReport(id, RAD_DRKHAN)
-  else if (study.status === 'reported') s.verifyAndRelease(id, RAD_DRGUPTA)
-}
-
 const acknowledgeScan: LegacyRadStore['acknowledgeScan'] = (id) =>
   useRadiologyStudiesStore.getState().ackResult(id)
 
@@ -90,7 +76,6 @@ function legacyFor(studies: RadiologyStudy[]): LegacyRadStore {
     scansToday: studies.filter(s => new Date(s.orderedAt).toDateString() === today).length,
     scans: flat,
     addOrderFromDoctor,
-    advanceStatus,
     acknowledgeScan,
   }
 }
