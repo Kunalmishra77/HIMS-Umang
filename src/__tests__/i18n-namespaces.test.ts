@@ -28,6 +28,17 @@ const usedNamespaces = () => {
   return [...found].sort()
 }
 
+const flattenKeys = (obj: unknown, prefix = '', out: string[] = []): string[] => {
+  if (obj !== null && typeof obj === 'object' && !Array.isArray(obj)) {
+    for (const [k, v] of Object.entries(obj as Record<string, unknown>)) {
+      flattenKeys(v, prefix ? `${prefix}.${k}` : k, out)
+    }
+  } else {
+    out.push(prefix)
+  }
+  return out
+}
+
 describe('i18n namespaces', () => {
   for (const locale of ['en', 'hi']) {
     it(`${locale} ships exactly the kept namespaces as JSON files`, () => {
@@ -53,4 +64,19 @@ describe('i18n namespaces', () => {
     const used = new Set(usedNamespaces())
     expect(KEPT.filter((ns) => !used.has(ns))).toEqual([])
   })
+
+  for (const ns of KEPT) {
+    it(`${ns}: en and hi have identical key sets`, () => {
+      const enJson = JSON.parse(
+        fs.readFileSync(path.join(ROOT, 'messages', 'en', `${ns}.json`), 'utf8'))
+      const hiJson = JSON.parse(
+        fs.readFileSync(path.join(ROOT, 'messages', 'hi', `${ns}.json`), 'utf8'))
+      const enKeys = new Set(flattenKeys(enJson))
+      const hiKeys = new Set(flattenKeys(hiJson))
+      const missingFromHi = [...enKeys].filter((k) => !hiKeys.has(k)).sort()
+      const missingFromEn = [...hiKeys].filter((k) => !enKeys.has(k)).sort()
+      expect({ namespace: ns, missingFromHi, missingFromEn }).toEqual(
+        { namespace: ns, missingFromHi: [], missingFromEn: [] })
+    })
+  }
 })
