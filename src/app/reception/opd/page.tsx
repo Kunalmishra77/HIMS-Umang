@@ -116,7 +116,7 @@ export default function OpdQueuePage() {
 
   const escalate = (id: string, name: string, triageLevel?: TriageLevel) => {
     sendToEmergency(id)
-    notifyAndAuditMany(['emergency', 'doctor', 'bed_manager'], {
+    notifyAndAuditMany(['doctor', 'nurse', 'admin'], {
       type: 'system', priority: 'critical',
       title: t('opd.emergencyTitle', { name }),
       body: t('opd.emergencyBody', { name, triage: triageLevel ?? 'High' }),

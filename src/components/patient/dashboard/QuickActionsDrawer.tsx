@@ -8,7 +8,7 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import {
-  LayoutGrid, Salad, MessageSquareText, FileText, CalendarPlus, Video, CreditCard,
+  LayoutGrid, Salad, MessageSquareText, FileText, CalendarPlus, CreditCard,
   HeartPulse, ChevronRight, type LucideIcon,
 } from "lucide-react"
 import { SideDrawer } from "@/components/ui/SideDrawer"
@@ -18,7 +18,6 @@ const ACTIONS: { icon: LucideIcon; label: string; sub: string; href: string }[] 
   { icon: MessageSquareText, label: "Ask AI", sub: "Health companion", href: "/patient/assistant" },
   { icon: FileText, label: "My reports", sub: "Results & documents", href: "/patient/records" },
   { icon: CalendarPlus, label: "Book visit", sub: "AI-suggested slot", href: "/patient/appointments" },
-  { icon: Video, label: "Teleconsultation", sub: "Video visit", href: "/patient/teleconsult" },
   { icon: CreditCard, label: "Pay bill", sub: "View & settle dues", href: "/patient/billing" },
   { icon: HeartPulse, label: "Follow-up care", sub: "Plan your next steps", href: "/patient/followup" },
 ]

@@ -68,36 +68,14 @@ export function RoleGuard({ allowedRole, children }: Props) {
       return
     }
     if (!isAllowed) {
+      // `admin` has no dashboard of its own — see src/types/roles.ts.
       const roleHomeMap: Record<Role, string> = {
-        patient:       '/patient/dashboard',
-        doctor:        '/doctor/dashboard',
-        reception:     '/reception/dashboard',
-        admin:         '/admin/dashboard',
-        hr:            '/hr/dashboard',
-        nurse:         '/nurse/dashboard',
-        emergency:     '/emergency/dashboard',
-        lab:           '/lab/dashboard',
-        radiology:     '/radiology/dashboard',
-        insurance:     '/insurance/dashboard',
-        inventory:     '/inventory/dashboard',
-        pharmacy:      '/pharmacy/dashboard',
-        bed_manager:   '/admission/dashboard',
-        discharge:     '/discharge/dashboard',
-        billing:       '/billing/dashboard',
-        ot:            '/ot/dashboard',
-        housekeeping:  '/housekeeping/dashboard',
-        quality:           '/quality/dashboard',
-        feedback_analyst:  '/feedback/dashboard',
-        blood_bank:    '/bloodbank/dashboard',
-        cssd:          '/cssd/dashboard',
-        dietary:       '/dietary/dashboard',
-        bmw:           '/bmw/dashboard',
-        mortuary:      '/mortuary/dashboard',
-        ambulance:     '/ambulance/dashboard',
-        audit_officer:   '/audit/dashboard',
-        vendor_manager:  '/vendor-manager/dashboard',
-        cmo:             '/cmo',
-        secretary:       '/secretary',
+        patient:   '/patient/dashboard',
+        doctor:    '/doctor/dashboard',
+        reception: '/reception/dashboard',
+        nurse:     '/nurse/dashboard',
+        billing:   '/billing/dashboard',
+        admin:     '/',
       }
       router.replace(roleHomeMap[activeRole] ?? '/')
     }

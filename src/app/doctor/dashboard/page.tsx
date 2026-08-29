@@ -2,7 +2,6 @@
 import { Select } from "@/components/ui/Select"
 import { useState, useEffect, useRef } from "react"
 import { SideDrawer } from "@/components/ui/SideDrawer"
-import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
 import {
   Activity, CheckCircle2, Stethoscope, Mic, MicOff, Pill, Plus, X, Search,
@@ -1291,9 +1290,6 @@ export default function DoctorDashboard() {
                   )
                 })}
               </div>
-              <Link href="/doctor/beds" className="flex items-center gap-1 text-xs font-semibold text-accent hover:text-primary-dark transition-colors">
-                View full board <ArrowRight className="h-3 w-3" aria-hidden="true" />
-              </Link>
             </div>
           </div>
         </div>
@@ -1575,9 +1571,6 @@ export default function DoctorDashboard() {
                 <Bed className="h-4 w-4" aria-hidden="true" />
                 {wardFree > 0 ? `${wardFree} of ${wardTotal} ${admType} bed${wardFree !== 1 ? 's' : ''} free at this branch` : `No ${admType} beds free at this branch`}
               </span>
-              <Link href="/doctor/beds" className="text-xs font-bold text-accent hover:text-primary-dark flex items-center gap-1 flex-shrink-0">
-                {wardFree > 0 ? 'View beds' : 'Other branches'} <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
-              </Link>
             </div>
             <div>
               <label htmlFor="adm-reason" className="block t-overline text-foreground-lighter mb-1.5">Reason for Admission</label>

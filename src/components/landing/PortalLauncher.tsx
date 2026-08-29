@@ -4,11 +4,8 @@ import React from "react"
 import { useRouter } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
 import {
-  Activity, Stethoscope, Users, Shield, QrCode, FlaskConical, Pill,
-  ArrowRight, LayoutDashboard, Ambulance, Microscope, ScanLine, FileText,
-  Package, ClipboardList, Droplets, Utensils, Trash2, Truck, ShieldCheck,
-  BedDouble, CreditCard, Scissors, Heart, ShoppingCart, MessageSquarePlus,
-  Building2,
+  Activity, Stethoscope, Users, QrCode,
+  ArrowRight, LayoutDashboard, CreditCard,
 } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { type Role } from "@/store/useAuthStore"
@@ -16,49 +13,20 @@ import { cn } from "@/lib/utils"
 
 type RoleCard = { role: Role; label: string; desc: string; icon: React.ElementType; href: string }
 
+// `admin` is deliberately absent — it ships no portal (src/types/roles.ts).
 const allRoleGroups: { id: string; label: string; roles: RoleCard[] }[] = [
   { id: "clinical", label: "Clinical", roles: [
-    { role: "doctor",    label: "Doctor",          desc: "AI pre-briefs, e-prescriptions, queue",      icon: Stethoscope, href: "/doctor/dashboard" },
-    { role: "nurse",     label: "Nurse",           desc: "Ward monitoring, vitals, MAR, handover",     icon: Activity,    href: "/nurse/dashboard" },
-    { role: "pharmacy",  label: "Pharmacy",        desc: "Prescriptions, dispensing, narcotics log",   icon: Pill,        href: "/pharmacy/dashboard" },
-    { role: "lab",       label: "Laboratory",      desc: "Sample tracking, AI anomaly, reflex tests",  icon: Microscope,  href: "/lab/dashboard" },
-    { role: "radiology", label: "Radiology",       desc: "AI triage, RIS command center, DICOM",       icon: ScanLine,    href: "/radiology/dashboard" },
-    { role: "emergency", label: "Emergency",       desc: "ER triage, trauma tracking, sepsis alerts",  icon: Ambulance,   href: "/emergency/dashboard" },
+    { role: "doctor", label: "Doctor", desc: "AI pre-briefs, e-prescriptions, queue",  icon: Stethoscope, href: "/doctor/dashboard" },
+    { role: "nurse",  label: "Nurse",  desc: "Ward monitoring, vitals, MAR, handover", icon: Activity,    href: "/nurse/dashboard" },
   ] },
   { id: "operations", label: "Operations", roles: [
-    { role: "reception",   label: "Reception",         desc: "OPD queue, registration, kiosk",         icon: LayoutDashboard, href: "/reception/dashboard" },
-    { role: "bed_manager", label: "Admission / Beds",  desc: "Bed allocation, forecast, census",       icon: BedDouble,       href: "/admission/dashboard" },
-    { role: "discharge",   label: "Discharge",         desc: "5-pillar clearance, discharge summary",  icon: ClipboardList,   href: "/discharge/dashboard" },
-    { role: "ot",          label: "Operation Theater", desc: "OT scheduling, WHO checklist, briefing", icon: Scissors,        href: "/ot/dashboard" },
+    { role: "reception", label: "Reception", desc: "OPD queue, registration, kiosk", icon: LayoutDashboard, href: "/reception/dashboard" },
   ] },
   { id: "finance", label: "Finance", roles: [
-    { role: "billing",   label: "Billing",         desc: "Invoices, packages, refunds, discounts", icon: CreditCard, href: "/billing/dashboard" },
-    { role: "insurance", label: "Insurance / TPA", desc: "Claims, pre-auth, AI approval scoring",  icon: FileText,   href: "/insurance/dashboard" },
-  ] },
-  { id: "management", label: "Management", roles: [
-    { role: "admin",           label: "Admin",            desc: "Analytics, staff, operations overview",            icon: Shield,       href: "/admin/dashboard" },
-    { role: "hr",              label: "HR / HRMS",        desc: "Employees, leave, attendance, hiring, appraisals", icon: Users,        href: "/hr/dashboard" },
-    { role: "quality",         label: "Quality",          desc: "NABH compliance, audits, incidents",               icon: Heart,        href: "/quality/dashboard" },
-    { role: "vendor_manager",  label: "Vendor Management",    desc: "Vendors, contracts, POs, payments, AI insights",            icon: ShoppingCart,      href: "/vendor-manager/dashboard" },
-    { role: "feedback_analyst", label: "Patient Feedback",     desc: "Satisfaction analytics, AI insights, response dashboard",   icon: MessageSquarePlus, href: "/feedback/dashboard" },
-    { role: "housekeeping",    label: "Housekeeping",     desc: "Ward cleanliness, bed turnover tasks",             icon: Package,      href: "/housekeeping/dashboard" },
-    { role: "inventory",       label: "Inventory",        desc: "Assets, stock levels, procurement",                icon: FlaskConical, href: "/inventory/dashboard" },
-  ] },
-  { id: "support", label: "Support Services", roles: [
-    { role: "blood_bank",    label: "Blood Bank",         desc: "Inventory, cross-match, AI demand forecast",   icon: Droplets,    href: "/bloodbank/dashboard" },
-    { role: "cssd",          label: "CSSD",               desc: "Sterilization cycles, instrument tracking",    icon: Package,     href: "/cssd/dashboard" },
-    { role: "dietary",       label: "Dietary",            desc: "Diet plans, meal orders, AI nutrition",        icon: Utensils,    href: "/dietary/dashboard" },
-    { role: "bmw",           label: "Bio-Medical Waste",  desc: "Waste categories, disposal logs, compliance",  icon: Trash2,      href: "/bmw/dashboard" },
-    { role: "mortuary",      label: "Mortuary",           desc: "Deceased records, MLC clearance",              icon: FileText,    href: "/mortuary/dashboard" },
-    { role: "ambulance",     label: "Ambulance",          desc: "Fleet management, dispatch, trip log",         icon: Truck,       href: "/ambulance/dashboard" },
-    { role: "audit_officer", label: "Audit / Compliance", desc: "Audit trail, compliance reports, NABH prep",   icon: ShieldCheck, href: "/audit/dashboard" },
+    { role: "billing", label: "Billing", desc: "Invoices, packages, refunds, discounts", icon: CreditCard, href: "/billing/dashboard" },
   ] },
   { id: "patient", label: "Patient", roles: [
     { role: "patient", label: "Patient Portal", desc: "Track queue, view records, billing, appointments", icon: Users, href: "/patient/dashboard" },
-  ] },
-  { id: "government", label: "Government", roles: [
-    { role: "cmo",       label: "CMO — Bhopal",      desc: "District health cockpit · 142 facilities · alerts, beds, ambulance",     icon: Building2, href: "/cmo" },
-    { role: "secretary", label: "PS Health · MP",    desc: "State command · 52 districts · district ranking, Cabinet, NITI Aayog", icon: Building2, href: "/secretary" },
   ] },
 ]
 

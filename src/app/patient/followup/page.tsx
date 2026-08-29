@@ -128,7 +128,6 @@ export default function FollowUpPage() {
       <div className="rounded-3xl bg-white shadow-[0_1px_4px_rgba(15,23,42,0.06),0_8px_28px_rgba(15,23,42,0.05)] p-5">
         <div className="flex items-center justify-between mb-3">
           <h3 className="text-[15px] font-bold text-slate-900 flex items-center gap-2"><Clock className="h-4.5 w-4.5 text-amber-600" /> Medicine reminders</h3>
-          {meds.length > 0 && <Link href="/patient/pharmacy" className="text-[12.5px] font-semibold text-[var(--color-accent)] flex items-center gap-1">Pharmacy <ArrowRight className="h-3.5 w-3.5" /></Link>}
         </div>
         {meds.length === 0 ? (
           <p className="text-[13px] text-slate-500 bg-slate-50 rounded-xl p-3">

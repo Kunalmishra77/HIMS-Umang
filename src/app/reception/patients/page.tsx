@@ -49,7 +49,7 @@ const TAB_KEY: Record<Tab, string> = { Today: 'tabToday', Yesterday: 'tabYesterd
 const initials = (n: string) => n.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase()
 
 const NOTIFY_ROLE_BY_NEXT: Partial<Record<QueueStatus, Role>> = {
-  vitals: 'nurse', consulting: 'doctor', pharmacy: 'pharmacy', billing: 'billing',
+  vitals: 'nurse', consulting: 'doctor', billing: 'billing',
 }
 
 export default function ReceptionPatients() {

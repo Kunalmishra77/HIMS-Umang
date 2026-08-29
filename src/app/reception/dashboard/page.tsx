@@ -5,11 +5,10 @@ import { useTranslations } from "next-intl"
 import { useAuthStore } from "@/store/useAuthStore"
 import { usePatientStore, type TriageLevel } from "@/store/usePatientStore"
 import { useBillingStore } from "@/store/useBillingStore"
-import { useAdmissionStore } from "@/store/useAdmissionStore"
 import { useNotificationStore } from "@/store/useNotificationStore"
 import { useWhatsAppStore } from "@/store/useWhatsAppStore"
 import {
-  Users, Activity, Stethoscope, BedDouble, CreditCard, Calendar,
+  Users, Activity, Stethoscope, CreditCard, Calendar,
   UserPlus, ArrowRight, AlertTriangle, MessageSquare, Volume2, Clock, ChevronRight,
   Pill, CheckCircle2, Hourglass,
 } from "lucide-react"
@@ -31,8 +30,6 @@ export default function ReceptionDashboard() {
   const patients = usePatientStore(s => s.patients)
   const appointments = usePatientStore(s => s.appointments)
   const bills = useBillingStore(s => s.bills)
-  const beds = useAdmissionStore(s => s.beds)
-  const admissionRequests = useAdmissionStore(s => s.admissionRequests)
   const notifications = useNotificationStore(s => s.notifications)
   const threads = useWhatsAppStore(s => s.threads)
 
@@ -66,11 +63,9 @@ export default function ReceptionDashboard() {
 
   const pendingBills = bills.filter(b => b.status !== 'settled')
   const totalDue = pendingBills.reduce((s, b) => s + Math.max(0, b.patientDue - b.paidAmount), 0)
-  const freeBeds = beds.filter(b => b.status === 'Available').length
   const todayAppts = appointments.filter(a => a.date === today && a.status !== 'cancelled')
   const escalations = threads.filter(t => t.status === 'escalated' || t.escalatedToHuman)
   const criticalNotifs = notifications.filter(n => n.priority === 'critical' && !n.read)
-  const pendingAdmissions = admissionRequests.filter(r => r.status === 'Pending')
 
   const hour = new Date().getHours()
   const greeting = hour < 12 ? t('dashboard.goodMorning') : hour < 17 ? t('dashboard.goodAfternoon') : t('dashboard.goodEvening')
@@ -81,7 +76,6 @@ export default function ReceptionDashboard() {
     { label: t('dashboard.kpiPatientsToday'), value: `${todayPatients.length}`, icon: Users, tint: 'bg-[rgba(238,107,38,0.07)] text-[var(--color-accent)]', href: '/reception/patients' },
     { label: t('dashboard.kpiInQueue'), value: `${inQueue.length}`, sub: t('dashboard.kpiInQueueSub', { wait: avgWait }), icon: Activity, tint: 'bg-amber-50 text-amber-600', href: '/reception/opd' },
     { label: t('dashboard.kpiNowServing'), value: nowServing ? `#${nowServing.token}` : '—', sub: nowServing?.name, icon: Volume2, tint: 'bg-[rgba(238,107,38,0.07)] text-[var(--color-accent)]', href: '/reception/queue' },
-    { label: t('dashboard.kpiFreeBeds'), value: `${freeBeds}`, sub: t('dashboard.kpiFreeBedsSub', { total: beds.length }), icon: BedDouble, tint: 'bg-[rgba(238,107,38,0.07)] text-[var(--color-accent)]', href: '/reception/beds' },
     { label: t('dashboard.kpiPendingBills'), value: `${pendingBills.length}`, sub: t('dashboard.kpiPendingBillsSub', { amount: totalDue.toLocaleString('en-IN') }), icon: CreditCard, tint: 'bg-rose-50 text-rose-600', href: '/reception/billing' },
     { label: t('dashboard.kpiAppointments'), value: `${todayAppts.length}`, sub: t('dashboard.kpiToday'), icon: Calendar, tint: 'bg-[rgba(238,107,38,0.07)] text-[var(--color-accent)]', href: '/reception/appointments' },
   ]
@@ -162,13 +156,9 @@ export default function ReceptionDashboard() {
               <h3 className="text-[15px] font-bold text-slate-900">{t('dashboard.needsAttention')}</h3>
             </div>
             <div className="space-y-2">
-              {highPriorityWaiting.length === 0 && pendingBills.length === 0 && escalations.length === 0 && criticalNotifs.length === 0 && pendingAdmissions.length === 0 && (
+              {highPriorityWaiting.length === 0 && pendingBills.length === 0 && escalations.length === 0 && criticalNotifs.length === 0 && (
                 <p className="text-[13px] text-slate-400 bg-slate-50 rounded-xl p-3">{t('dashboard.allClear')}</p>
               )}
-              {pendingAdmissions.map(r => (
-                <AttnRow key={r.id} href="/reception/beds" tint="bg-[rgba(238,107,38,0.07)] text-[var(--color-accent)]" icon={BedDouble}
-                  title={t('dashboard.attnAdmissionTitle', { name: r.patientName })} sub={`${r.admissionType} · ${r.diagnosis}${r.triageLevel ? ` · ${r.triageLevel}` : ''}`} cta={t('dashboard.attnBeds')} />
-              ))}
               {highPriorityWaiting.map(p => (
                 <AttnRow key={p.id} href="/reception/opd" tint="bg-red-50 text-red-600" icon={AlertTriangle}
                   title={t('dashboard.attnHighPriorityTitle', { name: p.name, triage: p.triageLevel ?? '' })} sub={t('dashboard.attnTokenSymptom', { token: p.token, detail: p.symptoms[0] ?? p.department })} cta={t('dashboard.attnQueue')} />
@@ -230,7 +220,6 @@ export default function ReceptionDashboard() {
                 { label: t('dashboard.qaRegisterWalkIn'), icon: UserPlus, href: '/reception/opd', tint: 'from-[var(--color-primary)] to-[var(--color-primary-dark)]' },
                 { label: t('dashboard.qaNewAppointment'), icon: Calendar, href: '/reception/appointments', tint: 'from-[var(--color-primary)] to-[var(--color-primary-light)]' },
                 { label: t('dashboard.qaOpdDisplay'), icon: Volume2, href: '/reception/queue', tint: 'from-amber-500 to-primary' },
-                { label: t('dashboard.qaBedStatus'), icon: BedDouble, href: '/reception/beds', tint: 'from-[var(--color-primary)] to-[var(--color-primary-light)]' },
               ].map(a => (
                 <Link key={a.label} href={a.href} className="flex flex-col items-center gap-2 p-3 rounded-2xl bg-slate-50 hover:bg-slate-100 transition active:scale-[0.97]">
                   <span className={cn("h-10 w-10 rounded-2xl bg-gradient-to-br flex items-center justify-center", a.tint)}><a.icon className="h-5 w-5 text-white" /></span>

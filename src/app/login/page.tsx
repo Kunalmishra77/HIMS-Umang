@@ -9,37 +9,15 @@ import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
 
 // Every portal's post-login landing route, keyed by the account's real role
-// (profiles.role). Mirrors the hrefs advertised in PortalLauncher.
+// (profiles.role). Mirrors the hrefs advertised in PortalLauncher. `admin` has
+// no portal and is deliberately absent — an admin sign-in falls through to the
+// default below.
 const ROLE_DASHBOARD: Record<string, string> = {
   doctor: "/doctor/dashboard",
   nurse: "/nurse/dashboard",
-  pharmacy: "/pharmacy/dashboard",
-  lab: "/lab/dashboard",
-  radiology: "/radiology/dashboard",
-  emergency: "/emergency/dashboard",
   reception: "/reception/dashboard",
-  bed_manager: "/admission/dashboard",
-  discharge: "/discharge/dashboard",
-  ot: "/ot/dashboard",
   billing: "/billing/dashboard",
-  insurance: "/insurance/dashboard",
-  admin: "/admin/dashboard",
-  hr: "/hr/dashboard",
-  quality: "/quality/dashboard",
-  feedback_analyst: "/feedback/dashboard",
-  housekeeping: "/housekeeping/dashboard",
-  inventory: "/inventory/dashboard",
-  vendor_manager: "/vendor-manager/dashboard",
-  blood_bank: "/bloodbank/dashboard",
-  cssd: "/cssd/dashboard",
-  dietary: "/dietary/dashboard",
-  bmw: "/bmw/dashboard",
-  mortuary: "/mortuary/dashboard",
-  ambulance: "/ambulance/dashboard",
-  audit_officer: "/audit/dashboard",
   patient: "/patient/dashboard",
-  cmo: "/cmo",
-  secretary: "/secretary",
 }
 
 export default function LoginPage() {

@@ -7,10 +7,9 @@
  * steps are enriched from the diagnostics store so they reflect real report
  * progress rather than being skipped over. */
 
-import { useRouter } from "next/navigation"
 import {
   DoorOpen, Clock, Activity, Stethoscope, FlaskConical, ScanLine, Pill, Receipt,
-  CheckCircle2, ArrowRight, Video, type LucideIcon,
+  CheckCircle2, ArrowRight, type LucideIcon,
 } from "lucide-react"
 import { usePatientLiveStore, stagesFor, type OpdStage } from "@/store/usePatientLiveStore"
 import { usePatientDiagnosticsStore, byKind } from "@/store/usePatientDiagnosticsStore"
@@ -36,7 +35,6 @@ const STAGE_TO_CANON: Record<OpdStage, number> = {
 }
 
 export function LiveVisitStatusCard() {
-  const router = useRouter()
   const mode = usePatientLiveStore((s) => s.mode)
   const stage = usePatientLiveStore((s) => s.stage)
   const token = usePatientLiveStore((s) => s.token)
@@ -125,15 +123,6 @@ export function LiveVisitStatusCard() {
             ? <CheckCircle2 className="h-5 w-5 flex-shrink-0 text-success" aria-hidden="true" />
             : <ArrowRight className="h-5 w-5 flex-shrink-0 text-accent" aria-hidden="true" />}
           <p className="t-body flex-1 font-medium text-foreground">{meta.action}</p>
-          {meta.joinVideo && !isDone && (
-            <button
-              type="button"
-              onClick={() => router.push("/patient/teleconsult")}
-              className="u-press inline-flex flex-shrink-0 cursor-pointer items-center gap-1.5 rounded-xl bg-primary px-3 py-2 t-label text-[#0D2032] transition-colors hover:bg-primary-dark"
-            >
-              <Video className="h-4 w-4" /> Join call
-            </button>
-          )}
         </div>
       )}
     </section>

@@ -19,8 +19,8 @@ import { useRouter } from "next/navigation"
 import { createPortal } from "react-dom"
 import {
   Search, X, ArrowRight, User, FileText, LayoutDashboard, Sparkles,
-  Pill, FlaskConical, ScanLine, Stethoscope, Bed, ShieldCheck, Receipt,
-  Activity, Users, Wallet, Truck,
+  Stethoscope, Receipt,
+  Activity, Users, Wallet,
 } from "lucide-react"
 import { useAuthStore, type Role } from "@/store/useAuthStore"
 import { usePatientStore } from "@/store/usePatientStore"
@@ -44,46 +44,36 @@ type CommandItem = {
 
 // Top-level routes that EVERY role can deep-link to from the palette.
 const UNIVERSAL_ROUTES: { label: string; href: string; icon: React.ElementType; roles?: Role[] | "*" }[] = [
-  { label: "Demo settings · reset data", href: "/admin/settings", icon: ShieldCheck, roles: ["admin"] },
-  { label: "Audit trail",       href: "/audit/log",            icon: ShieldCheck, roles: ["admin", "audit_officer"] },
-  { label: "Compliance cockpit", href: "/admin/compliance",     icon: ShieldCheck, roles: ["admin", "audit_officer", "quality"] },
-  { label: "DISHA / DPDP",       href: "/admin/disha",          icon: ShieldCheck, roles: ["admin", "audit_officer"] },
-  { label: "Hospital P&L",       href: "/admin/finance",        icon: Wallet,      roles: ["admin"] },
-  { label: "Refund queue",        href: "/billing/refunds",      icon: Receipt,     roles: ["admin", "billing"] },
-  { label: "Insurance claims",    href: "/insurance/dashboard",  icon: ShieldCheck, roles: ["admin", "billing", "insurance"] },
-  { label: "Bed map",              href: "/admission/beds",       icon: Bed,         roles: ["admin", "bed_manager", "nurse", "doctor"] },
-  { label: "Doctor OPD",           href: "/doctor/dashboard",     icon: Stethoscope, roles: ["doctor"] },
-  { label: "Doctor IPD",           href: "/doctor/ipd",           icon: Stethoscope, roles: ["doctor"] },
-  { label: "Lab dashboard",        href: "/lab/dashboard",        icon: FlaskConical, roles: ["lab", "admin"] },
-  { label: "Lab · Phlebotomy bench", href: "/lab/phlebotomy",      icon: FlaskConical, roles: ["lab", "admin"] },
-  { label: "Lab · Analyzer feed",  href: "/lab/analyzer-feed",    icon: FlaskConical, roles: ["lab", "admin"] },
-  { label: "Lab · Pathologist verify", href: "/lab/verify",         icon: ShieldCheck,  roles: ["lab", "admin"] },
-  { label: "Lab · Manual entries (fallback)", href: "/lab/benches", icon: FlaskConical, roles: ["lab", "admin"] },
-  { label: "Pharmacy queue",       href: "/pharmacy/queue",       icon: Pill,        roles: ["pharmacy", "admin"] },
-  { label: "Radiology inbox",      href: "/radiology/inbox",      icon: ScanLine,    roles: ["radiology", "admin"] },
-  { label: "Radiology · Scheduling", href: "/radiology/schedule", icon: ScanLine,    roles: ["radiology", "admin"] },
-  { label: "Radiology · Arrival desk", href: "/radiology/arrival", icon: ScanLine,   roles: ["radiology", "admin"] },
-  { label: "ER triage",            href: "/emergency/triage",     icon: Activity,    roles: ["emergency", "admin"] },
-  { label: "Staff directory",      href: "/admin/users",          icon: Users,       roles: ["admin", "doctor", "nurse", "pharmacy", "lab", "radiology", "emergency", "reception", "bed_manager", "discharge", "ot", "billing", "insurance", "quality", "audit_officer"] },
-  { label: "Reception OPD",        href: "/reception/opd",        icon: User,        roles: ["reception", "admin"] },
-  { label: "Discharge desk",       href: "/discharge/dashboard",  icon: LayoutDashboard, roles: ["discharge", "admin"] },
-  { label: "OT live",              href: "/ot/dashboard",         icon: Activity,    roles: ["ot", "admin"] },
-  { label: "Ambulance dispatch",   href: "/ambulance/dispatch",   icon: Truck,       roles: ["ambulance", "admin"] },
+  { label: "Doctor OPD",              href: "/doctor/dashboard",      icon: Stethoscope,     roles: ["doctor"] },
+  { label: "Doctor · Consultation",   href: "/doctor/consultation",   icon: Stethoscope,     roles: ["doctor"] },
+  { label: "Doctor · Records",        href: "/doctor/records",        icon: FileText,        roles: ["doctor"] },
+  { label: "Doctor · Schedule",       href: "/doctor/schedule",       icon: Activity,        roles: ["doctor"] },
+  { label: "Doctor · Inbox",          href: "/doctor/inbox",          icon: FileText,        roles: ["doctor"] },
+  { label: "Nurse dashboard",         href: "/nurse/dashboard",       icon: LayoutDashboard, roles: ["nurse"] },
+  { label: "Nurse · Patients",        href: "/nurse/patients",        icon: Users,           roles: ["nurse"] },
+  { label: "Nurse · Tasks",           href: "/nurse/tasks",           icon: FileText,        roles: ["nurse"] },
+  { label: "Nurse · Vitals requests", href: "/nurse/vitals-requests", icon: Activity,        roles: ["nurse"] },
+  { label: "Reception OPD",           href: "/reception/opd",         icon: User,            roles: ["reception"] },
+  { label: "Reception · Register patient", href: "/reception/register", icon: User,          roles: ["reception"] },
+  { label: "Reception · Patients",    href: "/reception/patients",    icon: Users,           roles: ["reception"] },
+  { label: "Reception · Billing",     href: "/reception/billing",     icon: Receipt,         roles: ["reception"] },
+  { label: "Refund queue",            href: "/billing/refunds",       icon: Receipt,         roles: ["admin", "billing"] },
+  { label: "Billing dashboard",       href: "/billing/dashboard",     icon: Wallet,          roles: ["billing"] },
+  { label: "Billing · Packages",      href: "/billing/packages",      icon: Wallet,          roles: ["billing"] },
+  { label: "Billing · Discounts",     href: "/billing/discounts",     icon: Wallet,          roles: ["billing"] },
+  { label: "My dashboard",            href: "/patient/dashboard",     icon: LayoutDashboard, roles: ["patient"] },
+  { label: "My consultations",        href: "/patient/consultations", icon: Stethoscope,     roles: ["patient"] },
+  { label: "My appointments",         href: "/patient/appointments",  icon: Activity,        roles: ["patient"] },
+  { label: "My records",              href: "/patient/records",       icon: FileText,        roles: ["patient"] },
+  { label: "My billing",              href: "/patient/billing",       icon: Receipt,         roles: ["patient"] },
 ]
 
 // Intent stubs — match a keyword + route. Phase-2 will parse free text via
 // the AI gateway; for now the keyword route is enough to demo intent nav.
 const INTENTS: { label: string; href: string; keywords: string }[] = [
-  { label: "Schedule a follow-up appointment",   href: "/reception/appointments", keywords: "schedule appointment book follow-up" },
-  { label: "Order labs for Anil",                 href: "/doctor/ipd",              keywords: "order labs cbc crp anil" },
-  { label: "Check denial-risk claims",             href: "/insurance/dashboard",     keywords: "denial risk insurance claim ai" },
-  { label: "Open refund queue (2-step approver)", href: "/billing/refunds",         keywords: "refund approve 2-step approver gate" },
-  { label: "NABH evidence cockpit",               href: "/admin/compliance",        keywords: "nabh compliance evidence cockpit" },
-  { label: "Bed-demand forecast",                  href: "/admission/forecast",      keywords: "bed forecast demand admission" },
-  { label: "Audit trail filtered by Anil",         href: "/audit/log",                keywords: "anil verma audit trail journey" },
-  { label: "Patient self check-in (kiosk)",         href: "/checkin",                  keywords: "checkin kiosk self-service patient" },
-  { label: "Drug-safety: penicillin allergy",      href: "/doctor/ipd",               keywords: "drug safety penicillin allergy augmentin" },
-  { label: "OT WHO checklist (Anil)",              href: "/ot/checklist",             keywords: "ot who checklist sign-in time-out anil" },
+  { label: "Schedule a follow-up appointment",    href: "/reception/appointments", keywords: "schedule appointment book follow-up" },
+  { label: "Open refund queue (2-step approver)", href: "/billing/refunds",        keywords: "refund approve 2-step approver gate" },
+  { label: "Patient self check-in (kiosk)",       href: "/checkin",                keywords: "checkin kiosk self-service patient" },
 ]
 
 export function CommandPalette() {
@@ -113,6 +103,17 @@ export function CommandPalette() {
   const items = useMemo<CommandItem[]>(() => {
     const out: CommandItem[] = []
 
+    // Where a patient/inpatient search result navigates to — the only shipped
+    // per-patient destinations are nurse and billing; doctor and reception have
+    // no per-patient route in this build, so a hit there opens their list page.
+    const patientHref = (id: string): string | null => {
+      if (activeRole === "nurse") return `/nurse/patients/${id}`
+      if (activeRole === "billing") return `/billing/patient/${id}`
+      if (activeRole === "doctor") return "/doctor/records"
+      if (activeRole === "reception") return "/reception/patients"
+      return null
+    }
+
     // Routes (filter by active role; admin sees all)
     for (const r of UNIVERSAL_ROUTES) {
       const allowed = r.roles === "*" || (activeRole && (r.roles ?? []).includes(activeRole)) || activeRole === "admin"
@@ -132,27 +133,31 @@ export function CommandPalette() {
     for (const p of patients ?? []) {
       if (seen.has(p.id)) continue
       seen.add(p.id)
+      const href = patientHref(p.id)
+      if (!href) continue
       out.push({
         id: `patient:${p.id}`,
         kind: "patient",
         label: p.name,
-        detail: `${p.id} · ${p.age}y · ${p.department || p.queueStatus || ''} · journey →`,
-        keywords: `${p.id} ${p.phone || ''} ${p.department || ''} journey`,
+        detail: `${p.id} · ${p.age}y · ${p.department || p.queueStatus || ''}`,
+        keywords: `${p.id} ${p.phone || ''} ${p.department || ''}`,
         icon: User,
-        go: () => router.push(`/journey/${p.id}`),
+        go: () => router.push(href),
       })
     }
     for (const ip of inpatients ?? []) {
       if (seen.has(ip.patientId)) continue
       seen.add(ip.patientId)
+      const href = patientHref(ip.patientId)
+      if (!href) continue
       out.push({
         id: `inpatient:${ip.patientId}`,
         kind: "patient",
         label: ip.name,
-        detail: `${ip.patientId} · ${ip.ward} ${ip.bed} · ${ip.diagnosis} · journey →`,
-        keywords: `${ip.patientId} ${ip.ward} ${ip.bed} ${ip.diagnosis} journey`,
+        detail: `${ip.patientId} · ${ip.ward} ${ip.bed} · ${ip.diagnosis}`,
+        keywords: `${ip.patientId} ${ip.ward} ${ip.bed} ${ip.diagnosis}`,
         icon: User,
-        go: () => router.push(`/journey/${ip.patientId}`),
+        go: () => router.push(href),
       })
     }
 

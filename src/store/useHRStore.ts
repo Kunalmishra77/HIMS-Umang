@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
-import type { Role } from '@/types/roles'
+import type { StaffRole } from '@/types/roles'
 import { useAuditStore } from './useAuditStore'
 import { getSupabaseClient } from '@/lib/supabase/client'
 
@@ -67,7 +67,7 @@ export interface StaffMember {
   name: string
   email: string
   phone: string
-  role: Role
+  role: StaffRole
   department: string
   designation: string          // e.g., 'Consultant', 'Senior Resident', 'Staff Nurse'
   branchId: BranchId
@@ -180,7 +180,7 @@ export interface DeptMinimum {
   department: string
   min: number             // hard minimum — below = critical breach
   ideal: number           // amber..green transition
-  roles: Role[]           // expected role mix (e.g., doctor + nurse for ICU)
+  roles: StaffRole[]      // expected role mix (e.g., doctor + nurse for ICU)
   perShift: boolean       // if true, applies per shift; if false, daily aggregate
 }
 
@@ -859,7 +859,7 @@ function audit(
 // Other stores that used to hardcode their own copy of the staff list can now
 // derive it live from HR via these helpers.
 
-export type DerivedDirectoryContact = { id: string; name: string; role: Role; department: string }
+export type DerivedDirectoryContact = { id: string; name: string; role: StaffRole; department: string }
 
 /** Returns active staff as a messaging-directory-compatible list. */
 export function activeDirectory(staff: StaffMember[]): DerivedDirectoryContact[] {

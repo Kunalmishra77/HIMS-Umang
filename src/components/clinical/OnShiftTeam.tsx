@@ -4,7 +4,7 @@ import { useMemo } from "react"
 import { Phone, Mail, Users, ShieldAlert, Stethoscope, Activity, Heart, FlaskConical, Pill, Microscope, Truck, Beaker } from "lucide-react"
 import { useHRStore, type ShiftType, type StaffMember } from "@/store/useHRStore"
 import { cn } from "@/lib/utils"
-import type { Role } from "@/types/roles"
+import type { StaffRole } from "@/types/roles"
 
 // ─────────────────────────────────────────────────────────────────────────
 // Reusable "Who's on-shift right now" widget. Used by:
@@ -27,7 +27,7 @@ export interface OnShiftTeamProps {
   date: string                  // YYYY-MM-DD
   shift: ShiftType
   /** Restrict to specific roles (e.g., ['doctor', 'nurse'] for ICU). */
-  roles?: Role[]
+  roles?: StaffRole[]
   /** Compact UI variant. Default false. */
   compact?: boolean
   /** Click handler for individual staff. */
@@ -100,7 +100,7 @@ export function OnShiftTeam({
     const ordered = result
       .filter(s => { if (seen.has(s.id)) return false; seen.add(s.id); return true })
       .sort((a, b) => {
-        const roleOrder = (r: Role) => (
+        const roleOrder = (r: StaffRole) => (
           r === 'doctor' || r === 'emergency' || r === 'ot' ? 0 :
           r === 'nurse' ? 1 :
           r === 'radiology' || r === 'lab' || r === 'pharmacy' ? 2 : 3
