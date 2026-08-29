@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { useTranslations } from "next-intl"
-import { QrCode, ShieldCheck, LogIn } from "lucide-react"
+import { QrCode, LogIn } from "lucide-react"
 import { LocaleToggle } from "@/components/ui/LocaleToggle"
 import { cn } from "@/lib/utils"
 
@@ -12,9 +12,6 @@ const NAV_HEIGHT = 64 // h-16
 const LINKS = [
   { key: "home",     href: "#home" },
   { key: "platform", href: "#platform" },
-  { key: "product",  href: "#product" },
-  { key: "security", href: "#security" },
-  { key: "outcomes", href: "#outcomes" },
 ]
 
 function scrollToSection(href: string) {
@@ -68,7 +65,7 @@ export function LandingNav() {
 
         {/* Logo — click scrolls to top */}
         <button onClick={() => handleNav("#home")} className="flex items-center cursor-pointer">
-          <img src="/Agentix logo-health.svg" alt="Agentix HIMS" className="h-9 w-auto object-contain" />
+          <img src="/Umang-logo.webp" alt="Umang Hospital" className="h-9 w-auto object-contain" />
         </button>
 
         {/* Nav links */}
@@ -91,12 +88,6 @@ export function LandingNav() {
 
         {/* CTA buttons */}
         <div className="flex items-center gap-2">
-          <button
-            onClick={() => router.push("/abha")}
-            className="hidden md:inline-flex items-center gap-2 h-9 px-4 rounded-full text-[13px] font-semibold text-[#344054] bg-white border border-[#EAECF2] hover:border-[#D0D5DD] transition-colors cursor-pointer"
-          >
-            <ShieldCheck className="h-4 w-4 text-green-600" /> {t("cta.abdmSandbox")}
-          </button>
           <button
             onClick={() => router.push("/checkin")}
             className="hidden sm:inline-flex items-center gap-2 h-9 px-4 rounded-full text-[13px] font-semibold text-[#344054] bg-white border border-[#EAECF2] hover:border-[#D0D5DD] transition-colors cursor-pointer"

@@ -1,29 +1,23 @@
 "use client"
 
 import {
-  Stethoscope, Activity, Pill, Microscope, ScanLine, Ambulance, LayoutDashboard, BedDouble,
-  ClipboardList, Scissors, CreditCard, FileText, Shield, Heart, Package, Droplets, Utensils,
-  Trash2, Truck, ShieldCheck, Users,
+  Stethoscope, Activity, LayoutDashboard, ClipboardList, CreditCard, Users,
 } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { Reveal } from "./Reveal"
 
 const GROUPS = [
   { label: "Clinical", color: "var(--color-primary)", items: [
-    { icon: Stethoscope, name: "Doctor / OPD" }, { icon: Activity, name: "Nursing" }, { icon: Pill, name: "Pharmacy" },
-    { icon: Microscope, name: "Laboratory" }, { icon: ScanLine, name: "Radiology / RIS" }, { icon: Ambulance, name: "Emergency" },
+    { icon: Stethoscope, name: "Doctor Consultation" }, { icon: Activity, name: "Nursing & Vitals" },
   ] },
   { label: "Operations", color: "var(--color-primary)", items: [
-    { icon: LayoutDashboard, name: "Reception / OPD" }, { icon: BedDouble, name: "Admissions & Beds" },
-    { icon: ClipboardList, name: "Discharge" }, { icon: Scissors, name: "Operation Theater" },
+    { icon: LayoutDashboard, name: "Registration & OPD" }, { icon: ClipboardList, name: "Reception & Queueing" },
   ] },
   { label: "Finance", color: "var(--color-primary-light)", items: [
-    { icon: CreditCard, name: "Billing" }, { icon: FileText, name: "Insurance / TPA" },
+    { icon: CreditCard, name: "Billing" },
   ] },
-  { label: "Management & Support", color: "var(--color-primary)", items: [
-    { icon: Shield, name: "Admin / COO" }, { icon: Heart, name: "Quality / NABH" }, { icon: Package, name: "Inventory & CSSD" },
-    { icon: Droplets, name: "Blood Bank" }, { icon: Utensils, name: "Dietary" }, { icon: Trash2, name: "Bio-Medical Waste" },
-    { icon: Truck, name: "Ambulance" }, { icon: ShieldCheck, name: "Audit & Compliance" }, { icon: Users, name: "Patient Portal" },
+  { label: "Patient", color: "var(--color-primary)", items: [
+    { icon: Users, name: "Patient Portal" },
   ] },
 ]
 

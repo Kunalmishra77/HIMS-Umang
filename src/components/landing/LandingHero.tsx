@@ -1,7 +1,7 @@
 "use client"
 
 import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion"
-import { Sparkles, ArrowRight, ChevronDown, ShieldCheck, Cpu, Building2, Network } from "lucide-react"
+import { Sparkles, ArrowRight, ChevronDown, Cpu, Building2, Network } from "lucide-react"
 import { useRef } from "react"
 import { useTranslations } from "next-intl"
 import { HeroSignIn } from "./HeroSignIn"
@@ -61,15 +61,10 @@ export function LandingHero() {
               className="inline-flex items-center gap-2 h-12 px-6 rounded-xl text-[15px] font-semibold text-white bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] transition-colors cursor-pointer shadow-[0_8px_24px_rgba(238,107,38,0.18)]">
               {t("cta.launchConsole")} <ArrowRight className="h-4 w-4" />
             </button>
-            <button onClick={() => scrollTo("#product")}
+            <button onClick={() => scrollTo("#platform")}
               className="inline-flex items-center gap-2 h-12 px-5 rounded-xl text-[15px] font-semibold text-[#344054] bg-white border border-[#EAECF2] hover:border-[#D0D5DD] transition-colors cursor-pointer">
               {t("hero.ctaSecondary")} <ChevronDown className="h-4 w-4" />
             </button>
-          </div>
-          <div className="flex flex-wrap items-center gap-x-5 gap-y-2 mt-7 text-[12.5px] font-semibold text-[#667085]">
-            {["NABH-ready", "ABDM / DISHA", "ISO 27001", "HL7 / FHIR"].map(t => (
-              <span key={t} className="inline-flex items-center gap-1.5"><ShieldCheck className="h-3.5 w-3.5 text-[var(--color-accent)]" />{t}</span>
-            ))}
           </div>
         </motion.div>
 
