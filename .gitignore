@@ -1,0 +1,15 @@
+node_modules/
+.next/
+out/
+build/
+*.tsbuildinfo
+.env*
+.DS_Store
+npm-debug.log*
+.vercel
+_drive.mjs
+_checkin.mjs
+_zod.mjs
+
+# migration runtime secrets
+scripts/migration/env.sh
