@@ -85,33 +85,52 @@ const sourceFiles = (dir = path.join(process.cwd(), 'src'), out: string[] = []):
   return out
 }
 
-// Top-level portals/routes Task 3 deleted. A closed set — every name here is
-// a route this project provably does not ship, so a source file containing
-// '/<name>' as a path segment anywhere (comment, object literal, template
-// literal, wherever) is unconditionally a bug, not a false positive. Does
-// NOT include sub-paths of a kept portal (e.g. the former /doctor/ipd) —
-// those names ('ipd', 'beds', 'online', 'teleconsult', ...) are common
-// enough as ordinary words/abbreviations that a segment-anywhere scan for
-// them would false-positive; those are covered by the routeMatches /
-// prefixMatches checks above instead, which validate against real shipped
-// routes rather than a keyword list. 'journey' is NOT in this list — Task 4
-// fix round 2 restored src/app/journey/[patientId] as the reception journey
-// board's per-patient detail view.
+// A route-shaped literal: starts with '/', then lowercase-alphanumeric/
+// hyphen/slash segments.
+const ROUTE_SHAPE = /^\/[a-z0-9][a-z0-9/-]*$/
+
+// Route-shaped string literals that are not routes. Keep this small and
+// commented — a growing list is a signal the matcher is too broad, not that
+// the codebase has a lot of route-shaped non-routes.
+const ALLOWED_NON_ROUTES = new Set<string>([
+  '/min', // src/components/nurse/VitalsFields.tsx — respiratory-rate unit label ("breaths /min"), not a link
+])
+
+// Every route-shaped literal anywhere in `src` — not just ones adjacent to
+// href=/router.push/redirect (internalLinks/templatePrefixes above only look
+// there). This is what catches a plain object-literal property like
+// `route: "/doctor/ipd"` — exactly the shape destinationFor() returns and
+// CommandPalette later feeds to router.push, and exactly what a name-based
+// denylist for kept-portal sub-paths can't safely catch (see REMOVED_PORTALS
+// comment below). Two shapes:
+//   - a plain quoted/backtick string whose ENTIRE content matches
+//     ROUTE_SHAPE (isPrefix: false — must equal a shipped route exactly).
+//   - a template literal's static leading segment(s) up to the first
+//     interpolation (isPrefix: true — the interpolation fills in the rest,
+//     so this only needs to prefix-match a shipped route).
+const routeLikeLiterals = (src: string): { value: string; isPrefix: boolean }[] => {
+  const out: { value: string; isPrefix: boolean }[] = []
+  for (const m of src.matchAll(/'(\/[a-z0-9][a-z0-9/-]*)'/g)) out.push({ value: m[1], isPrefix: false })
+  for (const m of src.matchAll(/"(\/[a-z0-9][a-z0-9/-]*)"/g)) out.push({ value: m[1], isPrefix: false })
+  for (const m of src.matchAll(/`(\/[a-z0-9][a-z0-9/-]*)`/g)) out.push({ value: m[1], isPrefix: false })
+  for (const m of src.matchAll(/`(\/[a-z0-9][a-z0-9/-]*)\$\{/g)) out.push({ value: m[1], isPrefix: true })
+  return out
+}
+
+// Top-level portals/routes Task 3 deleted. Used below only to assert none of
+// their directories exist on disk. Whether any source file still references
+// a deleted route — including a kept portal's deleted SUB-path like the
+// former /doctor/ipd, which a name denylist can't safely cover ('ipd',
+// 'beds', 'online' are too common as ordinary words) — is the job of the
+// route-shaped-literal allowlist check further down instead. 'journey' is
+// NOT in this list — Task 4 fix round 2 restored src/app/journey/[patientId]
+// as the reception journey board's per-patient detail view.
 const REMOVED_PORTALS = [
   'admin', 'admission', 'ambulance', 'audit', 'bloodbank', 'bmw', 'cmo', 'consent',
   'cssd', 'dietary', 'discharge', 'emergency', 'family-track', 'feedback',
   'housekeeping', 'hr', 'insurance', 'inventory', 'lab', 'mortuary',
   'ot', 'pharmacy', 'quality', 'radiology', 'secretary', 'vendor-manager',
 ]
-
-// Matches '/<name>' as a genuine path segment, not a substring of a longer
-// word or a longer real path: the character before '/' must not be part of
-// an identifier, a relative import ('./hr', '../lab') or another path
-// segment ('/patient/feedback' must NOT match 'feedback'), and the character
-// after the name must end the segment (another '/', a quote/backtick, '?',
-// ')', '}', or end of string).
-const removedPortalHit = (src: string, name: string): boolean =>
-  new RegExp(`(?<![\\w./-])/${name}(?=[/'"\`?)}]|$)`, 'm').test(src)
 
 describe('role manifest', () => {
   it('ships exactly the six approved roles', () => {
@@ -164,16 +183,28 @@ describe('route manifest', () => {
     expect(broken).toEqual([])
   })
 
-  it('never mentions a removed portal as a path segment anywhere in source', () => {
-    const hits: string[] = []
+  it('has no route-shaped string literal anywhere that does not resolve to a shipped route', () => {
+    const routes = shippedRoutes()
+    expect(routes.length).toBeGreaterThan(10)
+
+    const broken: string[] = []
     for (const file of sourceFiles()) {
       const src = fs.readFileSync(file, 'utf8')
-      for (const name of REMOVED_PORTALS) {
-        if (removedPortalHit(src, name)) {
-          hits.push(`${path.relative(process.cwd(), file)} -> /${name}`)
+      for (const { value, isPrefix } of routeLikeLiterals(src)) {
+        if (value.startsWith('/api/')) continue
+        if (ALLOWED_NON_ROUTES.has(value)) continue
+        if (!ROUTE_SHAPE.test(value)) continue
+        const segs = value.split('/').filter(Boolean)
+        if (segs.length === 0) continue
+        const ok = isPrefix
+          ? routes.some((r) => prefixMatches(r, segs))
+          : routes.some((r) => routeMatches(r, value))
+        if (!ok) {
+          broken.push(`${path.relative(process.cwd(), file)} -> ${value}${isPrefix ? '${...}' : ''}`)
         }
       }
     }
-    expect(hits).toEqual([])
+    expect(broken).toEqual([])
   })
+
 })
