@@ -13,18 +13,20 @@ const STORES = ['usePharmacyStore', 'useLabOrdersStore', 'useRadiologyStudiesSto
 // store passed with only those stems. Widened with the actual per-store
 // action names being removed, found by reading each store's action list and
 // its live callers (docs/task-9-report.md has the full inventory).
+//
+// A bare 'release' used to be left out here because actionNames() matched
+// ANY 2-space `identifier:` line, including data fields — useLabOrdersStore's
+// kept STATUS_MAP has a literal `released: 'Completed'` key that
+// startsWith('release') would false-positive on forever. actionNames() is now
+// scoped to function-valued members only (`identifier: (`), which excludes
+// that string-valued STATUS_MAP entry, so 'release' can be listed directly.
 const FULFILMENT = [
   'dispense', 'collectSpecimen', 'enterResult', 'recordResult',
   'verifyResult', 'approveResult', 'runQC', 'recordQC', 'triggerReflex',
   'scheduleScan', 'recordAcquisition', 'startReading', 'authorReport',
   'publishReport', 'distributeReport', 'decrementStock',
   // usePharmacyStore — dispensing-counter pipeline (queued→preparing→ready→collected).
-  // NOTE: pharmacy's own `release` action is deliberately NOT listed as a bare
-  // stem — useLabOrdersStore's kept STATUS_MAP has a literal `released:` key
-  // (a TestStatus→display-label mapping, not an action) that the naive
-  // startsWith('release') check would false-positive on forever. `claim` /
-  // `updateStatus` / `markCollected` already pin the pharmacy store's removal.
-  'updateStatus', 'markCollected', 'claim', 'setMedicineSupply',
+  'updateStatus', 'markCollected', 'claim', 'release', 'setMedicineSupply',
   'substituteMedicine', 'togglePatientModification', 'applyModification',
   'requestProcurement', 'adjustQuantity', 'approveSupervisorOverride',
   // useLabOrdersStore — bench pipeline (collect→claim→enter→verify→release) + reflex queue.
@@ -41,9 +43,13 @@ const FULFILMENT = [
   'ackEscalation', 'linkPrior',
 ]
 
+// Scoped to function-valued members (`identifier: (`), both interface
+// signatures and implementations — not any 2-space `identifier:` line, which
+// would also match data-shaped fields and object-literal string values (see
+// the 'release'/STATUS_MAP note above).
 const actionNames = (file: string): string[] => {
   const src = fs.readFileSync(path.join(process.cwd(), 'src/store', `${file}.ts`), 'utf8')
-  return [...src.matchAll(/^ {2}([a-zA-Z][a-zA-Z0-9]*)\s*:/gm)].map((m) => m[1])
+  return [...src.matchAll(/^ {2}([a-zA-Z][a-zA-Z0-9]*)\s*:\s*\(/gm)].map((m) => m[1])
 }
 
 describe('order boundary', () => {

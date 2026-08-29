@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
 import { useAuditStore } from './useAuditStore'
-import { LAB_CATALOG, computeFlag, type Bench, type Priority, type SpecimenType, type AnalyteSpec } from '@/lib/labCatalog'
+import { LAB_CATALOG, computeFlag, type Bench, type Priority, type SpecimenType } from '@/lib/labCatalog'
 import { deriveUhid } from '@/lib/uhid'
 import { pushOrder, pullOrders, mergeById as mergeSharedOrders } from '@/lib/cross-device-orders'
 

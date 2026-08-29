@@ -112,9 +112,7 @@ export const RAD_DRGUPTA: RadTech = { id: 'RD-202', name: 'Dr. Aisha Gupta' }  /
 // ─── Helpers ──────────────────────────────────────────────────────────────
 
 let _studySeq = 0
-let _attSeq = 0
 const nextStudyId = () => `RS-${Date.now()}-${++_studySeq}`
-const nextAttId = () => `ATT-${Date.now()}-${++_attSeq}`
 
 export function emptyReportSections(code: string): Record<string, string> {
   const cat = RADIOLOGY_CATALOG[code]
