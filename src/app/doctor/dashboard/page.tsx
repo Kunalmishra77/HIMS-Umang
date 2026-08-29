@@ -1569,7 +1569,7 @@ export default function DoctorDashboard() {
             <div className={cn("flex items-center justify-between rounded-xl px-3.5 py-2.5", wardFree > 0 ? "bg-success-bg" : "bg-warning-bg")}>
               <span className={cn("text-[13px] font-semibold flex items-center gap-1.5", wardFree > 0 ? "text-success" : "text-brand-amber-strong")}>
                 <Bed className="h-4 w-4" aria-hidden="true" />
-                {wardFree > 0 ? `${wardFree} of ${wardTotal} ${admType} bed${wardFree !== 1 ? 's' : ''} free at this branch` : `No ${admType} beds free at this branch`}
+                {wardFree > 0 ? `${wardFree} of ${wardTotal} ${admType} bed${wardFree !== 1 ? 's' : ''} free` : `No ${admType} beds free`}
               </span>
             </div>
             <div>
