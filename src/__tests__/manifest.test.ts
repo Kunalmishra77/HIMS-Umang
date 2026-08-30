@@ -117,20 +117,41 @@ const routeLikeLiterals = (src: string): { value: string; isPrefix: boolean }[] 
   return out
 }
 
-// Top-level portals/routes Task 3 deleted. Used below only to assert none of
-// their directories exist on disk. Whether any source file still references
-// a deleted route — including a kept portal's deleted SUB-path like the
-// former /doctor/ipd, which a name denylist can't safely cover ('ipd',
-// 'beds', 'online' are too common as ordinary words) — is the job of the
-// route-shaped-literal allowlist check further down instead. 'journey' is
-// NOT in this list — Task 4 fix round 2 restored src/app/journey/[patientId]
-// as the reception journey board's per-patient detail view.
+// Top-level portals/routes Task 3 deleted. Used both to assert none of their
+// directories exist on disk AND, below, as a denylist scanned across every
+// source file. The route-shaped-literal allowlist check further down catches
+// a route-shaped literal that starts a string/template ('/family-track',
+// `/family-track/${token}`) — but bce547e's re-review found it does NOT
+// catch a route segment that appears after a leading interpolation, e.g.
+// `${origin}/family-track/${token}`: routeLikeLiterals() only extracts a
+// template's STATIC LEADING segment up to the first interpolation, and here
+// the very first thing in the template IS an interpolation, so the
+// '/family-track/' that follows it is invisible to that check. The denylist
+// below has no such blind spot — it scans the raw source text for the
+// literal path segment anywhere, regardless of what precedes it. Does NOT
+// include sub-paths of a kept portal (e.g. the former /doctor/ipd) — those
+// names ('ipd', 'beds', 'online', 'teleconsult', ...) are common enough as
+// ordinary words/abbreviations that a segment-anywhere scan for them would
+// false-positive; those stay covered by the routeMatches/prefixMatches
+// checks instead, which validate against real shipped routes rather than a
+// keyword list. 'journey' is NOT in this list — Task 4 fix round 2 restored
+// src/app/journey/[patientId] as the reception journey board's per-patient
+// detail view.
 const REMOVED_PORTALS = [
   'admin', 'admission', 'ambulance', 'audit', 'bloodbank', 'bmw', 'cmo', 'consent',
   'cssd', 'dietary', 'discharge', 'emergency', 'family-track', 'feedback',
   'housekeeping', 'hr', 'insurance', 'inventory', 'lab', 'mortuary',
   'ot', 'pharmacy', 'quality', 'radiology', 'secretary', 'vendor-manager',
 ]
+
+// Matches '/<name>' as a genuine path segment, not a substring of a longer
+// word or a longer real path: the character before '/' must not be part of
+// an identifier, a relative import ('./hr', '../lab') or another path
+// segment ('/patient/feedback' must NOT match 'feedback'), and the character
+// after the name must end the segment (another '/', a quote/backtick, '?',
+// ')', '}', or end of string).
+const removedPortalHit = (src: string, name: string): boolean =>
+  new RegExp(`(?<![\\w./-])/${name}(?=[/'"\`?)}]|$)`, 'm').test(src)
 
 describe('role manifest', () => {
   it('ships exactly the six approved roles', () => {
@@ -147,6 +168,19 @@ describe('route manifest', () => {
   it('ships no teleconsult route on either side', () => {
     expect(fs.existsSync(path.join(APP, 'doctor/online'))).toBe(false)
     expect(fs.existsSync(path.join(APP, 'patient/teleconsult'))).toBe(false)
+  })
+
+  it('never mentions a removed portal as a path segment anywhere in source', () => {
+    const hits: string[] = []
+    for (const file of sourceFiles()) {
+      const src = fs.readFileSync(file, 'utf8')
+      for (const name of REMOVED_PORTALS) {
+        if (removedPortalHit(src, name)) {
+          hits.push(`${path.relative(process.cwd(), file)} -> /${name}`)
+        }
+      }
+    }
+    expect(hits).toEqual([])
   })
 
   it('has no internal link anywhere that points at a route this project does not ship', () => {

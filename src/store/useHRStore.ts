@@ -205,7 +205,7 @@ const SEED_STAFF: StaffMember[] = [
   // ── Doctors (Clinical leadership) ───────────────────────────────────
   {
     id: 'DR-1012', employeeId: 'EMP-2018-0012',
-    name: 'Dr. Priya Nair', email: 'priya.nair@agentix.in', phone: '+91 98450 11012',
+    name: 'Dr. Priya Nair', email: 'priya.nair@umanghospital.in', phone: '+91 98450 11012',
     role: 'doctor', department: 'General Medicine', designation: 'Consultant Physician',
     branchId: DEFAULT_BRANCH, joiningDate: '2018-04-15',
     contractType: 'permanent', status: 'active',
@@ -219,7 +219,7 @@ const SEED_STAFF: StaffMember[] = [
   },
   {
     id: 'DR-1013', employeeId: 'EMP-2019-0013',
-    name: 'Dr. Rohan Mehta', email: 'rohan.mehta@agentix.in', phone: '+91 98450 11013',
+    name: 'Dr. Rohan Mehta', email: 'rohan.mehta@umanghospital.in', phone: '+91 98450 11013',
     role: 'doctor', department: 'Cardiology', designation: 'Senior Consultant — Cardiology',
     branchId: DEFAULT_BRANCH, joiningDate: '2019-08-01',
     contractType: 'permanent', status: 'active',
@@ -235,7 +235,7 @@ const SEED_STAFF: StaffMember[] = [
   },
   {
     id: 'DR-1014', employeeId: 'EMP-2020-0014',
-    name: 'Dr. Ananya Iyer', email: 'ananya.iyer@agentix.in', phone: '+91 98450 11014',
+    name: 'Dr. Ananya Iyer', email: 'ananya.iyer@umanghospital.in', phone: '+91 98450 11014',
     role: 'doctor', department: 'Dermatology', designation: 'Consultant Dermatologist',
     branchId: DEFAULT_BRANCH, joiningDate: '2020-02-20',
     contractType: 'visiting', status: 'active',
@@ -249,7 +249,7 @@ const SEED_STAFF: StaffMember[] = [
   },
   {
     id: 'DR-1015', employeeId: 'EMP-2017-0015',
-    name: 'Dr. Vikram Rathore', email: 'vikram.rathore@agentix.in', phone: '+91 98450 11015',
+    name: 'Dr. Vikram Rathore', email: 'vikram.rathore@umanghospital.in', phone: '+91 98450 11015',
     role: 'emergency', department: 'Emergency Room', designation: 'Senior Consultant — Emergency Medicine',
     branchId: DEFAULT_BRANCH, joiningDate: '2017-03-10',
     contractType: 'permanent', status: 'active',
@@ -265,7 +265,7 @@ const SEED_STAFF: StaffMember[] = [
   },
   {
     id: 'ER-110', employeeId: 'EMP-2017-0015', // same person as DR-1015 in older code; alias collapsed
-    name: 'Dr. Vikram Rathore', email: 'vikram.rathore@agentix.in', phone: '+91 98450 11015',
+    name: 'Dr. Vikram Rathore', email: 'vikram.rathore@umanghospital.in', phone: '+91 98450 11015',
     role: 'emergency', department: 'Emergency Room', designation: 'Senior Consultant — Emergency Medicine',
     branchId: DEFAULT_BRANCH, joiningDate: '2017-03-10',
     contractType: 'permanent', status: 'active',
@@ -274,7 +274,7 @@ const SEED_STAFF: StaffMember[] = [
   },
   {
     id: 'ER-111', employeeId: 'EMP-2021-0111',
-    name: 'Dr. Neha Singh', email: 'neha.singh@agentix.in', phone: '+91 98450 21111',
+    name: 'Dr. Neha Singh', email: 'neha.singh@umanghospital.in', phone: '+91 98450 21111',
     role: 'emergency', department: 'Emergency Room', designation: 'Consultant — Emergency Medicine',
     branchId: DEFAULT_BRANCH, joiningDate: '2021-11-04',
     contractType: 'permanent', status: 'active',
@@ -288,7 +288,7 @@ const SEED_STAFF: StaffMember[] = [
   },
   {
     id: 'OT-901', employeeId: 'EMP-2016-0901',
-    name: 'Dr. Anisha Sharma', email: 'anisha.sharma@agentix.in', phone: '+91 98450 70901',
+    name: 'Dr. Anisha Sharma', email: 'anisha.sharma@umanghospital.in', phone: '+91 98450 70901',
     role: 'ot', department: 'Operation Theater', designation: 'Senior Consultant — Surgery',
     branchId: DEFAULT_BRANCH, joiningDate: '2016-09-18',
     contractType: 'permanent', status: 'active',
@@ -302,7 +302,7 @@ const SEED_STAFF: StaffMember[] = [
   },
   {
     id: 'RAD-304', employeeId: 'EMP-2019-0304',
-    name: 'Dr. Sameer Khan', email: 'sameer.khan@agentix.in', phone: '+91 98450 30304',
+    name: 'Dr. Sameer Khan', email: 'sameer.khan@umanghospital.in', phone: '+91 98450 30304',
     role: 'radiology', department: 'Radiology', designation: 'Senior Consultant — Radiology',
     branchId: DEFAULT_BRANCH, joiningDate: '2019-04-22',
     contractType: 'permanent', status: 'active',
@@ -316,7 +316,7 @@ const SEED_STAFF: StaffMember[] = [
   },
   {
     id: 'LP-201', employeeId: 'EMP-2014-0201',
-    name: 'Dr. Asha Rao', email: 'asha.rao@agentix.in', phone: '+91 98450 20201',
+    name: 'Dr. Asha Rao', email: 'asha.rao@umanghospital.in', phone: '+91 98450 20201',
     role: 'lab', department: 'Pathology', designation: 'Consultant Pathologist',
     branchId: DEFAULT_BRANCH, joiningDate: '2014-07-08',
     contractType: 'permanent', status: 'active',
@@ -332,7 +332,7 @@ const SEED_STAFF: StaffMember[] = [
   // ── Nurses ──────────────────────────────────────────────────────────
   {
     id: 'NR-402', employeeId: 'EMP-2019-0402',
-    name: 'Anjali Desai', email: 'anjali.desai@agentix.in', phone: '+91 98450 40402',
+    name: 'Anjali Desai', email: 'anjali.desai@umanghospital.in', phone: '+91 98450 40402',
     role: 'nurse', department: 'Cardiac Care', designation: 'Senior Staff Nurse',
     branchId: DEFAULT_BRANCH, joiningDate: '2019-07-12',
     contractType: 'permanent', status: 'active',
@@ -346,7 +346,7 @@ const SEED_STAFF: StaffMember[] = [
   },
   {
     id: 'NR-403', employeeId: 'EMP-2020-0403',
-    name: 'Pooja Shetty', email: 'pooja.shetty@agentix.in', phone: '+91 98450 40403',
+    name: 'Pooja Shetty', email: 'pooja.shetty@umanghospital.in', phone: '+91 98450 40403',
     role: 'nurse', department: 'ICU', designation: 'ICU Staff Nurse',
     branchId: DEFAULT_BRANCH, joiningDate: '2020-01-19',
     contractType: 'permanent', status: 'active',
@@ -362,7 +362,7 @@ const SEED_STAFF: StaffMember[] = [
   },
   {
     id: 'NR-404', employeeId: 'EMP-2021-0404',
-    name: 'Ramesh Rao', email: 'ramesh.rao@agentix.in', phone: '+91 98450 40404',
+    name: 'Ramesh Rao', email: 'ramesh.rao@umanghospital.in', phone: '+91 98450 40404',
     role: 'nurse', department: 'General Ward', designation: 'Staff Nurse',
     branchId: DEFAULT_BRANCH, joiningDate: '2021-03-15',
     contractType: 'permanent', status: 'active',
@@ -376,7 +376,7 @@ const SEED_STAFF: StaffMember[] = [
   },
   {
     id: 'NR-410', employeeId: 'EMP-2018-0410',
-    name: 'Lakshmi Iyer', email: 'lakshmi.iyer@agentix.in', phone: '+91 98450 40410',
+    name: 'Lakshmi Iyer', email: 'lakshmi.iyer@umanghospital.in', phone: '+91 98450 40410',
     role: 'nurse', department: 'Maternity', designation: 'Senior Staff Nurse — Maternity',
     branchId: DEFAULT_BRANCH, joiningDate: '2018-11-22',
     contractType: 'permanent', status: 'active',
@@ -390,7 +390,7 @@ const SEED_STAFF: StaffMember[] = [
   },
   {
     id: 'NR-501', employeeId: 'EMP-2020-0501',
-    name: 'Anjali Pillai', email: 'anjali.pillai@agentix.in', phone: '+91 98450 50501',
+    name: 'Anjali Pillai', email: 'anjali.pillai@umanghospital.in', phone: '+91 98450 50501',
     role: 'nurse', department: 'Emergency Room', designation: 'Triage Nurse',
     branchId: DEFAULT_BRANCH, joiningDate: '2020-05-30',
     contractType: 'permanent', status: 'active',
@@ -408,7 +408,7 @@ const SEED_STAFF: StaffMember[] = [
   // ── Pharmacy ────────────────────────────────────────────────────────
   {
     id: 'PH-301', employeeId: 'EMP-2018-0301',
-    name: 'Ritu Sharma', email: 'ritu.sharma@agentix.in', phone: '+91 98450 30301',
+    name: 'Ritu Sharma', email: 'ritu.sharma@umanghospital.in', phone: '+91 98450 30301',
     role: 'pharmacy', department: 'Pharmacy', designation: 'Senior Pharmacist',
     branchId: DEFAULT_BRANCH, joiningDate: '2018-02-12',
     contractType: 'permanent', status: 'active',
@@ -420,7 +420,7 @@ const SEED_STAFF: StaffMember[] = [
   },
   {
     id: 'PH-302', employeeId: 'EMP-2019-0302',
-    name: 'Anil Kumar', email: 'anil.kumar@agentix.in', phone: '+91 98450 30302',
+    name: 'Anil Kumar', email: 'anil.kumar@umanghospital.in', phone: '+91 98450 30302',
     role: 'pharmacy', department: 'Pharmacy', designation: 'Pharmacist',
     branchId: DEFAULT_BRANCH, joiningDate: '2019-10-08',
     contractType: 'permanent', status: 'active',
@@ -434,7 +434,7 @@ const SEED_STAFF: StaffMember[] = [
   // ── Lab ─────────────────────────────────────────────────────────────
   {
     id: 'LB-992', employeeId: 'EMP-2017-0992',
-    name: 'Neha Gupta', email: 'neha.gupta@agentix.in', phone: '+91 98450 99992',
+    name: 'Neha Gupta', email: 'neha.gupta@umanghospital.in', phone: '+91 98450 99992',
     role: 'lab', department: 'Pathology', designation: 'Senior Lab Technician',
     branchId: DEFAULT_BRANCH, joiningDate: '2017-08-30',
     contractType: 'permanent', status: 'active',
@@ -446,7 +446,7 @@ const SEED_STAFF: StaffMember[] = [
   },
   {
     id: 'LT-101', employeeId: 'EMP-2020-1101',
-    name: 'Ravi Menon', email: 'ravi.menon@agentix.in', phone: '+91 98450 10101',
+    name: 'Ravi Menon', email: 'ravi.menon@umanghospital.in', phone: '+91 98450 10101',
     role: 'lab', department: 'Pathology', designation: 'Lab Technician',
     branchId: DEFAULT_BRANCH, joiningDate: '2020-06-04',
     contractType: 'permanent', status: 'active',
@@ -458,7 +458,7 @@ const SEED_STAFF: StaffMember[] = [
   },
   {
     id: 'LT-102', employeeId: 'EMP-2021-1102',
-    name: 'Shalu Iyer', email: 'shalu.iyer@agentix.in', phone: '+91 98450 10102',
+    name: 'Shalu Iyer', email: 'shalu.iyer@umanghospital.in', phone: '+91 98450 10102',
     role: 'lab', department: 'Pathology', designation: 'Lab Technician',
     branchId: DEFAULT_BRANCH, joiningDate: '2021-02-15',
     contractType: 'permanent', status: 'active',
@@ -467,7 +467,7 @@ const SEED_STAFF: StaffMember[] = [
   },
   {
     id: 'LT-103', employeeId: 'EMP-2022-1103',
-    name: 'Biju Verma', email: 'biju.verma@agentix.in', phone: '+91 98450 10103',
+    name: 'Biju Verma', email: 'biju.verma@umanghospital.in', phone: '+91 98450 10103',
     role: 'lab', department: 'Microbiology', designation: 'Microbiologist',
     branchId: DEFAULT_BRANCH, joiningDate: '2022-04-11',
     contractType: 'permanent', status: 'active',
@@ -478,7 +478,7 @@ const SEED_STAFF: StaffMember[] = [
   // ── Radiology techs ─────────────────────────────────────────────────
   {
     id: 'RT-101', employeeId: 'EMP-2020-2101',
-    name: 'Ravi Bose', email: 'ravi.bose@agentix.in', phone: '+91 98450 21101',
+    name: 'Ravi Bose', email: 'ravi.bose@umanghospital.in', phone: '+91 98450 21101',
     role: 'radiology', department: 'Radiology', designation: 'X-Ray Technologist',
     branchId: DEFAULT_BRANCH, joiningDate: '2020-09-18',
     contractType: 'permanent', status: 'active',
@@ -490,7 +490,7 @@ const SEED_STAFF: StaffMember[] = [
   },
   {
     id: 'RT-102', employeeId: 'EMP-2021-2102',
-    name: 'Babita Joshi', email: 'babita.joshi@agentix.in', phone: '+91 98450 21102',
+    name: 'Babita Joshi', email: 'babita.joshi@umanghospital.in', phone: '+91 98450 21102',
     role: 'radiology', department: 'Radiology', designation: 'CT Technologist',
     branchId: DEFAULT_BRANCH, joiningDate: '2021-05-08',
     contractType: 'permanent', status: 'active',
@@ -504,7 +504,7 @@ const SEED_STAFF: StaffMember[] = [
   // ── Operations roles ────────────────────────────────────────────────
   {
     id: 'RC-204', employeeId: 'EMP-2019-0204',
-    name: 'Sunita Joshi', email: 'sunita.joshi@agentix.in', phone: '+91 98450 20204',
+    name: 'Sunita Joshi', email: 'sunita.joshi@umanghospital.in', phone: '+91 98450 20204',
     role: 'reception', department: 'Front Desk', designation: 'Senior Receptionist',
     branchId: DEFAULT_BRANCH, joiningDate: '2019-01-22',
     contractType: 'permanent', status: 'active',
@@ -513,7 +513,7 @@ const SEED_STAFF: StaffMember[] = [
   },
   {
     id: 'BM-601', employeeId: 'EMP-2018-0601',
-    name: 'Aditi Verma', email: 'aditi.verma@agentix.in', phone: '+91 98450 60601',
+    name: 'Aditi Verma', email: 'aditi.verma@umanghospital.in', phone: '+91 98450 60601',
     role: 'bed_manager', department: 'Admission Desk', designation: 'Bed Manager',
     branchId: DEFAULT_BRANCH, joiningDate: '2018-10-15',
     contractType: 'permanent', status: 'active',
@@ -522,7 +522,7 @@ const SEED_STAFF: StaffMember[] = [
   },
   {
     id: 'DC-701', employeeId: 'EMP-2017-0701',
-    name: 'Meena Agarwal', email: 'meena.agarwal@agentix.in', phone: '+91 98450 70701',
+    name: 'Meena Agarwal', email: 'meena.agarwal@umanghospital.in', phone: '+91 98450 70701',
     role: 'discharge', department: 'Discharge Desk', designation: 'Discharge Coordinator',
     branchId: DEFAULT_BRANCH, joiningDate: '2017-12-08',
     contractType: 'permanent', status: 'active',
@@ -533,7 +533,7 @@ const SEED_STAFF: StaffMember[] = [
   // ── Finance roles ───────────────────────────────────────────────────
   {
     id: 'BL-801', employeeId: 'EMP-2018-0801',
-    name: 'Suresh Nair', email: 'suresh.nair@agentix.in', phone: '+91 98450 80801',
+    name: 'Suresh Nair', email: 'suresh.nair@umanghospital.in', phone: '+91 98450 80801',
     role: 'billing', department: 'Billing', designation: 'Senior Billing Officer',
     branchId: DEFAULT_BRANCH, joiningDate: '2018-06-15',
     contractType: 'permanent', status: 'active',
@@ -542,7 +542,7 @@ const SEED_STAFF: StaffMember[] = [
   },
   {
     id: 'INS-011', employeeId: 'EMP-2019-0011',
-    name: 'Karan Patel', email: 'karan.patel@agentix.in', phone: '+91 98450 00011',
+    name: 'Karan Patel', email: 'karan.patel@umanghospital.in', phone: '+91 98450 00011',
     role: 'insurance', department: 'TPA Desk', designation: 'Insurance Coordinator',
     branchId: DEFAULT_BRANCH, joiningDate: '2019-11-25',
     contractType: 'permanent', status: 'active',
@@ -551,7 +551,7 @@ const SEED_STAFF: StaffMember[] = [
   },
   {
     id: 'BL-2001', employeeId: 'EMP-2020-2001',
-    name: 'Asha Reddy', email: 'asha.reddy@agentix.in', phone: '+91 98450 02001',
+    name: 'Asha Reddy', email: 'asha.reddy@umanghospital.in', phone: '+91 98450 02001',
     role: 'billing', department: 'Billing', designation: 'Billing Officer',
     branchId: DEFAULT_BRANCH, joiningDate: '2020-03-12',
     contractType: 'permanent', status: 'active',
@@ -562,7 +562,7 @@ const SEED_STAFF: StaffMember[] = [
   // ── Management ──────────────────────────────────────────────────────
   {
     id: 'ADM-01', employeeId: 'EMP-2012-0001',
-    name: 'Rajesh Kulkarni', email: 'rajesh.kulkarni@agentix.in', phone: '+91 98450 00001',
+    name: 'Rajesh Kulkarni', email: 'rajesh.kulkarni@umanghospital.in', phone: '+91 98450 00001',
     role: 'admin', department: 'Administration', designation: 'Chief Operating Officer',
     branchId: DEFAULT_BRANCH, joiningDate: '2012-04-01',
     contractType: 'permanent', status: 'active',
@@ -574,7 +574,7 @@ const SEED_STAFF: StaffMember[] = [
   },
   {
     id: 'QA-1101', employeeId: 'EMP-2015-1101',
-    name: 'Dr. Lalitha Iyer', email: 'lalitha.iyer@agentix.in', phone: '+91 98450 11011',
+    name: 'Dr. Lalitha Iyer', email: 'lalitha.iyer@umanghospital.in', phone: '+91 98450 11011',
     role: 'quality', department: 'Quality & Compliance', designation: 'Quality Manager',
     branchId: DEFAULT_BRANCH, joiningDate: '2015-08-12',
     contractType: 'permanent', status: 'active',
@@ -588,7 +588,7 @@ const SEED_STAFF: StaffMember[] = [
   },
   {
     id: 'AU-1801', employeeId: 'EMP-2016-1801',
-    name: 'Preethi Krishnan', email: 'preethi.krishnan@agentix.in', phone: '+91 98450 18001',
+    name: 'Preethi Krishnan', email: 'preethi.krishnan@umanghospital.in', phone: '+91 98450 18001',
     role: 'audit_officer', department: 'Audit & Compliance', designation: 'Audit Officer',
     branchId: DEFAULT_BRANCH, joiningDate: '2016-02-19',
     contractType: 'permanent', status: 'active',
@@ -602,7 +602,7 @@ const SEED_STAFF: StaffMember[] = [
   // ── Support services ───────────────────────────────────────────────
   {
     id: 'BB-1201', employeeId: 'EMP-2016-1201',
-    name: 'Dr. Pooja Srivastava', email: 'pooja.srivastava@agentix.in', phone: '+91 98450 12001',
+    name: 'Dr. Pooja Srivastava', email: 'pooja.srivastava@umanghospital.in', phone: '+91 98450 12001',
     role: 'blood_bank', department: 'Blood Bank', designation: 'Transfusion Medicine Officer',
     branchId: DEFAULT_BRANCH, joiningDate: '2016-07-08',
     contractType: 'permanent', status: 'active',
@@ -616,7 +616,7 @@ const SEED_STAFF: StaffMember[] = [
   },
   {
     id: 'CS-1301', employeeId: 'EMP-2019-1301',
-    name: 'Shalini Mehta', email: 'shalini.mehta@agentix.in', phone: '+91 98450 13001',
+    name: 'Shalini Mehta', email: 'shalini.mehta@umanghospital.in', phone: '+91 98450 13001',
     role: 'cssd', department: 'CSSD', designation: 'CSSD Manager',
     branchId: DEFAULT_BRANCH, joiningDate: '2019-05-14',
     contractType: 'permanent', status: 'active',
@@ -625,7 +625,7 @@ const SEED_STAFF: StaffMember[] = [
   },
   {
     id: 'DT-1401', employeeId: 'EMP-2020-1401',
-    name: 'Nalini Bose', email: 'nalini.bose@agentix.in', phone: '+91 98450 14001',
+    name: 'Nalini Bose', email: 'nalini.bose@umanghospital.in', phone: '+91 98450 14001',
     role: 'dietary', department: 'Dietary & Nutrition', designation: 'Chief Dietitian',
     branchId: DEFAULT_BRANCH, joiningDate: '2020-02-08',
     contractType: 'permanent', status: 'active',
@@ -637,7 +637,7 @@ const SEED_STAFF: StaffMember[] = [
   },
   {
     id: 'BW-1501', employeeId: 'EMP-2018-1501',
-    name: 'Ganesh Rao', email: 'ganesh.rao@agentix.in', phone: '+91 98450 15001',
+    name: 'Ganesh Rao', email: 'ganesh.rao@umanghospital.in', phone: '+91 98450 15001',
     role: 'bmw', department: 'Bio-Medical Waste', designation: 'BMW Officer',
     branchId: DEFAULT_BRANCH, joiningDate: '2018-04-22',
     contractType: 'permanent', status: 'active',
@@ -646,7 +646,7 @@ const SEED_STAFF: StaffMember[] = [
   },
   {
     id: 'MT-1601', employeeId: 'EMP-2017-1601',
-    name: 'Shyam Tiwari', email: 'shyam.tiwari@agentix.in', phone: '+91 98450 16001',
+    name: 'Shyam Tiwari', email: 'shyam.tiwari@umanghospital.in', phone: '+91 98450 16001',
     role: 'mortuary', department: 'Mortuary', designation: 'Mortuary Officer',
     branchId: DEFAULT_BRANCH, joiningDate: '2017-11-30',
     contractType: 'permanent', status: 'active',
@@ -655,7 +655,7 @@ const SEED_STAFF: StaffMember[] = [
   },
   {
     id: 'AM-1701', employeeId: 'EMP-2019-1701',
-    name: 'Deepak Pandey', email: 'deepak.pandey@agentix.in', phone: '+91 98450 17001',
+    name: 'Deepak Pandey', email: 'deepak.pandey@umanghospital.in', phone: '+91 98450 17001',
     role: 'ambulance', department: 'Ambulance Services', designation: 'Ambulance Coordinator',
     branchId: DEFAULT_BRANCH, joiningDate: '2019-08-12',
     contractType: 'permanent', status: 'active',
@@ -664,7 +664,7 @@ const SEED_STAFF: StaffMember[] = [
   },
   {
     id: 'HK-1001', employeeId: 'EMP-2020-1001',
-    name: 'Ramesh Kumar', email: 'ramesh.kumar@agentix.in', phone: '+91 98450 10001',
+    name: 'Ramesh Kumar', email: 'ramesh.kumar@umanghospital.in', phone: '+91 98450 10001',
     role: 'housekeeping', department: 'Housekeeping', designation: 'Housekeeping Supervisor',
     branchId: DEFAULT_BRANCH, joiningDate: '2020-07-19',
     contractType: 'permanent', status: 'active',
@@ -673,7 +673,7 @@ const SEED_STAFF: StaffMember[] = [
   },
   {
     id: 'INV-550', employeeId: 'EMP-2018-0550',
-    name: 'Vikram Singh', email: 'vikram.singh@agentix.in', phone: '+91 98450 50550',
+    name: 'Vikram Singh', email: 'vikram.singh@umanghospital.in', phone: '+91 98450 50550',
     role: 'inventory', department: 'Procurement', designation: 'Inventory Manager',
     branchId: DEFAULT_BRANCH, joiningDate: '2018-09-04',
     contractType: 'permanent', status: 'active',

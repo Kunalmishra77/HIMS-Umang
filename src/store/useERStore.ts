@@ -373,7 +373,7 @@ export const useERStore = create<ERState>()(persist((set, get) => ({
       useNotificationStore.getState().add({
         type: 'system', priority: 'medium',
         title: `Welcome to Umang Hospital · UHID ${uhid}`,
-        body: `${displayName} registered at Emergency · ${new Date(arrivedAt).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}. View live status: agentix.in/p/${uhid.toLowerCase()}?t=${trackToken}. SMS sent to ${smsTarget}.`,
+        body: `${displayName} registered at Emergency · ${new Date(arrivedAt).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}. View live status: umanghospital.in/p/${uhid.toLowerCase()}?t=${trackToken}. SMS sent to ${smsTarget}.`,
         targetRole: 'patient',
         patientName: displayName,
         patientPhone: smsTarget,

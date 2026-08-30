@@ -3,7 +3,7 @@
 // M13.11 — Public family tracking page.
 //
 // The SMS sent to the attendant from the ER registration form points here:
-//   https://agentix.in/p/<uhid>
+//   https://umanghospital.in/p/<uhid>
 // Anyone with the link can see live status (no login required, like Apollo /
 // Manipal patient-tracking pages). Polls every 10 seconds to feel real-time;
 // shows the same journey data the staff portal aggregates, in WhatsApp-style

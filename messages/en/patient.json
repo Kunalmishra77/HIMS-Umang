@@ -67,7 +67,7 @@
     "lowConfidence": "Low confidence",
     "reviewedApprovedBy": "Reviewed & approved by {name}",
     "awaitingReview": "Awaiting clinician review",
-    "modelNote": "Model: agentix-ai-v1 · Processed under DISHA. AI never makes a final clinical decision — it assists your care team. Manage access in Profile & Privacy.",
+    "modelNote": "Model: umang-ai-v1 · Processed under DISHA. AI never makes a final clinical decision — it assists your care team. Manage access in Profile & Privacy.",
     "decTriageTitle": "Triage priority",
     "decTriageDetail": "AI assessed your symptoms as High priority and fast-tracked you.",
     "decBriefTitle": "Pre-consultation brief",
