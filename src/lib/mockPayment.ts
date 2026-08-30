@@ -48,7 +48,7 @@ export async function processPayment(intent: PaymentIntent): Promise<PaymentResu
     channel: intent.channel,
     amount: intent.amount,
     paidAt: new Date().toISOString(),
-    ...(intent.channel === 'upi' ? { payerVPA: 'patient@agentix' } : {}),
+    ...(intent.channel === 'upi' ? { payerVPA: 'patient@umang' } : {}),
     ...(intent.channel === 'card' ? { last4: '4081' } : {}),
   }
   if (intent.channel === 'insurance') {

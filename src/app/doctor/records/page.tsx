@@ -20,7 +20,7 @@ type Row = Patient & { mode: Mode }
 
 const STATUS_TINT: Record<QueueStatus, string> = {
   waiting: 'bg-amber-50 text-amber-700', vitals: 'bg-surface-sunken text-accent', consulting: 'bg-[rgba(238,107,38,0.07)] text-[var(--color-accent)]',
-  pharmacy: 'bg-[rgba(238,107,38,0.07)] text-[var(--color-accent)]', billing: 'bg-primary-soft text-accent', done: 'bg-green-50 text-green-700',
+  billing: 'bg-primary-soft text-accent', done: 'bg-green-50 text-green-700',
 }
 const TRIAGE_TINT: Record<string, string> = {
   Critical: 'bg-red-100 text-red-700', High: 'bg-accent-soft text-accent', Medium: 'bg-amber-100 text-amber-700', Low: 'bg-slate-100 text-slate-500',

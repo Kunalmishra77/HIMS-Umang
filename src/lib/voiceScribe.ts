@@ -284,8 +284,8 @@ const spelled = (word: string) => ({ en: spellLetters(word, 'en'), hi: spellLett
 // single-word rule can't re-touch what they already rewrote; because every
 // replacement is lower-case or Devanagari, the caps-only patterns never rematch.
 const PRONUNCIATION: Array<{ re: RegExp; en: string; hi: string }> = [
-  // Product name — "HIMS" is read letter by letter ("H.I.M.S").
-  { re: /\bAgentix\s+HIMS\b/g, en: `Agentix ${spellLetters('HIMS', 'en')}`, hi: `एजेंटिक्स ${spellLetters('HIMS', 'hi')}` },
+  // "HIMS" (Hospital Information & Management System) is read letter by letter ("H.I.M.S").
+  // "Umang Hospital" itself needs no rule — both words are ordinary and read correctly as-is.
   { re: /\bHIMS\b/g, ...spelled('HIMS') },
   // ABHA (Ayushman Bharat Health Account) is a spoken word — "Ah-bha".
   { re: /\bABHA\b/g, en: 'Abha', hi: 'आभा' },

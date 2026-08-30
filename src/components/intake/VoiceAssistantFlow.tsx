@@ -31,7 +31,7 @@ const T = {
 
 // Auto barge-in: open the mic WHILE the assistant speaks so the patient can talk
 // over her. OFF by default — without hardware echo-cancellation the mic hears
-// Asha's own voice and cuts her off mid-greeting ("Namaskar, Agentix…" → stop).
+// Asha's own voice and cuts her off mid-greeting ("Namaskar, Umang…" → stop).
 // The patient can always interrupt reliably by TAPPING the mic instead. Only set
 // this true on kiosks/devices with proven acoustic echo-cancellation.
 const BARGE_IN = false

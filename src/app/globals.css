@@ -1,13 +1,13 @@
 @import "tailwindcss";
 
 @theme inline {
-  /* Typography — Agentix HIMS, Stripe-inspired (see /DESIGN.md).
+  /* Typography — Umang Hospital, Stripe-inspired (see /DESIGN.md).
      Inter (weight 300–700, `ss01` enabled globally) is the open-source stand-in
      for Sohne. Numeric/tabular cells use `tabular-nums` (`.t-numeric`). */
   --font-body:    "Inter", "SF Pro Display", "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
   --font-heading: "Inter", "SF Pro Display", "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
 
-  /* Brand Colors — Agentix HIMS orange (logo `#EE6B26`) + navy (`#0D2032`).
+  /* Brand Colors — Umang Hospital orange (logo `#EE6B26`) + navy (`#0D2032`).
      Unlike the old teal, no single orange is AA both as white-on-fill AND as
      text-on-white, so brand orange is split: `--color-primary` is the exact
      logo orange used for FILLS (buttons/active/focus), always paired with navy
@@ -155,7 +155,7 @@
   --font-size-3xl: 1.875rem;
   --font-size-4xl: 2.25rem;
 
-  /* Border Radius — Agentix HIMS scale (interactive controls = 12px) */
+  /* Border Radius — Umang Hospital scale (interactive controls = 12px) */
   --radius-sm:  0.5rem;    /* 8px */
   --radius-md:  0.75rem;   /* 12px — buttons, inputs, interactive controls */
   --radius-lg:  1rem;      /* 16px */

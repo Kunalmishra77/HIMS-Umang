@@ -18,8 +18,7 @@
  *   - "Open chart" navigates to the patient's IPD chart.
  */
 import { useEffect, useMemo, useState } from "react"
-import { useRouter } from "next/navigation"
-import { ShieldAlert, Check, FlaskConical } from "lucide-react"
+import { ShieldAlert, Check } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useAuditStore } from "@/store/useAuditStore"
 
@@ -43,7 +42,6 @@ function ackKey(eventId: string, role: string): string {
 export function CriticalValueBanner({ role = 'both', className }: Props) {
   const entries = useAuditStore((s) => s.entries)
   const log = useAuditStore((s) => s.log)
-  const router = useRouter()
   const [, setTick] = useState(0)  // re-render after ack
   // SSR vs client see different "minutes ago" from the audit seed (seeded
   // via `Date.now()` at module-eval). Gate any rendered timestamp behind
@@ -104,15 +102,6 @@ export function CriticalValueBanner({ role = 'both', className }: Props) {
           >
             <ShieldAlert className="h-3.5 w-3.5 text-rose-600 flex-shrink-0" />
             <span className="text-[11px] font-semibold text-rose-800 whitespace-nowrap">Critical lab value</span>
-            <button
-              type="button"
-              onClick={() => router.push('/audit/log')}
-              title="Open audit trail"
-              aria-label="Open audit trail"
-              className="inline-flex items-center justify-center h-5 w-5 rounded-full text-rose-600 hover:bg-rose-100"
-            >
-              <FlaskConical className="h-3 w-3" />
-            </button>
             <button
               type="button"
               onClick={() => doAck(e.id)}

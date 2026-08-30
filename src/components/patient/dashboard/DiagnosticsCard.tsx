@@ -100,7 +100,7 @@ export function DiagnosticsCard() {
     if (action === "view") {
       router.push(item.reportUrl ?? "/patient/records")
     } else if (action === "download") {
-      const text = `Agentix HIMS — ${item.name}\n${"=".repeat(28)}\nStatus: ${STATUS_LABEL[item.status]}\n${item.summary ?? ""}`
+      const text = `Umang Hospital — ${item.name}\n${"=".repeat(28)}\nStatus: ${STATUS_LABEL[item.status]}\n${item.summary ?? ""}`
       const url = URL.createObjectURL(new Blob([text], { type: "text/plain;charset=utf-8" }))
       const a = document.createElement("a")
       a.href = url
@@ -108,7 +108,7 @@ export function DiagnosticsCard() {
       a.click()
       URL.revokeObjectURL(url)
     } else if (typeof navigator !== "undefined") {
-      const shareText = `My ${item.name} report from Agentix HIMS`
+      const shareText = `My ${item.name} report from Umang Hospital`
       if (navigator.share) navigator.share({ title: item.name, text: shareText })
       else navigator.clipboard?.writeText(shareText)
     }

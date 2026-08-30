@@ -55,7 +55,7 @@ export default function BillingDashboard() {
   const onFreeze = (billId: string, name: string) => {
     const actor = currentUser?.name ?? 'Billing Officer'
     freezeBill(billId, actor)
-    notifyAndAuditMany(['audit_officer', 'admin'], {
+    notifyAndAuditMany(['admin'], {
       type: 'system', priority: 'medium',
       title: `Bill frozen · ${name}`,
       body: `Bill ${billId} for ${name} frozen by ${actor}. No further edits permitted; ready for settlement.`,

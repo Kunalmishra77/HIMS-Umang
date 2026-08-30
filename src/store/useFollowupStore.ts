@@ -66,12 +66,12 @@ function makeEvents(dischargedOn: string, followUpDate?: string): PostDischargeE
     events.push({
       id: 'EV-3', type: 'pre_followup_reminder', label: 'Day Before Follow-up',
       scheduledDate: new Date(fu.getTime() - 86400000).toISOString(), channel: 'whatsapp', status: 'scheduled',
-      message: 'Reminder: Your follow-up appointment is tomorrow at Agentix HIMS.',
+      message: 'Reminder: Your follow-up appointment is tomorrow at Umang Hospital.',
     })
     events.push({
       id: 'EV-4', type: 'doctor_availability', label: 'Follow-up Day Confirmation',
       scheduledDate: followUpDate, channel: 'sms', status: 'scheduled',
-      message: 'Your doctor is available today for your follow-up. Agentix HIMS OPD timings: 9am–1pm.',
+      message: 'Your doctor is available today for your follow-up. Umang Hospital OPD timings: 9am–1pm.',
     })
   }
   return events

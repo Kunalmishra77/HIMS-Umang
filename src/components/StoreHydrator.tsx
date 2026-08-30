@@ -12,39 +12,24 @@ import { useNursingStore } from "@/store/useNursingStore"
 import { usePatientProfileStore } from "@/store/usePatientProfileStore"
 import { useShiftStore } from "@/store/useShiftStore"
 import { useHRStore } from "@/store/useHRStore"
-import { useVendorStore } from "@/store/useVendorStore"
-import { useVendorManagerStore } from "@/store/useVendorManagerStore"
-import { useStatutoryStore } from "@/store/useStatutoryStore"
 import { useAuditStore } from "@/store/useAuditStore"
 
 // Phase-1 Step-3: every clinical / operational / financial store now persists.
 import { useAdmissionStore } from "@/store/useAdmissionStore"
-import { useAmbulanceStore } from "@/store/useAmbulanceStore"
 import { useAuthStore } from "@/store/useAuthStore"
-import { useBMWStore } from "@/store/useBMWStore"
 import { useBillingStore } from "@/store/useBillingStore"
-import { useBloodBankStore } from "@/store/useBloodBankStore"
-import { useCSSDStore } from "@/store/useCSSDStore"
-import { useConsentStore } from "@/store/useConsentStore"
 import { useConsultationStore } from "@/store/useConsultationStore"
-import { useDietaryStore } from "@/store/useDietaryStore"
-import { useHrmsStore } from "@/store/useHrmsStore"
 import { useDischargeStore } from "@/store/useDischargeStore"
 import { useDoctorStatsStore } from "@/store/useDoctorStatsStore"
-import { useDrugMasterStore } from "@/store/useDrugMasterStore"
 import { useERStore } from "@/store/useERStore"
 import { useEmergencyStore } from "@/store/useEmergencyStore"
 import { useFamilyTokenStore } from "@/store/useFamilyTokenStore"
 import { useFeedbackStore } from "@/store/useFeedbackStore"
 import { useFollowupStore } from "@/store/useFollowupStore"
-import { useHousekeepingStore } from "@/store/useHousekeepingStore"
 import { useInsuranceStore } from "@/store/useInsuranceStore"
-import { useInventoryStore } from "@/store/useInventoryStore"
 import { useJourneyStore } from "@/store/useJourneyStore"
 import { useLabOrdersStore } from "@/store/useLabOrdersStore"
-import { useLabQCStore } from "@/store/useLabQCStore"
 import { useMortuaryStore } from "@/store/useMortuaryStore"
-import { useNarcoticsStore } from "@/store/useNarcoticsStore"
 import { useOTStore } from "@/store/useOTStore"
 import { usePatientLiveStore } from "@/store/usePatientLiveStore"
 import { usePatientFeedbackStore } from "@/store/usePatientFeedbackStore"
@@ -52,7 +37,6 @@ import { usePatientOrdersStore } from "@/store/usePatientOrdersStore"
 import { usePatientStore } from "@/store/usePatientStore"
 import { usePharmacyInventoryStore } from "@/store/usePharmacyInventoryStore"
 import { usePharmacyStore } from "@/store/usePharmacyStore"
-import { useQualityStore } from "@/store/useQualityStore"
 import { useRadiologyStudiesStore } from "@/store/useRadiologyStudiesStore"
 import { useWardStore } from "@/store/useWardStore"
 import { useWhatsAppStore } from "@/store/useWhatsAppStore"
@@ -72,43 +56,29 @@ export function StoreHydrator() {
     usePatientProfileStore.persist.rehydrate()
     useShiftStore.persist.rehydrate()
     useHRStore.persist.rehydrate()
-    useHrmsStore.persist.rehydrate()
-    useVendorStore.persist.rehydrate()
-    useStatutoryStore.persist.rehydrate()
 
     // Phase-1 Step-3 — newly persisted stores (collapses Lost-on-refresh).
     useAdmissionStore.persist.rehydrate()
-    useAmbulanceStore.persist.rehydrate()
     useAuthStore.persist.rehydrate()
-    useBMWStore.persist.rehydrate()
     useBillingStore.persist.rehydrate()
-    useBloodBankStore.persist.rehydrate()
-    useCSSDStore.persist.rehydrate()
     useConsultationStore.persist.rehydrate()
-    useDietaryStore.persist.rehydrate()
     useDischargeStore.persist.rehydrate()
     useDoctorStatsStore.persist.rehydrate()
-    useDrugMasterStore.persist.rehydrate()
     useERStore.persist.rehydrate()
     useEmergencyStore.persist.rehydrate()
     useFamilyTokenStore.persist.rehydrate()
     useFeedbackStore.persist.rehydrate()
     useFollowupStore.persist.rehydrate()
-    useHousekeepingStore.persist.rehydrate()
     useInsuranceStore.persist.rehydrate()
-    useInventoryStore.persist.rehydrate()
     useJourneyStore.persist.rehydrate()
     useLabOrdersStore.persist.rehydrate()
-    useLabQCStore.persist.rehydrate()
     useMortuaryStore.persist.rehydrate()
-    useNarcoticsStore.persist.rehydrate()
     useOTStore.persist.rehydrate()
     usePatientLiveStore.persist.rehydrate()
     usePatientOrdersStore.persist.rehydrate()
     usePatientStore.persist.rehydrate()
     usePharmacyInventoryStore.persist.rehydrate()
     usePharmacyStore.persist.rehydrate()
-    useQualityStore.persist.rehydrate()
     useRadiologyStudiesStore.persist.rehydrate()
     useWardStore.persist.rehydrate()
     useWhatsAppStore.persist.rehydrate()
@@ -147,8 +117,7 @@ export function StoreHydrator() {
         onAudit((entry) => useAuditStore.getState().push(entry))
         // Companion seed for legacy Zustand stores that the mock API doesn't
         // own (ER triage, OT procedure with WHO, Insurance claim with denial-
-        // risk 0.72, Narcotics register, Drug Master Augmentin, Admission).
-        // Idempotent — gated by a localStorage marker.
+        // risk 0.72, Admission). Idempotent — gated by a localStorage marker.
         const { seedAnilLegacyStores } = await import('@/lib/seed-legacy-stores')
         await seedAnilLegacyStores()
         // Family-tracking tokens for the seeded demo patients so their public
@@ -209,7 +178,6 @@ export function StoreHydrator() {
               () => useInsuranceStore.getState().hydrateReal(),
               () => useOTStore.getState().hydrateReal(),
               () => usePatientFeedbackStore.getState().hydrateReal(),
-              () => useConsentStore.getState().hydrateReal(),
               () => useNotificationStore.getState().hydrateReal(),
             ]
           : [
@@ -222,24 +190,11 @@ export function StoreHydrator() {
               () => useBillingStore.getState().hydrateReal(),
               () => useInsuranceStore.getState().hydrateReal(),
               () => useERStore.getState().hydrateReal(),
-              () => useBloodBankStore.getState().hydrateReal(),
               () => useOTStore.getState().hydrateReal(),
-              () => useAmbulanceStore.getState().hydrateReal(),
-              () => useInventoryStore.getState().hydrateReal(),
               () => useHRStore.getState().hydrateReal(),
-              () => useCSSDStore.getState().hydrateReal(),
-              () => useDietaryStore.getState().hydrateReal(),
-              () => useHousekeepingStore.getState().hydrateReal(),
-              () => useBMWStore.getState().hydrateReal(),
               () => useMortuaryStore.getState().hydrateReal(),
-              () => useStatutoryStore.getState().hydrateReal(),
-              () => useVendorManagerStore.getState().hydrateReal(),
-              () => useVendorStore.getState().hydrateReal(),
-              () => useQualityStore.getState().hydrateReal(),
               () => usePatientFeedbackStore.getState().hydrateReal(),
-              () => useConsentStore.getState().hydrateReal(),
               () => useWardStore.getState().hydrateReal(),
-              () => useDrugMasterStore.getState().hydrateReal(),
               () => useNotificationStore.getState().hydrateReal(),
             ]
         await Promise.all(hydrateFns.map(fn => fn()))

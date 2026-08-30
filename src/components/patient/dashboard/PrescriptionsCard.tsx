@@ -74,7 +74,7 @@ export function PrescriptionsCard() {
 
   function downloadRx() {
     const lines = [
-      "Agentix HIMS — e-Prescription",
+      "Umang Hospital — e-Prescription",
       "================================",
       `Patient: ${me?.name ?? "Patient"}${me?.uhid ? ` (UHID ${me.uhid})` : ""}`,
       `Prescribed by: ${doctor}`,

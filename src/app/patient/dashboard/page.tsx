@@ -41,7 +41,7 @@ export default function PatientDashboard() {
       else if (stage === 'done') toast.success(mode === 'video' ? t('dashboard.toastConsultComplete') : t('dashboard.toastVisitComplete'), { description: t('dashboard.toastSummaryReady') })
 
       // Doctor's orders land in real time the moment the prescription is issued.
-      if (stage === 'pharmacy' || stage === 'prescription') {
+      if (stage === 'billing' || stage === 'prescription') {
         const orders = usePatientOrdersStore.getState()
         if (!orders.received) {
           orders.receiveOrders()

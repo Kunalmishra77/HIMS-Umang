@@ -7,13 +7,13 @@ import { notifyAndAudit } from "@/lib/notifyAndAudit"
 
 function requestReorder(name: string, daysLeft: number) {
   notifyAndAudit({
-    to: 'pharmacy', type: 'medicines_ready', priority: 'medium',
+    to: 'admin', type: 'medicines_ready', priority: 'medium',
     title: `Refill request · ${name}`,
     body: `Patient (Kiran Patil) requested a refill for ${name}. ~${daysLeft} days remaining. Prep for collection.`,
     patientName: 'Kiran Patil',
     audit: { action: 'prescription_create', resource: 'patient_refill', detail: `Patient requested refill for ${name}`, userName: 'Kiran Patil' },
   })
-  toast.success(`Refill requested for ${name} · pharmacy notified`)
+  toast.success(`Refill requested for ${name}`)
 }
 
 type Med = {

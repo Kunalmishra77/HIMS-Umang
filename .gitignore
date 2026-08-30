@@ -13,3 +13,10 @@ _zod.mjs
 
 # migration runtime secrets
 scripts/migration/env.sh
+
+# reachability report output
+scripts/.reach-keep.txt
+scripts/.reach-dead.txt
+
+.env.local
+!.env.example

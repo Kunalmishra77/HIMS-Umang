@@ -81,8 +81,6 @@ export default function DoctorConsultation() {
   // Referral + admission drafts.
   const [referSpecialty, setReferSpecialty] = useState("")
   const [admitWard, setAdmitWard] = useState("General Ward")
-  // Track whether an Rx was dispatched so "Complete consultation" routes to pharmacy vs billing.
-  const [sentRx, setSentRx] = useState(false)
   // Prescription — medicines + diet/follow-up/imaging advice for the printout.
   const [meds, setMeds] = useState<RxMed[]>([])
   const [medDraft, setMedDraft] = useState<RxMed>(EMPTY_MED)
@@ -93,7 +91,7 @@ export default function DoctorConsultation() {
   useEffect(() => {
     if (active) { setSoap(loadSoap(active.id)); setHydrated(true) }
     setLabTests([]); setLabPick("")
-    setImagingStudies([]); setImagingPick(""); setReferSpecialty(""); setAdmitWard("General Ward"); setSentRx(false)
+    setImagingStudies([]); setImagingPick(""); setReferSpecialty(""); setAdmitWard("General Ward")
     setMeds([]); setMedDraft(EMPTY_MED); setDiet(""); setFollowUp(""); setImagingAdvice("")
   }, [active?.id])
 
@@ -160,14 +158,13 @@ export default function DoctorConsultation() {
       notes: diet.trim() ? `Diet: ${diet.trim()}` : undefined,
     })
     notifyAndAudit({
-      to: 'pharmacy', type: 'medicines_ready', priority: 'high',
+      to: 'admin', type: 'medicines_ready', priority: 'high',
       title: `New Rx · ${active.name}`,
       body: `Doctor prescribed ${meds.length} medicine(s) for ${active.name}: ${meds.map(m => m.name.trim()).join(', ')}. Begin dispense workflow.`,
       patientName: active.name,
       audit: { action: 'prescription_create', resource: 'consultation', resourceId: active.id, detail: `Rx (${meds.length} item(s)) ordered for ${active.name}`, userName: currentUser?.name ?? 'Doctor' },
     })
-    setSentRx(true)
-    toast.success(`Rx sent · pharmacy notified`, { description: `${meds.length} medicine(s)` })
+    toast.success(`Rx sent`, { description: `${meds.length} medicine(s)` })
   }
 
   function printRx() {
@@ -198,7 +195,7 @@ export default function DoctorConsultation() {
       <p class="muted" style="margin-top:24px">Signed by ${escapeHtml(doctor)} · ${active.department}</p>
     `)
     notifyAndAudit({
-      to: 'audit_officer', type: 'system', priority: 'low',
+      to: 'admin', type: 'system', priority: 'low',
       title: `Prescription printed · ${active.name}`,
       body: `${doctor} printed a prescription for ${active.name} (${meds.length} medicine(s)).`,
       patientName: active.name,
@@ -225,7 +222,7 @@ export default function DoctorConsultation() {
       testCodes: labTests,
     })
     notifyAndAudit({
-      to: 'lab', type: 'system', priority: 'medium',
+      to: 'admin', type: 'system', priority: 'medium',
       title: `Lab order · ${active.name}`,
       body: `Doctor ordered ${labTests.length} test(s) for ${active.name}: ${labTests.map(c => LAB_CATALOG[c]?.name ?? c).join(', ')}. Assessment: ${soap.assessment || soap.plan || '—'}.`,
       patientName: active.name,
@@ -260,7 +257,7 @@ export default function DoctorConsultation() {
       })
     }
     notifyAndAudit({
-      to: 'radiology', type: 'system', priority: 'medium',
+      to: 'admin', type: 'system', priority: 'medium',
       title: `Imaging order · ${active.name}`,
       body: `Doctor ordered ${imagingStudies.length} study(ies) for ${active.name}: ${imagingStudies.map(c => RADIOLOGY_CATALOG[c]?.name ?? c).join(', ')}. ${soap.assessment ? `Clinical question: ${soap.assessment}.` : ''}`,
       patientName: active.name,
@@ -312,7 +309,7 @@ export default function DoctorConsultation() {
       payerType: active.insurer ? 'Insurance' : 'Cash',
     })
     notifyAndAudit({
-      to: 'bed_manager', type: 'system', priority: active.triageLevel === 'Critical' ? 'critical' : 'high',
+      to: 'admin', type: 'system', priority: active.triageLevel === 'Critical' ? 'critical' : 'high',
       title: `Admission request · ${active.name}`,
       body: `Doctor requested ${admitWard} admission for ${active.name} (${active.department}). Assign a bed.`,
       patientName: active.name,
@@ -321,14 +318,13 @@ export default function DoctorConsultation() {
     // Leave the OPD queue and enter the IPD journey (override the COMPLETED sync from 'done').
     updateStatus(active.id, 'done')
     journeyTransition(active.id, 'ADMITTED_IPD', currentUser?.id ?? 'doctor', currentUser?.name ?? 'Doctor')
-    toast.success(`Admission requested · ${admitWard} · bed manager notified`)
+    toast.success(`Admission requested · ${admitWard}`)
   }
 
   function completeConsultation() {
     if (!active) return
-    const next = sentRx ? 'pharmacy' : 'billing'
-    updateStatus(active.id, next)
-    toast.success(`Consultation complete · ${active.name} sent to ${next === 'pharmacy' ? 'Pharmacy' : 'Billing'}`)
+    updateStatus(active.id, 'billing')
+    toast.success(`Consultation complete · ${active.name} sent to Billing`)
   }
 
   if (!hydrated) return null
@@ -592,9 +588,6 @@ export default function DoctorConsultation() {
                 <Send className="h-3.5 w-3.5" />
               </button>
             </div>
-            <button onClick={() => router.push('/doctor/beds')} className="w-full flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-white hover:bg-slate-100 border border-slate-200 text-slate-600 text-[11.5px] font-semibold cursor-pointer">
-              Check bed availability
-            </button>
           </div>
 
           <button onClick={completeConsultation} className="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-[13px] font-semibold cursor-pointer mt-1">

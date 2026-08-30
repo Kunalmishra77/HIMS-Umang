@@ -1,5 +1,5 @@
 {
-  "brand": "Agentix HIMS",
+  "brand": "Umang Hospital",
   "hero": {
     "title": "सही डॉक्टर ढूंढें",
     "subtitle": "लक्षण, स्पेशलिटी या डॉक्टर के नाम से सर्च करें",
@@ -32,7 +32,7 @@
   "eligibility": {
     "providerLabel": "आपका इंश्योरेंस प्रोवाइडर",
     "selectPlaceholder": "इंश्योरर चुनें...",
-    "cashlessTitle": "Agentix HIMS पर कैशलेस उपलब्ध है",
+    "cashlessTitle": "Umang Hospital पर कैशलेस उपलब्ध है",
     "cashlessBody": "{insurer} एक कैशलेस पार्टनर है। आप बिना पहले पेमेंट किए इलाज करवा सकते हैं — TPA सीधे हॉस्पिटल के साथ सेटल करेगा।",
     "cashlessPoint1": "✓ प्लान्ड एडमिशन के लिए प्री-ऑथराइज़ेशन ज़रूरी है",
     "cashlessPoint2": "✓ इमरजेंसी एडमिशन की सूचना 24 घंटे के अंदर दी जा सकती है",

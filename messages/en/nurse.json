@@ -53,19 +53,17 @@
     "completeVitals": "Complete Vitals"
   },
   "aiAssistant": {
-    "quickWhichRounds": "Which rounds are due?",
-    "quickMostAcute": "Who are my most acute patients?",
-    "quickReadyDischarge": "Who's ready for discharge?",
-    "quickHandoverSummary": "Summarise Kiran Patil for handover",
-    "quickCurrentMeds": "Show current meds for Kiran Patil",
+    "quickWaitingForVitals": "How many patients are waiting for vitals?",
     "quickDiabetes": "Who has diabetes?",
+    "quickFever": "Who has fever?",
+    "quickVisitSummary": "Summarise Kiran Patil's visit",
     "title": "Nursing Copilot",
-    "grounded": "Grounded in {count} patient(s) · {ward}",
+    "grounded": "Grounded in {count} patient(s)",
     "emptyTitle": "Your nursing copilot",
-    "emptySubtitle": "Ask about your ward — acuity, rounds, meds, vitals, discharges — or get a handover summary. Grounded in the live record.",
-    "inputPlaceholder": "Ask about your ward, a patient, meds, or a handover summary…",
+    "emptySubtitle": "Ask about the OPD queue — who's waiting, a patient's vitals or history, or a symptom cohort. Grounded in the live record.",
+    "inputPlaceholder": "Ask about the OPD queue or a patient…",
     "send": "Send",
-    "disclaimer": "AI · answers drawn from the live ward record · verify before acting"
+    "disclaimer": "AI · answers drawn from the live OPD record · verify before acting"
   },
   "fluidBalance": {
     "intake": "Intake",

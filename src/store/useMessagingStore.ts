@@ -1,13 +1,16 @@
 import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
-import type { Role } from '@/store/useAuthStore'
+import type { StaffRole } from '@/types/roles'
 
 // Internal staff-to-staff messaging — a genuine bus. Messages carry a senderId
 // and conversations are between two participant ids, so the SAME thread is read
 // correctly from either side (doctor and nurse both see it, each with their own
 // "mine"/unread perspective). Front-end simulation of a secure messaging bus.
-
-export type StaffContact = { id: string; name: string; role: Role; department: string }
+//
+// The directory spans the whole hospital workforce (lab, radiology, ...), not
+// just the five portals this build ships, so contacts use StaffRole rather
+// than the narrower login Role — see src/types/roles.ts.
+export type StaffContact = { id: string; name: string; role: StaffRole; department: string }
 export type ChatMsg = { id: string; senderId: string; text: string; at: string; readBy: string[] }
 export type Conversation = { id: string; participants: string[]; messages: ChatMsg[]; updatedAt: string }
 

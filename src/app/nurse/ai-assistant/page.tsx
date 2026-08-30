@@ -1,22 +1,20 @@
 "use client"
 
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { motion } from "framer-motion"
 import { Sparkles, Send, BrainCircuit, ShieldAlert } from "lucide-react"
-import { useInpatientStore } from "@/store/useInpatientStore"
-import { useShiftStore, ALL_WARDS } from "@/store/useShiftStore"
-import { runCopilot, type CopilotCtx } from "@/lib/copilotLLM"
+import { usePatientStore } from "@/store/usePatientStore"
+import { useAuthStore } from "@/store/useAuthStore"
 import { WardSwitcher } from "@/components/nurse/ShiftBanner"
+import { runCopilot, type CopilotCtx } from "@/lib/copilotLLM"
 import { cn } from "@/lib/utils"
 import { useTranslations } from "next-intl"
 
 const QUICK_PROMPT_KEYS = [
-  "quickWhichRounds",
-  "quickMostAcute",
-  "quickReadyDischarge",
-  "quickHandoverSummary",
-  "quickCurrentMeds",
+  "quickWaitingForVitals",
   "quickDiabetes",
+  "quickFever",
+  "quickVisitSummary",
 ] as const
 
 type Msg = { role: "user" | "ai"; text: string }
@@ -29,10 +27,8 @@ function Rich({ text }: { text: string }) {
 
 export default function NurseAiAssistant() {
   const t = useTranslations('nurse')
-  const inpatients = useInpatientStore(s => s.inpatients)
-  const activeWard = useShiftStore(s => s.activeWard)
-  const nurseName = useShiftStore(s => s.currentNurseName)
-  const wardInpatients = useMemo(() => inpatients.filter(i => activeWard === ALL_WARDS || i.ward === activeWard), [inpatients, activeWard])
+  const patients = usePatientStore(s => s.patients)
+  const nurseName = useAuthStore(s => s.currentUser?.name) ?? 'Nurse'
 
   const [messages, setMessages] = useState<Msg[]>([])
   const [input, setInput] = useState("")
@@ -46,7 +42,7 @@ export default function NurseAiAssistant() {
     setMessages(m => [...m, { role: "user", text }])
     setInput("")
     setThinking(true)
-    const ctx: CopilotCtx = { patients: [], visits: [], inpatients: wardInpatients, focusId: null, doctorName: nurseName }
+    const ctx: CopilotCtx = { patients, visits: [], inpatients: [], focusId: null, doctorName: nurseName }
     setTimeout(() => {
       const reply = runCopilot(text, ctx)
       const body = reply.draft ? `${reply.text}\n\n${reply.draft.content}` : reply.text
@@ -62,7 +58,7 @@ export default function NurseAiAssistant() {
           <span className="h-9 w-9 rounded-xl bg-primary flex items-center justify-center shadow-xs"><BrainCircuit className="h-4.5 w-4.5 text-white" /></span>
           <div>
             <h1 className="text-[15.5px] font-bold text-foreground leading-tight">{t('aiAssistant.title')}</h1>
-            <p className="text-[11px] text-foreground-placeholder">{t('aiAssistant.grounded', { count: wardInpatients.length, ward: activeWard })}</p>
+            <p className="text-[11px] text-foreground-placeholder">{t('aiAssistant.grounded', { count: patients.length })}</p>
           </div>
         </div>
         <WardSwitcher />

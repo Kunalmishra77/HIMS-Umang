@@ -5,13 +5,12 @@ import { useTranslations } from "next-intl"
 import { useAuthStore } from "@/store/useAuthStore"
 import { usePatientStore, type TriageLevel } from "@/store/usePatientStore"
 import { useBillingStore } from "@/store/useBillingStore"
-import { useAdmissionStore } from "@/store/useAdmissionStore"
 import { useNotificationStore } from "@/store/useNotificationStore"
 import { useWhatsAppStore } from "@/store/useWhatsAppStore"
 import {
-  Users, Activity, Stethoscope, BedDouble, CreditCard, Calendar,
+  Users, Activity, Stethoscope, CreditCard, Calendar,
   UserPlus, ArrowRight, AlertTriangle, MessageSquare, Volume2, Clock, ChevronRight,
-  Pill, CheckCircle2, Hourglass,
+  CheckCircle2, Hourglass,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
@@ -23,7 +22,7 @@ const TRIAGE_TINT: Record<TriageLevel, string> = {
   Low: 'bg-green-50 text-green-700',
 }
 const CARD = "rounded-2xl bg-white shadow-[0_1px_4px_rgba(15,23,42,0.06),0_4px_16px_rgba(15,23,42,0.04)]"
-const ACTIVE_STATUSES = ['waiting', 'vitals', 'consulting', 'pharmacy', 'billing'] as const
+const ACTIVE_STATUSES = ['waiting', 'vitals', 'consulting', 'billing'] as const
 
 export default function ReceptionDashboard() {
   const t = useTranslations('reception')
@@ -31,8 +30,6 @@ export default function ReceptionDashboard() {
   const patients = usePatientStore(s => s.patients)
   const appointments = usePatientStore(s => s.appointments)
   const bills = useBillingStore(s => s.bills)
-  const beds = useAdmissionStore(s => s.beds)
-  const admissionRequests = useAdmissionStore(s => s.admissionRequests)
   const notifications = useNotificationStore(s => s.notifications)
   const threads = useWhatsAppStore(s => s.threads)
 
@@ -50,7 +47,6 @@ export default function ReceptionDashboard() {
     waiting:    todayQueue.filter(p => p.queueStatus === 'waiting').length,
     vitals:     todayQueue.filter(p => p.queueStatus === 'vitals').length,
     consulting: todayQueue.filter(p => p.queueStatus === 'consulting').length,
-    pharmacy:   todayQueue.filter(p => p.queueStatus === 'pharmacy').length,
     billing:    todayQueue.filter(p => p.queueStatus === 'billing').length,
     done:       todayQueue.filter(p => p.queueStatus === 'done').length,
   }
@@ -66,11 +62,9 @@ export default function ReceptionDashboard() {
 
   const pendingBills = bills.filter(b => b.status !== 'settled')
   const totalDue = pendingBills.reduce((s, b) => s + Math.max(0, b.patientDue - b.paidAmount), 0)
-  const freeBeds = beds.filter(b => b.status === 'Available').length
   const todayAppts = appointments.filter(a => a.date === today && a.status !== 'cancelled')
   const escalations = threads.filter(t => t.status === 'escalated' || t.escalatedToHuman)
   const criticalNotifs = notifications.filter(n => n.priority === 'critical' && !n.read)
-  const pendingAdmissions = admissionRequests.filter(r => r.status === 'Pending')
 
   const hour = new Date().getHours()
   const greeting = hour < 12 ? t('dashboard.goodMorning') : hour < 17 ? t('dashboard.goodAfternoon') : t('dashboard.goodEvening')
@@ -81,7 +75,6 @@ export default function ReceptionDashboard() {
     { label: t('dashboard.kpiPatientsToday'), value: `${todayPatients.length}`, icon: Users, tint: 'bg-[rgba(238,107,38,0.07)] text-[var(--color-accent)]', href: '/reception/patients' },
     { label: t('dashboard.kpiInQueue'), value: `${inQueue.length}`, sub: t('dashboard.kpiInQueueSub', { wait: avgWait }), icon: Activity, tint: 'bg-amber-50 text-amber-600', href: '/reception/opd' },
     { label: t('dashboard.kpiNowServing'), value: nowServing ? `#${nowServing.token}` : '—', sub: nowServing?.name, icon: Volume2, tint: 'bg-[rgba(238,107,38,0.07)] text-[var(--color-accent)]', href: '/reception/queue' },
-    { label: t('dashboard.kpiFreeBeds'), value: `${freeBeds}`, sub: t('dashboard.kpiFreeBedsSub', { total: beds.length }), icon: BedDouble, tint: 'bg-[rgba(238,107,38,0.07)] text-[var(--color-accent)]', href: '/reception/beds' },
     { label: t('dashboard.kpiPendingBills'), value: `${pendingBills.length}`, sub: t('dashboard.kpiPendingBillsSub', { amount: totalDue.toLocaleString('en-IN') }), icon: CreditCard, tint: 'bg-rose-50 text-rose-600', href: '/reception/billing' },
     { label: t('dashboard.kpiAppointments'), value: `${todayAppts.length}`, sub: t('dashboard.kpiToday'), icon: Calendar, tint: 'bg-[rgba(238,107,38,0.07)] text-[var(--color-accent)]', href: '/reception/appointments' },
   ]
@@ -100,9 +93,9 @@ export default function ReceptionDashboard() {
       </div>
 
       {/* M13.4 — OPD walk-in journey pipeline.
-          Six chevron-linked stages mirroring how a walk-in patient moves through
-          the hospital today: Waiting room → Vitals → Consulting → Pharmacy →
-          Billing → Done. Each tile is a direct nav button to the right surface. */}
+          Five chevron-linked stages mirroring how a walk-in patient moves through
+          the hospital today: Waiting room → Vitals → Consulting → Billing → Done.
+          Each tile is a direct nav button to the right surface. */}
       <div className={cn(CARD, "p-4")}>
         <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
           <h2 className="text-sm font-bold text-slate-800 flex items-center gap-2">
@@ -112,12 +105,11 @@ export default function ReceptionDashboard() {
             {t('dashboard.journeySummary', { count: todayPatients.length, wait: avgWait })}
           </p>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 items-stretch">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 items-stretch">
           {[
             { label: t('dashboard.stageWaiting'),    sub: t('dashboard.stageWaitingSub'),  count: pipelineCounts.waiting,    color: 'border-amber-200 bg-amber-50',     icon: Users,        fg: 'text-amber-700',    href: '/reception/opd',     cta: t('dashboard.ctaSendToVitals') },
             { label: t('dashboard.stageVitals'),     sub: t('dashboard.stageVitalsSub'),       count: pipelineCounts.vitals,     color: 'border-primary/20 bg-primary-soft',   icon: Activity,     fg: 'text-accent',   href: '/reception/opd',     cta: t('dashboard.ctaTrack') },
             { label: t('dashboard.stageConsulting'), sub: t('dashboard.stageConsultingSub'),      count: pipelineCounts.consulting, color: 'border-[rgba(238,107,38,0.20)] bg-[rgba(238,107,38,0.07)]',   icon: Stethoscope,  fg: 'text-[var(--color-accent)]',   href: '/reception/queue',   cta: t('dashboard.ctaDisplayBoard') },
-            { label: t('dashboard.stagePharmacy'),   sub: t('dashboard.stagePharmacySub'),    count: pipelineCounts.pharmacy,   color: 'border-[rgba(238,107,38,0.20)] bg-[rgba(238,107,38,0.07)]',       icon: Pill,         fg: 'text-[var(--color-accent)]',     href: '/reception/opd',     cta: t('dashboard.ctaTrack') },
             { label: t('dashboard.stageBilling'),    sub: t('dashboard.stageBillingSub'),    count: pipelineCounts.billing,    color: 'border-rose-200 bg-rose-50',       icon: CreditCard,   fg: 'text-rose-700',     href: '/reception/billing', cta: t('dashboard.ctaCollect') },
             { label: t('dashboard.stageDone'),       sub: t('dashboard.stageDoneSub'),  count: pipelineCounts.done,       color: 'border-emerald-200 bg-emerald-50', icon: CheckCircle2, fg: 'text-emerald-700',  href: '/reception/patients',cta: t('dashboard.ctaReview') },
           ].map((s, i, arr) => (
@@ -162,13 +154,9 @@ export default function ReceptionDashboard() {
               <h3 className="text-[15px] font-bold text-slate-900">{t('dashboard.needsAttention')}</h3>
             </div>
             <div className="space-y-2">
-              {highPriorityWaiting.length === 0 && pendingBills.length === 0 && escalations.length === 0 && criticalNotifs.length === 0 && pendingAdmissions.length === 0 && (
+              {highPriorityWaiting.length === 0 && pendingBills.length === 0 && escalations.length === 0 && criticalNotifs.length === 0 && (
                 <p className="text-[13px] text-slate-400 bg-slate-50 rounded-xl p-3">{t('dashboard.allClear')}</p>
               )}
-              {pendingAdmissions.map(r => (
-                <AttnRow key={r.id} href="/reception/beds" tint="bg-[rgba(238,107,38,0.07)] text-[var(--color-accent)]" icon={BedDouble}
-                  title={t('dashboard.attnAdmissionTitle', { name: r.patientName })} sub={`${r.admissionType} · ${r.diagnosis}${r.triageLevel ? ` · ${r.triageLevel}` : ''}`} cta={t('dashboard.attnBeds')} />
-              ))}
               {highPriorityWaiting.map(p => (
                 <AttnRow key={p.id} href="/reception/opd" tint="bg-red-50 text-red-600" icon={AlertTriangle}
                   title={t('dashboard.attnHighPriorityTitle', { name: p.name, triage: p.triageLevel ?? '' })} sub={t('dashboard.attnTokenSymptom', { token: p.token, detail: p.symptoms[0] ?? p.department })} cta={t('dashboard.attnQueue')} />
@@ -230,7 +218,6 @@ export default function ReceptionDashboard() {
                 { label: t('dashboard.qaRegisterWalkIn'), icon: UserPlus, href: '/reception/opd', tint: 'from-[var(--color-primary)] to-[var(--color-primary-dark)]' },
                 { label: t('dashboard.qaNewAppointment'), icon: Calendar, href: '/reception/appointments', tint: 'from-[var(--color-primary)] to-[var(--color-primary-light)]' },
                 { label: t('dashboard.qaOpdDisplay'), icon: Volume2, href: '/reception/queue', tint: 'from-amber-500 to-primary' },
-                { label: t('dashboard.qaBedStatus'), icon: BedDouble, href: '/reception/beds', tint: 'from-[var(--color-primary)] to-[var(--color-primary-light)]' },
               ].map(a => (
                 <Link key={a.label} href={a.href} className="flex flex-col items-center gap-2 p-3 rounded-2xl bg-slate-50 hover:bg-slate-100 transition active:scale-[0.97]">
                   <span className={cn("h-10 w-10 rounded-2xl bg-gradient-to-br flex items-center justify-center", a.tint)}><a.icon className="h-5 w-5 text-white" /></span>

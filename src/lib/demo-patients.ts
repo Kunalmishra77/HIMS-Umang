@@ -67,8 +67,7 @@ const STATUS_PLAN: { status: QS; count: number }[] = [
   { status: 'waiting', count: 11 },
   { status: 'vitals', count: 8 },
   { status: 'consulting', count: 9 },
-  { status: 'pharmacy', count: 6 },
-  { status: 'billing', count: 5 },
+  { status: 'billing', count: 11 },
   { status: 'done', count: 11 },
 ]
 

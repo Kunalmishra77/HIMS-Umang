@@ -1,4 +1,4 @@
-/* Agentix HIMS — Live OPD wait-time ETA (Track A · reduce waiting anxiety)
+/* Umang Hospital — Live OPD wait-time ETA (Track A · reduce waiting anxiety)
  *
  * Turns the static per-patient `estimatedWait` into a position-aware ETA that
  * updates as the queue advances: a patient's wait = (patients ahead of them in

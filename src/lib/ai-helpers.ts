@@ -13,7 +13,7 @@ export function wrapAiResponse<T>(
   data: T,
   confidence: number,
   reasoning: string,
-  modelVersion = 'agentix-ai-v1'
+  modelVersion = 'umang-ai-v1'
 ): AiEnvelope<T> {
   const confidenceTier = getConfidenceTier(confidence)
   return {

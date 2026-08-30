@@ -1,4 +1,4 @@
-/* Agentix HIMS — M2 design tokens.
+/* Umang Hospital — M2 design tokens.
  *
  * Single source of truth for the COMPACTED design system. Imported by the new
  * compact primitives (CompactHeader, CompactKPI, DenseRow, CommandPalette).

@@ -55,7 +55,7 @@ export default function DoctorOrdersPage() {
     // Lab + Pharmacy each get a queue-trigger notification.
     if (testCount > 0) {
       notifyAndAudit({
-        to: 'lab', type: 'system', priority: 'medium',
+        to: 'admin', type: 'system', priority: 'medium',
         title: `New test order paid · Kiran Patil`,
         body: `${testCount} test${testCount === 1 ? '' : 's'} paid by patient. Specimen collection ready.`,
         patientName: 'Kiran Patil',
@@ -64,7 +64,7 @@ export default function DoctorOrdersPage() {
     }
     if (medCount > 0) {
       notifyAndAudit({
-        to: 'pharmacy', type: 'system', priority: 'medium',
+        to: 'admin', type: 'system', priority: 'medium',
         title: `New Rx paid · Kiran Patil`,
         body: `${medCount} medicine${medCount === 1 ? '' : 's'} paid by patient. Begin dispense workflow.`,
         patientName: 'Kiran Patil',

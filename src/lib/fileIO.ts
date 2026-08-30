@@ -51,7 +51,7 @@ export function downloadText(filename: string, text: string, mime = 'text/plain'
   downloadAs(filename, new Blob([text], { type: mime }))
 }
 
-/** Builds a branded, print-optimised HTML document for Agentix HIMS and opens the print dialog. */
+/** Builds a branded, print-optimised HTML document for Umang Hospital and opens the print dialog. */
 export function printableHtml(title: string, bodyHtml: string): void {
   if (typeof window === 'undefined') return
   const w = window.open('', title, 'width=780,height=980')
@@ -130,7 +130,7 @@ export function printableHtml(title: string, bodyHtml: string): void {
 <div class="page">
   <div class="doc-hdr">
     <div class="brand">
-      <div class="brand-name">Agentix HIMS <em>HIMS</em></div>
+      <div class="brand-name">Umang Hospital <em>HIMS</em></div>
       <div class="brand-sub">AI-First Hospital Information &amp; Management System</div>
     </div>
     <div class="doc-meta">
@@ -142,7 +142,7 @@ export function printableHtml(title: string, bodyHtml: string): void {
   <div class="doc-body">
     ${bodyHtml}
     <div class="doc-ftr">
-      <div class="doc-ftr-left">System-generated · ${tsStr}<br>Agentix HIMS · Confidential — for authorised use only</div>
+      <div class="doc-ftr-left">System-generated · ${tsStr}<br>Umang Hospital · Confidential — for authorised use only</div>
       <div class="doc-ftr-badge">&#10003; Verified Document</div>
     </div>
   </div>

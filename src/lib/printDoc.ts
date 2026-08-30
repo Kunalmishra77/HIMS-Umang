@@ -50,7 +50,7 @@ export function buildDocHtml(doc: PrintDoc): string {
 <body><div class="page">
   <div class="doc-hdr">
     <div>
-      <div class="brand-name">Agentix HIMS <em>HIMS</em></div>
+      <div class="brand-name">Umang Hospital <em>HIMS</em></div>
       <div class="brand-sub">AI-First Hospital Information &amp; Management System</div>
     </div>
     <div style="text-align:right"><div class="doc-kind">${esc(doc.kind)}</div><div class="doc-date">${esc(date)}</div></div>
@@ -63,7 +63,7 @@ export function buildDocHtml(doc: PrintDoc): string {
     </div>
     <div class="body">${doc.bodyHtml}</div>
     <div class="sign"><div class="line">${esc(doc.signature)}</div><div class="name">${esc(doc.signature)}</div></div>
-    <div class="foot"><span>Digitally generated · ${new Date().toLocaleString('en-IN')}<br>Verify clinically before clinical action.</span><span class="foot-badge">&#10003; Agentix HIMS</span></div>
+    <div class="foot"><span>Digitally generated · ${new Date().toLocaleString('en-IN')}<br>Verify clinically before clinical action.</span><span class="foot-badge">&#10003; Umang Hospital</span></div>
   </div>
 </div></body></html>`
 }

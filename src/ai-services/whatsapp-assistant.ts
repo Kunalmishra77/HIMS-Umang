@@ -75,7 +75,7 @@ function buildResponse(intent: IntentType, lang: 'en' | 'hi', entities: WhatsApp
       hi: 'मैं समझता हूं कि यह जरूरी है। मैं आपको तुरंत हमारी रिसेप्शन टीम से जोड़ रहा हूं। कृपया प्रतीक्षा करें।',
     },
     GENERAL_QUERY: {
-      en: 'Thank you for reaching Agentix HIMS. How can I assist you today?',
+      en: 'Thank you for reaching Umang Hospital. How can I assist you today?',
       hi: 'कैलाश हेल्थकेयर से संपर्क करने के लिए धन्यवाद। आज मैं आपकी कैसे मदद कर सकता हूं?',
     },
   }

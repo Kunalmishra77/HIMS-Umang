@@ -81,7 +81,7 @@ Version: ABDM-V2.1.0-Crypto
 Algorithm: ECDH-AES256-GCM-SHA256
 Payload-Hash: 4a2d3b8f109c3e4f7a8b9c0d1e2f3a4b
 Sender-HIP: HIP-LUCKNOW-DIAGNOSTICS-01
-Receiver-HIU: HIU-AGENTIX-HIMS-01
+Receiver-HIU: HIU-UMANG-HIMS-01
 
 MIIEwTADAgECAgEBMA0GCSqGSIb3DQEBCwUAMGExCzAJBgNVBAYTAklOMQswCQYD
 VQQIDAJVUDEQMA4GA1UEBwwHTHVja25vdzElMCMGA1UECgwcUGVvcGxl4oCZcyBV
@@ -133,7 +133,7 @@ export default function AbhaSandboxPage() {
   const [consentRequests, setConsentRequests] = useState<MockConsentRequest[]>([
     {
       id: "REQ-2026-004",
-      hiuName: "Agentix HIMS",
+      hiuName: "Umang Hospital",
       patientAddress: "ramesh.kumar@abdm",
       dataTypes: ["DiagnosticReport", "MedicationRequest"],
       purpose: "Care Management",
@@ -294,7 +294,7 @@ export default function AbhaSandboxPage() {
     const newId = `REQ-2026-00${consentRequests.length + 5}`
     const newRequest: MockConsentRequest = {
       id: newId,
-      hiuName: "Agentix HIMS",
+      hiuName: "Umang Hospital",
       patientAddress: targetAbhaAddress.trim().toLowerCase(),
       dataTypes: reqDataTypes,
       purpose: reqPurpose,

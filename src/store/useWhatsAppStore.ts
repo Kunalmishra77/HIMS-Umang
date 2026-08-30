@@ -131,7 +131,7 @@ const DEMO_THREADS: WhatsAppThread[] = [
       {
         id: 'msg-8',
         from: 'human_agent',
-        text: 'Hello, this is Agentix HIMS reception. Please tell us your child\'s symptoms and we will guide you immediately.',
+        text: 'Hello, this is Umang Hospital reception. Please tell us your child\'s symptoms and we will guide you immediately.',
         timestamp: new Date(Date.now() - 60 * 60000).toISOString(),
       },
     ],

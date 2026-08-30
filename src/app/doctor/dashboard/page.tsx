@@ -2,7 +2,6 @@
 import { Select } from "@/components/ui/Select"
 import { useState, useEffect, useRef } from "react"
 import { SideDrawer } from "@/components/ui/SideDrawer"
-import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
 import {
   Activity, CheckCircle2, Stethoscope, Mic, MicOff, Pill, Plus, X, Search,
@@ -358,7 +357,7 @@ export default function DoctorDashboard() {
   // stranded before consultation just because of a name-string mismatch.
   const mine     = patients.filter(p => belongsToDoctorQueue(p.doctor, currentUser?.name, activeDoctorNames))
   const queue    = mine.filter(p => ["waiting","vitals","consulting"].includes(p.queueStatus))
-  const seen     = mine.filter(p => ["pharmacy","billing","done"].includes(p.queueStatus)).length
+  const seen     = mine.filter(p => ["billing","done"].includes(p.queueStatus)).length
   const filtered = DRUGS.filter(d => d.toLowerCase().includes(medSearch.toLowerCase()) && medSearch.length > 0)
 
   // Open a patient → mark them in consultation (handoff signal to reception/queue).
@@ -497,9 +496,8 @@ export default function DoctorDashboard() {
       updateStatus(currentPatient.id, 'done')
       toast.success(`Consultation complete — ${currentPatient.name} → Admission requested (${admissionOrder.admissionType})`)
     } else {
-      const next = (isPharmacySent || prescriptions.length > 0) ? 'pharmacy' : 'billing'
-      updateStatus(currentPatient.id, next)
-      toast.success(`Consultation complete — ${currentPatient.name} → ${next === 'pharmacy' ? 'Pharmacy' : 'Billing'}`)
+      updateStatus(currentPatient.id, 'billing')
+      toast.success(`Consultation complete — ${currentPatient.name} → Billing`)
     }
     setActiveDrawer(null)
     resetConsultation()
@@ -1291,9 +1289,6 @@ export default function DoctorDashboard() {
                   )
                 })}
               </div>
-              <Link href="/doctor/beds" className="flex items-center gap-1 text-xs font-semibold text-accent hover:text-primary-dark transition-colors">
-                View full board <ArrowRight className="h-3 w-3" aria-hidden="true" />
-              </Link>
             </div>
           </div>
         </div>
@@ -1573,11 +1568,8 @@ export default function DoctorDashboard() {
             <div className={cn("flex items-center justify-between rounded-xl px-3.5 py-2.5", wardFree > 0 ? "bg-success-bg" : "bg-warning-bg")}>
               <span className={cn("text-[13px] font-semibold flex items-center gap-1.5", wardFree > 0 ? "text-success" : "text-brand-amber-strong")}>
                 <Bed className="h-4 w-4" aria-hidden="true" />
-                {wardFree > 0 ? `${wardFree} of ${wardTotal} ${admType} bed${wardFree !== 1 ? 's' : ''} free at this branch` : `No ${admType} beds free at this branch`}
+                {wardFree > 0 ? `${wardFree} of ${wardTotal} ${admType} bed${wardFree !== 1 ? 's' : ''} free` : `No ${admType} beds free`}
               </span>
-              <Link href="/doctor/beds" className="text-xs font-bold text-accent hover:text-primary-dark flex items-center gap-1 flex-shrink-0">
-                {wardFree > 0 ? 'View beds' : 'Other branches'} <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
-              </Link>
             </div>
             <div>
               <label htmlFor="adm-reason" className="block t-overline text-foreground-lighter mb-1.5">Reason for Admission</label>

@@ -28,8 +28,6 @@
     "stageVitalsSub": "With nurse",
     "stageConsulting": "Consulting",
     "stageConsultingSub": "With doctor",
-    "stagePharmacy": "Pharmacy",
-    "stagePharmacySub": "Collecting Rx",
     "stageBilling": "Billing",
     "stageBillingSub": "Settling fees",
     "stageDone": "Done",
@@ -81,7 +79,7 @@
   },
   "register": {
     "title": "Register Patient",
-    "subtitle": "ABHA-first registration — Aadhaar verified, no consultation fee for this government workflow.",
+    "subtitle": "ABHA-first registration — Aadhaar verified, quick and secure.",
     "progressLabel": "Registration progress",
     "macroIdentity": "Identity",
     "macroAbha": "ABHA",
@@ -248,7 +246,6 @@
   "opd": {
     "nextSendToVitals": "Send to Vitals",
     "nextSendToDoctor": "Send to Doctor",
-    "nextSendToPharmacy": "Send to Pharmacy",
     "nextSendToBilling": "Send to Billing",
     "nextMarkDone": "Mark Done",
     "statusWaiting": "Waiting",
@@ -256,7 +253,6 @@
     "statusReadyForVitals": "Ready for Vitals",
     "statusInVitals": "In Vitals",
     "statusConsulting": "Consulting",
-    "statusPharmacy": "Pharmacy",
     "statusBilling": "Billing",
     "statusCompleted": "Completed",
     "sourceWalkIn": "Walk-in",
@@ -381,12 +377,10 @@
     "statusWaiting": "Waiting",
     "statusVitals": "Vitals",
     "statusConsulting": "Consulting",
-    "statusPharmacy": "Pharmacy",
     "statusBilling": "Billing",
     "statusCompleted": "Completed",
     "nextSendToVitals": "Send to Vitals",
     "nextSendToDoctor": "Send to Doctor",
-    "nextSendToPharmacy": "Send to Pharmacy",
     "nextSendToBilling": "Send to Billing",
     "nextMarkDone": "Mark Done",
     "tabToday": "Today",
@@ -571,7 +565,7 @@
     "slipDocument": "Document",
     "slipType": "Type",
     "slipDate": "Date",
-    "slipSystemGenerated": "System-generated document — Agentix HIMS."
+    "slipSystemGenerated": "System-generated document — Umang Hospital."
   },
   "journey": {
     "stageRegistered": "Registered",

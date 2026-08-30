@@ -4,16 +4,15 @@ import { usePathname, useRouter } from "next/navigation"
 import Link from "next/link"
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion"
 import {
-  Activity, BarChart3, Bell, Calendar, ClipboardList, ClipboardCheck,
+  Activity, BarChart3, Bell, Calendar, ClipboardList,
   FileText, Home, LogOut, Settings, Users, Stethoscope,
-  LayoutDashboard, Receipt, UserCog, Workflow, Bot,
-  FlaskConical, Pill, Search, PanelLeftClose, PanelLeft,
-  Package, CheckCircle, ShieldCheck, Microscope, ScanLine, Ambulance, X,
-  BedDouble, Scissors, CreditCard, Trash2, HeartPulse,
-  Droplets, Utensils, Truck, Heart, BookOpen, AlertTriangle, ShieldAlert,
-  Sparkles, ChevronRight, MessageSquare, MessageSquarePlus, Video, Siren, Menu, ShoppingCart, Send,
-  List, Star, Building2, ArrowLeftRight, MapPin, Baby, Bug,
-  Droplet, Cpu, SlidersHorizontal, RefreshCw, UserPlus, Gauge,
+  LayoutDashboard, Receipt, UserCog,
+  Search, PanelLeftClose, PanelLeft,
+  Package, ScanLine, X,
+  CreditCard, HeartPulse,
+  Heart, AlertTriangle,
+  Sparkles, ChevronRight, MessageSquare, MessageSquarePlus, Menu,
+  UserPlus,
 } from "lucide-react"
 import { useAuthStore, type Role } from "@/store/useAuthStore"
 import { usePatientStore } from "@/store/usePatientStore"
@@ -39,20 +38,9 @@ const PATIENT_SECTIONS: { header: string; items: NavItem[] }[] = [
     { href: '/patient/consultations', label: 'item.patient_consultations', icon: Calendar },
     { href: '/patient/orders',        label: 'item.patient_orders',        icon: ClipboardList },
   ] },
-  { header: 'section.hospital_services', items: [
-    { href: '/patient/emergency',  label: 'item.patient_emergency',   icon: Siren },
-    { href: '/patient/ipd',        label: 'item.patient_ipd',         icon: BedDouble },
-    { href: '/patient/discharge',  label: 'item.patient_discharge',   icon: CheckCircle },
-    { href: '/patient/pharmacy',   label: 'item.patient_pharmacy',    icon: Pill },
-    { href: '/patient/pathology',  label: 'item.patient_pathology',   icon: FlaskConical },
-    { href: '/patient/radiology',  label: 'item.patient_radiology',   icon: ScanLine },
-    { href: '/patient/blood-bank', label: 'item.patient_blood_bank',  icon: Droplets },
-    { href: '/patient/ambulance',  label: 'item.patient_ambulance',   icon: Truck },
-  ] },
   { header: 'section.records_billing', items: [
     { href: '/patient/downloads', label: 'item.patient_downloads', icon: FileText },
     { href: '/patient/billing',   label: 'item.patient_billing',   icon: Receipt },
-    { href: '/patient/insurance', label: 'item.patient_insurance', icon: ShieldCheck },
   ] },
   { header: 'section.experience', items: [
     { href: '/patient/feedback', label: 'item.patient_feedback', icon: MessageSquarePlus },
@@ -75,14 +63,9 @@ const RECEPTION_SECTIONS: { header: string; items: NavItem[] }[] = [
     { href: '/reception/queue',        label: 'item.reception_queue',        icon: Activity },
     { href: '/reception/appointments', label: 'item.reception_appointments', icon: Calendar },
     { href: '/reception/patients',     label: 'item.reception_patients',     icon: Users },
-    { href: '/reception/referrals',    label: 'item.reception_referrals',    icon: Send },
   ] },
   { header: 'section.coordination', items: [
-    { href: '/reception/beds',        label: 'item.reception_beds',        icon: BedDouble },
     { href: '/reception/billing',     label: 'item.reception_billing',     icon: CreditCard },
-    { href: '/reception/tpa',         label: 'item.reception_tpa',         icon: ShieldCheck },
-    { href: '/reception/diagnostics', label: 'item.reception_diagnostics', icon: FlaskConical },
-    { href: '/reception/ambulance',   label: 'item.reception_ambulance',   icon: Truck },
   ] },
   { header: 'section.utilities', items: [
     { href: '/reception/messages',  label: 'item.reception_messages',  icon: MessageSquare },
@@ -96,9 +79,6 @@ const RECEPTION_SECTIONS: { header: string; items: NavItem[] }[] = [
 const DOCTOR_SECTIONS: { header: string; items: NavItem[] }[] = [
   { header: 'section.clinical', items: [
     { href: '/doctor/dashboard',   label: 'item.doctor_dashboard',   icon: Stethoscope },
-    { href: '/doctor/online',      label: 'item.doctor_online',      icon: Video },
-    { href: '/doctor/ipd',         label: 'item.doctor_ipd',         icon: HeartPulse },
-    { href: '/doctor/emergencies', label: 'item.doctor_emergencies', icon: Siren },
   ] },
   { header: 'patients', items: [
     { href: '/doctor/records',     label: 'item.doctor_records',      icon: ClipboardList },
@@ -110,147 +90,6 @@ const DOCTOR_SECTIONS: { header: string; items: NavItem[] }[] = [
   ] },
   { header: 'section.insights', items: [
     { href: '/doctor/analytics',   label: 'item.doctor_analytics',  icon: BarChart3 },
-    { href: '/doctor/beds',        label: 'item.doctor_beds',       icon: BedDouble },
-    { href: '/doctor/registries',  label: 'item.doctor_registries', icon: Users },
-  ] },
-]
-
-const PHARMACY_SECTIONS: { header: string; items: NavItem[] }[] = [
-  { header: 'section.fulfilment', items: [
-    { href: '/pharmacy/dashboard', label: 'item.pharmacy_dashboard', icon: LayoutDashboard },
-    { href: '/pharmacy/queue',     label: 'item.pharmacy_queue',     icon: ClipboardList },
-  ] },
-  { header: 'section.stock_compliance', items: [
-    { href: '/pharmacy/inventory', label: 'item.pharmacy_inventory', icon: Package },
-    { href: '/pharmacy/master',    label: 'item.pharmacy_master',    icon: BookOpen },
-    { href: '/pharmacy/narcotics', label: 'item.pharmacy_narcotics', icon: AlertTriangle },
-  ] },
-  { header: 'section.utilities', items: [
-    { href: '/pharmacy/messages',  label: 'item.pharmacy_messages',  icon: MessageSquare },
-  ] },
-]
-
-// Enterprise RIS — grouped sidebar (Command / Workflow / Reports).
-const RADIOLOGY_SECTIONS: { header: string; items: NavItem[] }[] = [
-  { header: 'section.command', items: [
-    { href: '/radiology/dashboard',   label: 'item.radiology_dashboard',   icon: LayoutDashboard },
-    { href: '/radiology/ai-command',  label: 'item.radiology_ai_command',  icon: Sparkles },
-    { href: '/radiology/critical',    label: 'item.radiology_critical',    icon: Siren },
-    { href: '/radiology/analytics',   label: 'item.radiology_analytics',   icon: BarChart3 },
-  ] },
-  { header: 'section.workflow', items: [
-    { href: '/radiology/in-queue',    label: 'item.radiology_in_queue',     icon: ClipboardList },
-    { href: '/radiology/orders',      label: 'item.radiology_orders',       icon: ClipboardCheck },
-    { href: '/radiology/schedule',    label: 'item.radiology_schedule',     icon: Activity },
-    { href: '/radiology/arrival',     label: 'item.radiology_arrival',      icon: ScanLine },
-    { href: '/radiology/inbox',       label: 'item.radiology_inbox',        icon: ClipboardList },
-    { href: '/radiology/bench',       label: 'item.radiology_bench',        icon: ScanLine },
-    { href: '/radiology/reading',     label: 'item.radiology_reading',      icon: FileText },
-    { href: '/radiology/verification',label: 'item.radiology_verification', icon: ShieldCheck },
-  ] },
-  { header: 'section.reports', items: [
-    { href: '/radiology/reports',     label: 'item.radiology_reports',      icon: FileText },
-    { href: '/radiology/viewer',      label: 'item.radiology_viewer',       icon: Microscope },
-    { href: '/radiology/templates',   label: 'item.radiology_templates',    icon: BookOpen },
-    { href: '/radiology/distribution',label: 'item.radiology_distribution', icon: Send },
-  ] },
-]
-
-const CMO_SECTIONS: { header: string; items: NavItem[] }[] = [
-  { header: 'section.daily', items: [
-    { href: '/cmo',           label: 'item.cmo_home',      icon: Home },
-    { href: '/cmo/alerts',    label: 'item.cmo_alerts',    icon: AlertTriangle },
-    { href: '/cmo/approvals', label: 'item.cmo_approvals', icon: ClipboardCheck },
-  ] },
-  { header: 'section.operations', items: [
-    { href: '/cmo/facilities', label: 'item.cmo_facilities', icon: Building2 },
-    { href: '/cmo/beds',       label: 'item.cmo_beds',       icon: BedDouble },
-    { href: '/cmo/ambulance',  label: 'item.cmo_ambulance',  icon: Ambulance },
-    { href: '/cmo/emergency',  label: 'item.cmo_emergency',  icon: Siren },
-  ] },
-  { header: 'section.workforce', items: [
-    { href: '/cmo/staff',    label: 'item.cmo_staff',    icon: Users },
-    { href: '/cmo/postings', label: 'item.cmo_postings', icon: ArrowLeftRight },
-  ] },
-  { header: 'section.public_health', items: [
-    { href: '/cmo/surveillance',     label: 'item.cmo_surveillance',     icon: Activity },
-    { href: '/cmo/mch',              label: 'item.cmo_mch',              icon: HeartPulse },
-    { href: '/cmo/disease-programs', label: 'item.cmo_disease_programs', icon: Stethoscope },
-  ] },
-  { header: 'section.schemes_supply', items: [
-    { href: '/cmo/schemes',   label: 'item.cmo_schemes',   icon: ShieldCheck },
-    { href: '/cmo/supply',    label: 'item.cmo_supply',    icon: Pill },
-    { href: '/cmo/equipment', label: 'item.cmo_equipment', icon: Settings },
-  ] },
-  { header: 'section.quality', items: [
-    { href: '/cmo/quality',    label: 'item.cmo_quality',    icon: Star },
-    { href: '/cmo/grievances', label: 'item.cmo_grievances', icon: MessageSquare },
-  ] },
-  { header: 'section.field_reports', items: [
-    { href: '/cmo/field-visits', label: 'item.cmo_field_visits', icon: MapPin },
-    { href: '/cmo/reports',      label: 'item.cmo_reports',      icon: FileText },
-  ] },
-  { header: 'section.comms_ai', items: [
-    { href: '/cmo/communication', label: 'item.cmo_communication', icon: MessageSquarePlus },
-    { href: '/cmo/ai-assistants', label: 'item.cmo_ai_assistants', icon: Sparkles },
-  ] },
-  { header: 'section.admin', items: [
-    { href: '/cmo/settings',  label: 'item.cmo_settings',  icon: Settings },
-    { href: '/cmo/audit-log', label: 'item.cmo_audit_log', icon: ClipboardList },
-    { href: '/cmo/profile',   label: 'item.cmo_profile',   icon: UserCog },
-  ] },
-]
-
-const SECRETARY_SECTIONS: { header: string; items: NavItem[] }[] = [
-  { header: 'section.daily', items: [
-    { href: '/secretary',           label: 'item.secretary_home',      icon: Home },
-    { href: '/secretary/alerts',    label: 'item.secretary_alerts',    icon: AlertTriangle },
-    { href: '/secretary/approvals', label: 'item.secretary_approvals', icon: ClipboardCheck },
-  ] },
-  { header: 'section.state_command', items: [
-    { href: '/secretary/ranking',      label: 'item.secretary_ranking',      icon: BarChart3 },
-    { href: '/secretary/mobilization', label: 'item.secretary_mobilization', icon: ArrowLeftRight },
-    { href: '/secretary/beds',         label: 'item.secretary_beds',         icon: BedDouble },
-    { href: '/secretary/emergency',    label: 'item.secretary_emergency',    icon: Siren },
-  ] },
-  { header: 'section.network', items: [
-    { href: '/secretary/districts', label: 'item.secretary_districts', icon: Building2 },
-    { href: '/secretary/dme',       label: 'item.secretary_dme',       icon: Stethoscope },
-    { href: '/secretary/ayush',     label: 'item.secretary_ayush',     icon: HeartPulse },
-  ] },
-  { header: 'section.public_health', items: [
-    { href: '/secretary/surveillance',     label: 'item.secretary_surveillance',     icon: Activity },
-    { href: '/secretary/mch',              label: 'item.secretary_mch',              icon: Baby },
-    { href: '/secretary/disease-programs', label: 'item.secretary_disease_programs', icon: Bug },
-  ] },
-  { header: 'section.schemes_funds', items: [
-    { href: '/secretary/schemes', label: 'item.secretary_schemes', icon: ShieldCheck },
-    { href: '/secretary/fraud',   label: 'item.secretary_fraud',   icon: ShieldAlert },
-  ] },
-  { header: 'section.workforce_supply', items: [
-    { href: '/secretary/workforce', label: 'item.secretary_workforce', icon: Users },
-    { href: '/secretary/supply',    label: 'item.secretary_supply',    icon: Pill },
-  ] },
-  { header: 'section.quality_compliance', items: [
-    { href: '/secretary/quality',   label: 'item.secretary_quality',   icon: Star },
-    { href: '/secretary/cag-audit', label: 'item.secretary_cag_audit', icon: FileText },
-  ] },
-  { header: 'section.reports', items: [
-    { href: '/secretary/reports',   label: 'item.secretary_reports',   icon: ClipboardList },
-    { href: '/secretary/niti-abdm', label: 'item.secretary_niti_abdm', icon: BarChart3 },
-  ] },
-  { header: 'section.policy_centre', items: [
-    { href: '/secretary/cabinet',       label: 'item.secretary_cabinet', icon: BookOpen },
-    { href: '/secretary/centre',        label: 'item.secretary_centre',  icon: Building2 },
-  ] },
-  { header: 'section.comms_ai', items: [
-    { href: '/secretary/communication', label: 'item.secretary_communication', icon: MessageSquarePlus },
-    { href: '/secretary/ai-assistants', label: 'item.secretary_ai_assistants', icon: Sparkles },
-  ] },
-  { header: 'section.admin', items: [
-    { href: '/secretary/settings',  label: 'item.secretary_settings',  icon: Settings },
-    { href: '/secretary/audit-log', label: 'item.secretary_audit_log', icon: ClipboardList },
-    { href: '/secretary/profile',   label: 'item.secretary_profile',   icon: UserCog },
   ] },
 ]
 
@@ -258,183 +97,33 @@ const navByRole: Record<Role, NavItem[]> = {
   patient: PATIENT_SECTIONS.flatMap(s => s.items),
   doctor: DOCTOR_SECTIONS.flatMap(s => s.items),
   reception: RECEPTION_SECTIONS.flatMap(s => s.items),
-  pharmacy: PHARMACY_SECTIONS.flatMap(s => s.items),
-  admin: [
-    { href: '/admin/assistant',       label: 'item.admin_assistant',       icon: Sparkles },
-    { href: '/admin/command-center',  label: 'item.admin_command_center',  icon: Activity },
-    { href: '/admin/dashboard',       label: 'item.admin_dashboard',       icon: LayoutDashboard },
-    { href: '/admin/coo',             label: 'item.admin_coo',             icon: Gauge },
-    { href: '/admin/users',           label: 'item.admin_users',           icon: UserCog },
-    { href: '/admin/credentials',     label: 'item.admin_credentials',     icon: ShieldCheck },
-    { href: '/admin/operations',      label: 'item.admin_operations',      icon: Workflow },
-    { href: '/admin/analytics',       label: 'item.admin_analytics',       icon: BarChart3 },
-    { href: '/admin/roster',          label: 'item.admin_roster',          icon: Calendar },
-    { href: '/admin/duty',            label: 'item.admin_duty',            icon: ClipboardList },
-    { href: '/admin/hours',           label: 'item.admin_hours',           icon: Activity },
-    { href: '/admin/on-call',         label: 'item.admin_on_call',         icon: Bell },
-    { href: '/admin/coverage',        label: 'item.admin_coverage',        icon: ShieldCheck },
-    { href: '/admin/staffing',        label: 'item.admin_staffing',        icon: Users },
-    { href: '/admin/doctor-activity', label: 'item.admin_doctor_activity', icon: Stethoscope },
-    { href: '/admin/finance',         label: 'item.admin_finance',         icon: CreditCard },
-    { href: '/admin/payroll',         label: 'item.admin_payroll',         icon: Receipt },
-    { href: '/admin/vendors',         label: 'item.admin_vendors',         icon: Truck },
-    { href: '/admin/disputes',        label: 'item.admin_disputes',        icon: ShieldAlert },
-    { href: '/admin/compliance',      label: 'item.admin_compliance',      icon: ShieldCheck },
-    { href: '/admin/statutory',       label: 'item.admin_statutory',       icon: Calendar },
-    { href: '/admin/disha',           label: 'item.admin_disha',           icon: ShieldCheck },
-    { href: '/quality/dashboard',     label: 'item.admin_quality',         icon: ShieldCheck },
-    { href: '/quality/nabh',          label: 'item.admin_nabh',            icon: ShieldCheck },
-    { href: '/admin/ai-performance',  label: 'item.admin_ai_performance',  icon: Sparkles },
-  ],
-  hr: [
-    { href: '/hr/dashboard',     label: 'item.hr_dashboard',   icon: LayoutDashboard },
-    { href: '/hr/employees',     label: 'item.hr_employees',   icon: Users },
-    { href: '/hr/leave',         label: 'item.hr_leave',       icon: Calendar },
-    { href: '/hr/attendance',    label: 'item.hr_attendance',  icon: Activity },
-    { href: '/hr/recruitment',   label: 'item.hr_recruitment', icon: Workflow },
-    { href: '/hr/onboarding',    label: 'item.hr_onboarding',  icon: ClipboardCheck },
-    { href: '/hr/appraisals',    label: 'item.hr_appraisals',  icon: BarChart3 },
-  ],
   nurse: [
     { href: '/nurse/dashboard',       label: 'item.nurse_dashboard',       icon: LayoutDashboard },
     { href: '/nurse/vitals-requests', label: 'item.nurse_vitals_requests', icon: HeartPulse },
-    { href: '/nurse/orders',          label: 'item.nurse_orders',          icon: ClipboardCheck },
     { href: '/nurse/patients',        label: 'item.nurse_patients',        icon: Users },
-    { href: '/nurse/rounds',     label: 'item.nurse_rounds',        icon: Stethoscope },
-    { href: '/nurse/tasks',      label: 'item.nurse_tasks',         icon: ClipboardList },
-    { href: '/nurse/medication', label: 'item.nurse_medication',    icon: Pill },
-    { href: '/nurse/fluid-balance', label: 'item.nurse_fluid_balance', icon: Droplets },
-    { href: '/nurse/handover',   label: 'item.nurse_handover',      icon: FileText },
-    { href: '/nurse/ai-assistant', label: 'item.nurse_ai_assistant', icon: Sparkles },
-    { href: '/nurse/messages',   label: 'item.nurse_messages',      icon: MessageSquare },
-  ],
-  emergency: [
-    { href: '/emergency/triage',    label: 'item.emergency_triage',    icon: Ambulance },
-    { href: '/emergency/floor',     label: 'item.emergency_floor',     icon: Activity },
-    { href: '/emergency/dashboard', label: 'item.emergency_dashboard', icon: LayoutDashboard },
-  ],
-  lab: [
-    { href: '/lab/dashboard',       label: 'item.lab_dashboard',      icon: LayoutDashboard },
-    { href: '/lab/in-queue',        label: 'item.lab_in_queue',       icon: ClipboardList },
-    { href: '/lab/phlebotomy',      label: 'item.lab_phlebotomy',     icon: Droplet },
-    { href: '/lab/inbox',           label: 'item.lab_inbox',          icon: ClipboardList },
-    { href: '/lab/analyzer-feed',   label: 'item.lab_analyzer_feed',  icon: Cpu },
-    { href: '/lab/verify',          label: 'item.lab_verify',         icon: ClipboardCheck },
-    { href: '/lab/benches',         label: 'item.lab_benches',        icon: Microscope },
-    { href: '/lab/microbiology',    label: 'item.lab_microbiology',   icon: Bug },
-    { href: '/lab/qc',              label: 'item.lab_qc',             icon: SlidersHorizontal },
-    { href: '/lab/reflex',          label: 'item.lab_reflex',         icon: RefreshCw },
-    { href: '/lab/reports',         label: 'item.lab_reports',        icon: FileText },
-  ],
-  radiology: RADIOLOGY_SECTIONS.flatMap(s => s.items),
-  insurance: [
-    { href: '/insurance/dashboard', label: 'item.insurance_dashboard', icon: LayoutDashboard },
-    { href: '/insurance/pipeline',  label: 'item.insurance_pipeline',  icon: Workflow },
-    { href: '/insurance/claims',    label: 'item.insurance_claims',    icon: FileText },
-    { href: '/insurance/preauth',   label: 'item.insurance_preauth',   icon: ShieldCheck },
-    { href: '/insurance/documents', label: 'item.insurance_documents', icon: Package },
-  ],
-  inventory: [
-    { href: '/inventory/dashboard', label: 'item.inventory_dashboard', icon: LayoutDashboard },
-    { href: '/inventory/stock',     label: 'item.inventory_stock',     icon: Package },
-    { href: '/inventory/requests',  label: 'item.inventory_requests',  icon: ShoppingCart },
-  ],
-  bed_manager: [
-    { href: '/admission/dashboard', label: 'item.bed_manager_dashboard', icon: BedDouble },
-    { href: '/admission/beds',      label: 'item.bed_manager_beds',      icon: LayoutDashboard },
-    { href: '/admission/forecast',  label: 'item.bed_manager_forecast',  icon: BarChart3 },
-  ],
-  discharge: [
-    { href: '/discharge/dashboard', label: 'item.discharge_dashboard', icon: CheckCircle },
+    { href: '/nurse/tasks',           label: 'item.nurse_tasks',           icon: ClipboardList },
+    { href: '/nurse/ai-assistant',    label: 'item.nurse_ai_assistant',    icon: Sparkles },
+    { href: '/nurse/messages',        label: 'item.nurse_messages',        icon: MessageSquare },
   ],
   billing: [
-    { href: '/billing/dashboard',   label: 'item.billing_dashboard', icon: CreditCard },
-    { href: '/billing/packages',    label: 'item.billing_packages',  icon: Package },
-    { href: '/billing/refunds',     label: 'item.billing_refunds',   icon: Receipt },
-    { href: '/billing/discounts',   label: 'item.billing_discounts', icon: Heart },
+    { href: '/billing/dashboard', label: 'item.billing_dashboard', icon: CreditCard },
+    { href: '/billing/packages',  label: 'item.billing_packages',  icon: Package },
+    { href: '/billing/refunds',   label: 'item.billing_refunds',   icon: Receipt },
+    { href: '/billing/discounts', label: 'item.billing_discounts', icon: Heart },
   ],
-  ot: [
-    { href: '/ot/dashboard',    label: 'item.ot_dashboard',  icon: Scissors },
-    { href: '/ot/schedule',     label: 'item.ot_schedule',   icon: Calendar },
-    { href: '/ot/checklist',    label: 'item.ot_checklist',  icon: ClipboardList },
-  ],
-  housekeeping: [
-    { href: '/housekeeping/dashboard', label: 'item.housekeeping_dashboard', icon: Trash2 },
-  ],
-  quality: [
-    { href: '/quality/dashboard',  label: 'item.quality_dashboard', icon: ShieldCheck },
-    { href: '/quality/incidents',  label: 'item.quality_incidents', icon: Activity },
-    { href: '/quality/nabh',       label: 'item.quality_nabh',      icon: ShieldCheck },
-  ],
-  feedback_analyst: [
-    { href: '/feedback/dashboard',   label: 'item.feedback_dashboard',   icon: Star },
-    { href: '/feedback/responses',   label: 'item.feedback_responses',   icon: List },
-    { href: '/feedback/ai-insights', label: 'item.feedback_ai_insights', icon: Sparkles },
-  ],
-  blood_bank: [
-    { href: '/bloodbank/dashboard',  label: 'item.bloodbank_dashboard', icon: Droplets },
-    { href: '/bloodbank/inventory',  label: 'item.bloodbank_inventory', icon: Package },
-    { href: '/bloodbank/requests',   label: 'item.bloodbank_requests',  icon: ClipboardList },
-    { href: '/bloodbank/donors',     label: 'item.bloodbank_donors',    icon: Heart },
-  ],
-  cssd: [
-    { href: '/cssd/dashboard',    label: 'item.cssd_dashboard',    icon: LayoutDashboard },
-    { href: '/cssd/cycles',       label: 'item.cssd_cycles',       icon: Activity },
-    { href: '/cssd/instruments',  label: 'item.cssd_instruments',  icon: Package },
-  ],
-  dietary: [
-    { href: '/dietary/dashboard', label: 'item.dietary_dashboard', icon: Utensils },
-    { href: '/dietary/plans',     label: 'item.dietary_plans',     icon: BookOpen },
-    { href: '/dietary/orders',    label: 'item.dietary_orders',    icon: ClipboardList },
-  ],
-  bmw: [
-    { href: '/bmw/dashboard', label: 'item.bmw_dashboard', icon: AlertTriangle },
-    { href: '/bmw/log',       label: 'item.bmw_log',       icon: FileText },
-    { href: '/bmw/reports',   label: 'item.bmw_reports',   icon: BarChart3 },
-  ],
-  mortuary: [
-    { href: '/mortuary/dashboard',   label: 'item.mortuary_dashboard',   icon: LayoutDashboard },
-    { href: '/mortuary/records',     label: 'item.mortuary_records',     icon: FileText },
-    { href: '/mortuary/clearances',  label: 'item.mortuary_clearances',  icon: CheckCircle },
-  ],
-  ambulance: [
-    { href: '/ambulance/dashboard', label: 'item.ambulance_dashboard', icon: Truck },
-    { href: '/ambulance/dispatch',  label: 'item.ambulance_dispatch',  icon: Activity },
-    { href: '/ambulance/log',       label: 'item.ambulance_log',       icon: FileText },
-  ],
-  audit_officer: [
-    { href: '/audit/dashboard', label: 'item.audit_dashboard', icon: ShieldCheck },
-    { href: '/audit/log',       label: 'item.audit_log',       icon: FileText },
-    { href: '/audit/reports',   label: 'item.audit_reports',   icon: BarChart3 },
-  ],
-  vendor_manager: [
-    { href: '/vendor-manager/dashboard',       label: 'item.vendor_manager_dashboard',        icon: LayoutDashboard },
-    { href: '/vendor-manager/vendors',          label: 'item.vendor_manager_vendors',         icon: Truck },
-    { href: '/vendor-manager/contracts',        label: 'item.vendor_manager_contracts',       icon: FileText },
-    { href: '/vendor-manager/purchase-orders',  label: 'item.vendor_manager_purchase_orders', icon: ShoppingCart },
-    { href: '/vendor-manager/payments',         label: 'item.vendor_manager_payments',        icon: CreditCard },
-    { href: '/vendor-manager/performance',      label: 'item.vendor_manager_performance',     icon: BarChart3 },
-    { href: '/vendor-manager/ai-insights',      label: 'item.vendor_manager_ai_insights',     icon: Sparkles },
-  ],
-  cmo:       CMO_SECTIONS.flatMap(s => s.items),
-  secretary: SECRETARY_SECTIONS.flatMap(s => s.items),
+  // `admin` ships no portal — see src/types/roles.ts.
+  admin: [],
 }
 
 // Single disciplined deep-blue identity shared by every portal (uniform per design
 // direction). Roles are distinguished by label + icon only — never by color.
 const ROLE_LABELS: Record<Role, string> = {
-  patient: 'role.patient',      doctor: 'role.doctor',       reception: 'role.reception',
-  admin: 'role.admin',          nurse: 'role.nurse',         emergency: 'role.emergency',
-  lab: 'role.lab',              radiology: 'role.radiology', insurance: 'role.insurance',
-  inventory: 'role.inventory',  pharmacy: 'role.pharmacy',   bed_manager: 'role.bed_manager',
-  discharge: 'role.discharge',  billing: 'role.billing',     ot: 'role.ot',
-  housekeeping: 'role.housekeeping', quality: 'role.quality', blood_bank: 'role.blood_bank',
-  cssd: 'role.cssd',            dietary: 'role.dietary',     bmw: 'role.bmw',
-  mortuary: 'role.mortuary',    ambulance: 'role.ambulance', audit_officer: 'role.audit_officer',
-  hr: 'role.hr',                vendor_manager: 'role.vendor_manager',
-  feedback_analyst: 'role.feedback_analyst',
-  cmo:       'role.cmo',
-  secretary: 'role.secretary',
+  patient:   'role.patient',
+  doctor:    'role.doctor',
+  reception: 'role.reception',
+  nurse:     'role.nurse',
+  billing:   'role.billing',
+  admin:     'role.admin',
 }
 
 // Roles whose sidebar is rendered as grouped sections (with headers) instead of a flat list.
@@ -442,10 +131,6 @@ const sectionsByRole: Partial<Record<Role, { header: string; items: NavItem[] }[
   patient: PATIENT_SECTIONS,
   reception: RECEPTION_SECTIONS,
   doctor: DOCTOR_SECTIONS,
-  pharmacy: PHARMACY_SECTIONS,
-  radiology: RADIOLOGY_SECTIONS,
-  cmo:       CMO_SECTIONS,
-  secretary: SECRETARY_SECTIONS,
 }
 
 export function AppShell({ children }: { children: React.ReactNode }) {
@@ -483,15 +168,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     if (n.link) return n.link
     const t = `${n.type} ${n.title} ${n.body}`.toLowerCase()
     if (activeRole === 'doctor') {
-      if (/discharge|round|ipd|inpatient|admit/.test(t)) return '/doctor/ipd'
       if (/radiolog|x-ray|ct |mri|scan|lab|result|critical|report/.test(t)) return '/doctor/inbox'
       if (/appointment|consult|opd/.test(t)) return '/doctor/dashboard'
     }
-    if (activeRole === 'discharge' && /discharge|clearance|exit/.test(t)) return '/discharge/dashboard'
-    if (activeRole === 'bed_manager' && /bed|admission|discharge/.test(t)) return '/admission/dashboard'
-    if (activeRole === 'radiology' && /radiolog|x-ray|scan|study|report/.test(t)) return '/radiology/inbox'
-    if (activeRole === 'lab' && /lab|result|sample|critical/.test(t)) return '/lab/inbox'
-    if (activeRole === 'pharmacy' && /pharmac|medicine|rx|prescription|dispense/.test(t)) return '/pharmacy/queue'
     return nav[0]?.href ?? null
   }
 
@@ -511,10 +190,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     return out.slice(0, 6)
   })() : []
 
-  const PATIENTS_ROUTE: Partial<Record<Role, string>> = { reception: '/reception/patients', nurse: '/nurse/patients', admin: '/admin/users' }
-  const gotoPatient = (m: { id: string; admitted: boolean }) => {
+  const PATIENTS_ROUTE: Partial<Record<Role, string>> = { reception: '/reception/patients', nurse: '/nurse/patients' }
+  const gotoPatient = () => {
     setQuery('')
-    if (activeRole === 'doctor') { router.push(m.admitted ? `/doctor/ipd/${m.id}` : '/doctor/records'); return }
+    if (activeRole === 'doctor') { router.push('/doctor/records'); return }
     const dest = PATIENTS_ROUTE[activeRole]; if (dest) router.push(dest)
   }
 
@@ -534,7 +213,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   const renderItem = (item: NavItem) => {
     // Exact match wins; prefix match only when no more-specific nav item also matches,
-    // preventing the root route (/secretary) from staying active on every sub-page.
+    // preventing a shared root route from staying active on every sub-page.
     const isActive =
       pathname === item.href ||
       (pathname.startsWith(item.href + '/') &&
@@ -584,7 +263,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         {/* Brand Header */}
         <div className="h-[68px] flex items-center px-4 flex-shrink-0 border-b border-border-light">
           <div className="flex items-center overflow-hidden whitespace-nowrap w-full pl-2">
-            <img src="/Agentix logo-health.svg" alt="Agentix HIMS" className={cn("w-auto object-contain", collapsed ? "h-8" : "h-10")} />
+            <img src="/Umang-logo.webp" alt="Umang Hospital" className={cn("w-auto object-contain", collapsed ? "h-8" : "h-10")} />
           </div>
         </div>
 
@@ -681,45 +360,31 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </div>
 
           <div className="flex items-center gap-2.5">
-            {/* Mobile search — below md the desktop bar is hidden. For admin this
-                routes to the AI assistant (the single admin search engine); for
-                everyone else it opens the universal command palette. */}
+            {/* Mobile search — below md the desktop bar is hidden. Opens the
+                universal command palette. */}
             <button
               type="button"
               onClick={() => {
-                if (activeRole === 'admin') { router.push('/admin/assistant'); return }
                 if (typeof window === "undefined") return
                 window.dispatchEvent(new KeyboardEvent("keydown", { key: "k", metaKey: true, ctrlKey: true, bubbles: true }))
               }}
-              aria-label={activeRole === 'admin' ? t('chrome.askAi') : t('chrome.search')}
+              aria-label={t('chrome.search')}
               className="md:hidden tap inline-flex items-center justify-center p-2 rounded-xl text-foreground-muted hover:bg-surface-sunken transition-colors cursor-pointer"
             >
-              {activeRole === 'admin' ? <Sparkles className="h-5 w-5" aria-hidden="true" /> : <Search className="h-5 w-5" aria-hidden="true" />}
+              <Search className="h-5 w-5" aria-hidden="true" />
             </button>
 
-            {/* M2 — Command palette trigger (Cmd/Ctrl+K). Hidden for admin, whose
-                single search surface is the AI assistant. */}
-            {activeRole !== 'admin' && <CommandPaletteTrigger className="hidden lg:inline-flex" />}
+            {/* M2 — Command palette trigger (Cmd/Ctrl+K). */}
+            <CommandPaletteTrigger className="hidden lg:inline-flex" />
 
-            {/* Admin — single AI search engine entry (replaces patient search) */}
-            {activeRole === 'admin' ? (
-              <button
-                type="button"
-                onClick={() => router.push('/admin/assistant')}
-                className="hidden md:inline-flex items-center gap-2 h-9 w-64 px-3 rounded-xl text-[13px] font-medium text-foreground-lighter bg-surface-sunken border border-border hover:border-primary hover:text-accent transition-colors cursor-pointer"
-              >
-                <Sparkles className="h-4 w-4 text-accent flex-shrink-0" aria-hidden="true" />
-                <span className="truncate">{t('chrome.askAiPlaceholder')}</span>
-              </button>
-            ) : (
-            /* Global Search */
+            {/* Global Search */}
             <div className="relative hidden md:block w-56">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-foreground-placeholder z-10" aria-hidden="true" />
               <input
                 type="search"
                 value={query}
                 onChange={e => setQuery(e.target.value)}
-                onKeyDown={e => { if (e.key === 'Enter' && searchResults[0]) gotoPatient(searchResults[0]); if (e.key === 'Escape') setQuery('') }}
+                onKeyDown={e => { if (e.key === 'Enter' && searchResults[0]) gotoPatient(); if (e.key === 'Escape') setQuery('') }}
                 onBlur={() => setTimeout(() => setQuery(''), 150)}
                 placeholder={activeRole === 'patient' ? t('chrome.searchRecordsPlaceholder') : t('chrome.searchPatientsPlaceholder')}
                 aria-label={t('chrome.search')}
@@ -728,7 +393,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               {searchResults.length > 0 && (
                 <div className="absolute left-0 right-0 top-11 w-72 bg-surface border border-border rounded-2xl z-50 overflow-hidden py-1.5 shadow-dropdown">
                   {searchResults.map(m => (
-                    <button key={m.id} onMouseDown={e => e.preventDefault()} onClick={() => gotoPatient(m)}
+                    <button key={m.id} onMouseDown={e => e.preventDefault()} onClick={() => gotoPatient()}
                       className="w-full text-left px-3.5 py-2 hover:bg-surface-sunken flex items-center justify-between gap-2 transition-colors">
                       <span className="min-w-0"><span className="block text-[13px] font-semibold text-foreground truncate">{m.name}</span><span className="block text-[11px] text-foreground-placeholder truncate">{m.sub}</span></span>
                       {m.admitted && <span className="text-[9.5px] font-bold px-1.5 py-0.5 rounded-full bg-danger-bg text-danger-strong flex-shrink-0">IPD</span>}
@@ -737,7 +402,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 </div>
               )}
             </div>
-            )}
 
             {/* Notifications */}
             <div className="relative">
@@ -800,7 +464,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
             <LocaleToggle />
 
-            <Link href={activeRole === 'patient' ? '/patient/settings' : activeRole === 'reception' ? '/reception/setup' : activeRole === 'doctor' ? '/doctor/settings' : '/admin/analytics'}>
+            <Link href={activeRole === 'patient' ? '/patient/settings' : activeRole === 'reception' ? '/reception/setup' : activeRole === 'doctor' ? '/doctor/settings' : nav[0]?.href ?? '/'}>
               <button
                 aria-label={t('chrome.settingsLabel')}
                 className="tap p-2 rounded-xl transition-colors cursor-pointer bg-surface-sunken border border-border text-foreground-lighter shadow-xs hover:bg-surface hover:text-foreground"

@@ -22,7 +22,7 @@ const SLOT_ROW: Record<Slot, string> = {
   upcoming:      "bg-surface border-border",
 }
 function slotStatus(q: QueueStatus): Slot {
-  if (["pharmacy", "billing", "done"].includes(q)) return "done"
+  if (["billing", "done"].includes(q)) return "done"
   if (q === "consulting") return "in-progress"
   return "upcoming"
 }

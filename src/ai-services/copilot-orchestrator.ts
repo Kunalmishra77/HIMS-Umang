@@ -130,6 +130,10 @@ async function doctorCopilot(ctx: CopilotContext): Promise<AiEnvelope<CopilotIns
     const labs = results[3].value
     const alerts = labs.data.filter(l => l.severity === 'critical')
     if (alerts.length > 0) {
+      // No 'view-labs' navigate action — this build has no shipped lab-results
+      // surface to route to (labs are reviewed inline during the doctor's own
+      // consultation now, not a dedicated lab portal); the alert itself is the
+      // actionable content.
       insights.push(wrapAiResponse<CopilotInsight>(
         {
           id: 'lab-anomaly',
@@ -137,7 +141,6 @@ async function doctorCopilot(ctx: CopilotContext): Promise<AiEnvelope<CopilotIns
           body: alerts.map(a => `${a.testName}: ${a.value} ${a.unit}`).join(', '),
           sourceService: 'detectLabAnomalies',
           priority: 'urgent',
-          actions: [{ id: 'view-labs', label: 'Go to Lab Results', type: 'navigate', payload: { path: '/lab/dashboard' }, requiresConfirmation: false }],
         },
         labs.confidence,
         labs.reasoning

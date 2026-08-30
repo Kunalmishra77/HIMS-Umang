@@ -4,8 +4,6 @@ import { useTranslations } from "next-intl"
 
 const COLUMNS = [
   { titleKey: "colPlatform", linkKeys: ["linkClinical", "linkOperations", "linkFinance", "linkSupport"] },
-  { titleKey: "colIntelligence", linkKeys: ["linkAiRadiology", "linkCriticalSla", "linkPredictiveOps", "linkOpsAssistant"] },
-  { titleKey: "colTrust", linkKeys: ["linkSecurity", "linkNabh", "linkDisha", "linkAiGovernance"] },
 ] as const
 
 export function LandingFooter() {
@@ -13,10 +11,10 @@ export function LandingFooter() {
   return (
     <footer className="bg-white border-t border-[#EAECF2]">
       <div className="max-w-7xl mx-auto px-5 lg:px-10 py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_1fr_1fr_1fr] gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_1fr] gap-8">
           <div>
             <div className="flex items-center">
-              <img src="/Agentix logo-health.svg" alt="Agentix HIMS" className="h-10 w-auto object-contain" />
+              <img src="/Umang-logo.webp" alt="Umang Hospital" className="h-10 w-auto object-contain" />
             </div>
             <p className="text-[13px] text-[#667085] mt-4 max-w-xs leading-relaxed">
               {t("tagline")}

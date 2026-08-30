@@ -6,14 +6,11 @@ import { motion } from "framer-motion"
 import { Mail, Lock, Eye, EyeOff, ArrowRight, QrCode, ShieldCheck, Loader2 } from "lucide-react"
 import { useAuthStore, type Role } from "@/store/useAuthStore"
 
+// `admin` is deliberately absent — it ships no portal (src/types/roles.ts).
 const ROLES: { value: Role; label: string; href: string }[] = [
   { value: "doctor", label: "Doctor", href: "/doctor/dashboard" },
   { value: "nurse", label: "Nurse", href: "/nurse/dashboard" },
   { value: "reception", label: "Reception", href: "/reception/dashboard" },
-  { value: "admin", label: "Admin", href: "/admin/dashboard" },
-  { value: "pharmacy", label: "Pharmacy", href: "/pharmacy/dashboard" },
-  { value: "lab", label: "Laboratory", href: "/lab/dashboard" },
-  { value: "radiology", label: "Radiology", href: "/radiology/dashboard" },
   { value: "billing", label: "Billing", href: "/billing/dashboard" },
   { value: "patient", label: "Patient", href: "/patient/dashboard" },
 ]

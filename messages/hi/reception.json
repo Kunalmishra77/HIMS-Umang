@@ -28,8 +28,6 @@
     "stageVitalsSub": "नर्स के साथ",
     "stageConsulting": "कंसल्टिंग",
     "stageConsultingSub": "डॉक्टर के साथ",
-    "stagePharmacy": "फार्मेसी",
-    "stagePharmacySub": "दवाई ले रहे हैं",
     "stageBilling": "बिलिंग",
     "stageBillingSub": "फीस जमा कर रहे हैं",
     "stageDone": "पूरा",
@@ -81,7 +79,7 @@
   },
   "register": {
     "title": "मरीज़ रजिस्टर करें",
-    "subtitle": "ABHA-फर्स्ट रजिस्ट्रेशन — आधार वेरिफाइड, इस सरकारी वर्कफ़्लो के लिए कोई कंसल्टेशन फीस नहीं।",
+    "subtitle": "ABHA-फर्स्ट रजिस्ट्रेशन — आधार वेरिफाइड, तेज़ और सुरक्षित।",
     "progressLabel": "रजिस्ट्रेशन प्रोग्रेस",
     "macroIdentity": "पहचान",
     "macroAbha": "ABHA",
@@ -248,7 +246,6 @@
   "opd": {
     "nextSendToVitals": "वाइटल्स के लिए भेजें",
     "nextSendToDoctor": "डॉक्टर के पास भेजें",
-    "nextSendToPharmacy": "फार्मेसी भेजें",
     "nextSendToBilling": "बिलिंग भेजें",
     "nextMarkDone": "पूरा मार्क करें",
     "statusWaiting": "इंतज़ार में",
@@ -256,7 +253,6 @@
     "statusReadyForVitals": "वाइटल्स के लिए तैयार",
     "statusInVitals": "वाइटल्स में",
     "statusConsulting": "कंसल्टिंग",
-    "statusPharmacy": "फार्मेसी",
     "statusBilling": "बिलिंग",
     "statusCompleted": "पूरा हुआ",
     "sourceWalkIn": "वॉक-इन",
@@ -381,12 +377,10 @@
     "statusWaiting": "इंतज़ार में",
     "statusVitals": "वाइटल्स",
     "statusConsulting": "कंसल्टिंग",
-    "statusPharmacy": "फार्मेसी",
     "statusBilling": "बिलिंग",
     "statusCompleted": "पूरा हुआ",
     "nextSendToVitals": "वाइटल्स के लिए भेजें",
     "nextSendToDoctor": "डॉक्टर के पास भेजें",
-    "nextSendToPharmacy": "फार्मेसी भेजें",
     "nextSendToBilling": "बिलिंग भेजें",
     "nextMarkDone": "पूरा मार्क करें",
     "tabToday": "आज",
@@ -571,7 +565,7 @@
     "slipDocument": "डॉक्युमेंट",
     "slipType": "टाइप",
     "slipDate": "तारीख",
-    "slipSystemGenerated": "सिस्टम-जनरेटेड डॉक्युमेंट — Agentix HIMS।"
+    "slipSystemGenerated": "सिस्टम-जनरेटेड डॉक्युमेंट — Umang Hospital।"
   },
   "journey": {
     "stageRegistered": "रजिस्टर हुआ",

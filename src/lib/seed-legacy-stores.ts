@@ -15,8 +15,6 @@ export async function seedAnilLegacyStores(): Promise<void> {
     { useERStore },
     { useInsuranceStore },
     { useOTStore },
-    { useNarcoticsStore },
-    { useDrugMasterStore },
     { useAdmissionStore },
     { useInpatientStore },
     { usePatientStore },
@@ -27,8 +25,6 @@ export async function seedAnilLegacyStores(): Promise<void> {
     import('@/store/useERStore'),
     import('@/store/useInsuranceStore'),
     import('@/store/useOTStore'),
-    import('@/store/useNarcoticsStore'),
-    import('@/store/useDrugMasterStore'),
     import('@/store/useAdmissionStore'),
     import('@/store/useInpatientStore'),
     import('@/store/usePatientStore'),
@@ -216,66 +212,6 @@ export async function seedAnilLegacyStores(): Promise<void> {
       ...(otState.procedures ?? []).filter((p) => (p as { id: string }).id !== 'OT-ANIL-001'),
     ],
   } as unknown as Parameters<typeof useOTStore.setState>[0])
-
-  // ── Narcotic register: Morphine sign-out ─────────────────────────────
-  const narcState = useNarcoticsStore.getState() as { log: unknown[] }
-  const morphAt = new Date(Date.now() - 25 * HOURS)
-  useNarcoticsStore.setState({
-    log: [
-      {
-        id: 'N-ANIL-001',
-        drug: 'Morphine 10mg/mL',
-        date: morphAt.toISOString().split('T')[0]!,
-        time: morphAt.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }),
-        patient: 'Anil Kumar Verma',
-        patientId: 'PT-44012',
-        dose: '5 mg IV',
-        prescriber: 'Dr. Vikram Rao',
-        dispenser: 'Rohit Sharma',
-        secondSignatory: 'Sunita Devi',
-        batchNo: 'BTH-20240722-M',
-        runningStock: 11,
-      },
-      ...(narcState.log ?? []),
-    ],
-  } as unknown as Parameters<typeof useNarcoticsStore.setState>[0])
-
-  // ── Drug Master: Augmentin (penicillin) + Cipro + Metro ─────────────
-  const dmState = useDrugMasterStore.getState() as { drugs: { genericName: string }[] }
-  if (!dmState.drugs.some((d) => d.genericName === 'Augmentin')) {
-    useDrugMasterStore.setState({
-      drugs: [
-        ...dmState.drugs,
-        {
-          id: 'D-AUG', genericName: 'Augmentin',
-          brandNames: ['Augmentin', 'Clavam', 'Moxikind-CV'],
-          form: 'tablet', strength: '625mg', schedule: 'H', atcCode: 'J01CR02',
-          contraindications: ['Penicillin allergy', 'Severe hepatic impairment'],
-          interactions: ['Warfarin', 'Methotrexate', 'Allopurinol'],
-          allergyClasses: ['Penicillin', 'β-lactam'],
-          maxDailyDoseMg: 1875,
-        },
-        {
-          id: 'D-CIP', genericName: 'Ciprofloxacin',
-          brandNames: ['Ciplox', 'Cifran', 'Ciprobid'],
-          form: 'tablet', strength: '500mg', schedule: 'H', atcCode: 'J01MA02',
-          contraindications: ['Tendon disorders history', 'Pregnancy', 'QT prolongation'],
-          interactions: ['Theophylline', 'NSAIDs', 'Antacids'],
-          allergyClasses: ['Fluoroquinolone'],
-          maxDailyDoseMg: 1500,
-        },
-        {
-          id: 'D-MTZ', genericName: 'Metronidazole',
-          brandNames: ['Flagyl', 'Metrogyl'],
-          form: 'tablet', strength: '400mg', schedule: 'H', atcCode: 'J01XD01',
-          contraindications: ['First trimester pregnancy', 'Alcohol intake'],
-          interactions: ['Alcohol', 'Warfarin', 'Phenytoin'],
-          allergyClasses: ['Nitroimidazole'],
-          maxDailyDoseMg: 2000,
-        },
-      ],
-    } as unknown as Parameters<typeof useDrugMasterStore.setState>[0])
-  }
 
   // ── Admission request (assigned to surgical-ward bed) ────────────────
   const admState = useAdmissionStore.getState() as { admissionRequests: { id: string }[] }

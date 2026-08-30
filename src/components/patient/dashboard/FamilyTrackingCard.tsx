@@ -32,7 +32,7 @@ export function FamilyTrackingCard() {
 
   const share = () => {
     if (typeof navigator !== 'undefined' && navigator.share) {
-      navigator.share({ title: 'My live status', text: 'Track me at Agentix HIMS', url })
+      navigator.share({ title: 'My live status', text: 'Track me at Umang Hospital', url })
     } else if (typeof navigator !== 'undefined') {
       navigator.clipboard?.writeText(url)
     }

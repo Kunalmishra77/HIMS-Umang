@@ -15,9 +15,14 @@ import { getSupabaseAdminClient } from '@/lib/supabase/admin'
 
 export const dynamic = 'force-dynamic'
 
+// Deliberately omits 'pharmacy': the local QueueStatus that this feeds
+// (usePatientStore) has no pharmacy stage (the Pharmacy portal doesn't ship —
+// see reception/opd/page.tsx), so a visit still carrying that legacy
+// visit_status_t value is dropped from the active queue below rather than
+// surfaced as a status the frontend can't render.
 const VISIT_TO_QUEUE: Record<string, string | undefined> = {
   scheduled: 'waiting', waiting: 'waiting', vitals: 'vitals',
-  consulting: 'consulting', pharmacy: 'pharmacy', billing: 'billing',
+  consulting: 'consulting', billing: 'billing',
 }
 
 export async function GET() {

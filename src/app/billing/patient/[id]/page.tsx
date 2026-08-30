@@ -90,7 +90,7 @@ export default function PatientBillPage({ params }: { params: Promise<{ id: stri
       total += s.amount * s.quantity
     })
     notifyAndAudit({
-      to: 'audit_officer', type: 'system', priority: 'low',
+      to: 'admin', type: 'system', priority: 'low',
       title: `Charges added · ${bill.patientName}`,
       body: `${count} AI-suggested charge${count !== 1 ? 's' : ''} (₹${total.toLocaleString('en-IN')}) added to bill ${bill.id} by ${actor}.`,
       patientName: bill.patientName,
@@ -112,7 +112,7 @@ export default function PatientBillPage({ params }: { params: Promise<{ id: stri
     if (!amt || amt <= 0) { toast.error("Enter a valid amount"); return }
     if (amt > outstanding) { toast.error(`Amount exceeds outstanding balance of ₹${outstanding.toLocaleString('en-IN')}`); return }
     recordPayment(bill.id, amt, payMode)
-    notifyAndAuditMany(['patient', 'audit_officer'], {
+    notifyAndAuditMany(['patient'], {
       type: 'system', priority: 'medium',
       title: `Payment received · ₹${amt.toLocaleString('en-IN')} · ${bill.patientName}`,
       body: `${payMode} payment of ₹${amt.toLocaleString('en-IN')} collected for bill ${bill.id} by ${actor}. Receipt generated.`,
@@ -187,7 +187,7 @@ export default function PatientBillPage({ params }: { params: Promise<{ id: stri
           {bill.status === 'draft' && (
             <Button variant="secondary" onClick={() => {
               freezeBill(bill.id)
-              notifyAndAuditMany(['audit_officer', 'admin'], {
+              notifyAndAuditMany(['admin'], {
                 type: 'system', priority: 'medium',
                 title: `Bill frozen · ${bill.patientName}`,
                 body: `Bill ${bill.id} frozen by ${actor}. No further edits permitted; ready for settlement.`,
@@ -204,7 +204,7 @@ export default function PatientBillPage({ params }: { params: Promise<{ id: stri
               const cov = Math.floor(bill.subtotal * 0.8)
               applyInsuranceCoverage(bill.id, cov)
               notifyAndAudit({
-                to: 'insurance', type: 'system', priority: 'medium',
+                to: 'admin', type: 'system', priority: 'medium',
                 title: `Insurance coverage applied · ${bill.patientName}`,
                 body: `₹${cov.toLocaleString('en-IN')} (80% of ₹${bill.subtotal.toLocaleString('en-IN')}) applied to bill ${bill.id} by ${actor}.`,
                 patientName: bill.patientName,

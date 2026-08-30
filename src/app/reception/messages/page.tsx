@@ -16,12 +16,12 @@ import { cn } from "@/lib/utils"
 import { toast } from "sonner"
 
 const RECIPIENT_KEY: Record<string, string> = {
-  Doctor: 'recipientDoctor', Nurse: 'recipientNurse', Pharmacy: 'recipientPharmacy', Laboratory: 'recipientLaboratory', Billing: 'recipientBilling', Admin: 'recipientAdmin', Ambulance: 'recipientAmbulance',
+  Doctor: 'recipientDoctor', Nurse: 'recipientNurse', Billing: 'recipientBilling', Admin: 'recipientAdmin',
 }
 
 // Map the friendly recipient label to the role the notification is addressed to.
 const TO_ROLE: Record<string, Role> = {
-  Doctor: 'doctor', Nurse: 'nurse', Pharmacy: 'pharmacy', Laboratory: 'lab', Billing: 'billing', Admin: 'admin', Ambulance: 'ambulance',
+  Doctor: 'doctor', Nurse: 'nurse', Billing: 'billing', Admin: 'admin',
 }
 
 const THREAD_STATUS: Record<string, string> = {
@@ -30,7 +30,7 @@ const THREAD_STATUS: Record<string, string> = {
 const PRIORITY_TINT: Record<string, string> = {
   critical: 'bg-red-50 text-red-600', high: 'bg-primary-soft text-accent', medium: 'bg-amber-50 text-amber-700', low: 'bg-slate-100 text-slate-500',
 }
-const RECIPIENTS = ['Doctor', 'Nurse', 'Pharmacy', 'Laboratory', 'Billing', 'Admin', 'Ambulance'] as const
+const RECIPIENTS = ['Doctor', 'Nurse', 'Billing', 'Admin'] as const
 
 export default function ReceptionMessages() {
   const t = useTranslations('reception')

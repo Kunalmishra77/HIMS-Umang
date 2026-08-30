@@ -36,6 +36,7 @@ export function IntakeFlow() {
   const [familyToken, setFamilyToken] = useState<string | null>(null)
   const [estWait, setEstWait] = useState(0)
   const [uhid, setUhid] = useState<string | null>(null)
+  const [patientId, setPatientId] = useState<string | null>(null)
 
   const update = (patch: Partial<IntakeForm>) => setForm(f => {
     const clean: Partial<IntakeForm> = {}
@@ -113,7 +114,7 @@ export function IntakeFlow() {
     setSubmitting(true)
     await new Promise(r => setTimeout(r, 1600))
     const res = await registerPatientFromIntake(form, { patients, addPatient, generateFamilyToken })
-    setToken(res.token); setFamilyToken(res.familyToken); setEstWait(res.estWait); setUhid(res.uhid ?? null)
+    setToken(res.token); setFamilyToken(res.familyToken); setEstWait(res.estWait); setUhid(res.uhid ?? null); setPatientId(res.patientId)
     setSubmitting(false); setCurrent('success')
   }
 
@@ -163,7 +164,7 @@ export function IntakeFlow() {
     }
 
     if (current === 'success') {
-      return <SuccessStep form={form} token={token ?? 1} familyToken={familyToken} wait={estWait} uhid={uhid ?? undefined} />
+      return <SuccessStep form={form} token={token ?? 1} familyToken={familyToken} wait={estWait} uhid={uhid ?? undefined} patientId={patientId ?? undefined} />
     }
 
     // ── Step body ───────────────────────────────────────────────────────
@@ -225,7 +226,7 @@ export function IntakeFlow() {
   const showBack = history.length > 0 && current !== 'success' && current !== 'welcome'
   
   const headerTitle = current === 'welcome' || current === 'success'
-    ? <Image src="/Agentix logo-health.svg" alt="Agentix HIMS" width={180} height={36} className="h-9 w-auto" priority />
+    ? <Image src="/Umang-logo.webp" alt="Umang Hospital" width={126} height={36} className="h-9 w-auto" priority />
     : current === 'voice' ? t('shell.headerVoice')
     : t('shell.headerCheckin')
 

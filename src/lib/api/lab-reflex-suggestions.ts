@@ -1,5 +1,13 @@
 /* LabReflexSuggestions — auto-suggested follow-up tests raised when a released
- * lab result crosses a reflex rule (src/lib/reflexRules.ts's evaluateReflex).
+ * lab result crosses a reflex rule. The client-side rule evaluator
+ * (formerly src/lib/reflexRules.ts's evaluateReflex) and the store actions
+ * that wrote here (useLabOrdersStore.ts's pushReflex/orderReflex/
+ * dismissReflex) were removed by Task 9's order-boundary pass — this
+ * project creates lab orders but no portal fulfils them, so nothing
+ * triggers a reflex suggestion any more. The table/schema stay per that
+ * task's "tables stay, only client actions go" scope; this module is now
+ * unreached from the app but kept for when a later task revisits the
+ * db-layer surface.
  * Mirrors `ReflexSuggestion` in src/store/useLabOrdersStore.ts and the
  * `lab_reflex_suggestions` table in
  * supabase/migrations/20260704210827_laboratory_schema.sql.

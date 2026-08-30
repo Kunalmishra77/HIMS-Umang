@@ -10,15 +10,12 @@ import type { Locale } from "@/i18n/routing"
 import { StoreHydrator } from "@/components/StoreHydrator"
 
 export const metadata: Metadata = {
-  title: "Agentix HIMS",
-  description: "AI-Powered Hospital Management System — Agentix HIMS",
+  title: "Umang Hospital HIMS",
+  description: "Hospital information management for the Umang Hospital OPD journey — registration, reception, nursing, consultation and billing.",
   icons: {
-    icon: [
-      { url: "/Agentix-logo-favicon.ico", sizes: "any" },
-      { url: "/Agentix logo-health.svg", type: "image/svg+xml" },
-    ],
-    shortcut: "/Agentix-logo-favicon.ico",
-    apple: "/Agentix logo-health.svg",
+    icon: [{ url: "/Umang-logo.webp", type: "image/webp" }],
+    shortcut: "/Umang-logo.webp",
+    apple: "/Umang-logo.webp",
   },
 }
 
@@ -28,7 +25,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang={locale} suppressHydrationWarning>
       <head>
-        {/* Noto Sans Devanagari — for Hindi text in CMO cockpit */}
+        {/* Noto Sans Devanagari — for the Hindi locale */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600&display=swap" rel="stylesheet" />

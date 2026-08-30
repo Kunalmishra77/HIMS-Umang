@@ -57,7 +57,7 @@ export type AdmissionRequest = {
 }
 
 // ── Multi-branch bed availability ──────────────────────────────────
-// The `beds` array is THIS branch (Agentix HIMS — MG Road). Other branches expose
+// The `beds` array is THIS branch (Umang Hospital — MG Road). Other branches expose
 // summary availability per ward so a doctor can find a bed elsewhere when the
 // current branch is full.
 export type WardName = Bed['ward']
@@ -65,11 +65,11 @@ export const WARD_ORDER: WardName[] = ['General Ward', 'ICU', 'Private Room', 'S
 export type BranchWard = { ward: WardName; total: number; available: number }
 export type Branch = { id: string; name: string; location: string; distanceKm: number; phone: string; wards: BranchWard[] }
 
-export const CURRENT_BRANCH = { id: 'mg-road', name: 'Agentix HIMS — MG Road', location: 'MG Road', distanceKm: 0, phone: '+91 80 1234 0000' }
+export const CURRENT_BRANCH = { id: 'mg-road', name: 'Umang Hospital — MG Road', location: 'MG Road', distanceKm: 0, phone: '+91 80 1234 0000' }
 
 export const OTHER_BRANCHES: Branch[] = [
   {
-    id: 'whitefield', name: 'Agentix HIMS — Whitefield', location: 'Whitefield', distanceKm: 8.2, phone: '+91 80 1234 1111',
+    id: 'whitefield', name: 'Umang Hospital — Whitefield', location: 'Whitefield', distanceKm: 8.2, phone: '+91 80 1234 1111',
     wards: [
       { ward: 'General Ward', total: 24, available: 6 },
       { ward: 'ICU', total: 10, available: 3 },
@@ -79,7 +79,7 @@ export const OTHER_BRANCHES: Branch[] = [
     ],
   },
   {
-    id: 'indiranagar', name: 'Agentix HIMS — Indiranagar', location: 'Indiranagar', distanceKm: 5.1, phone: '+91 80 1234 2222',
+    id: 'indiranagar', name: 'Umang Hospital — Indiranagar', location: 'Indiranagar', distanceKm: 5.1, phone: '+91 80 1234 2222',
     wards: [
       { ward: 'General Ward', total: 18, available: 2 },
       { ward: 'ICU', total: 6, available: 1 },
