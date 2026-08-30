@@ -53,19 +53,17 @@
     "completeVitals": "वाइटल्स पूरे करें"
   },
   "aiAssistant": {
-    "quickWhichRounds": "कौन से राउंड बाकी हैं?",
-    "quickMostAcute": "मेरे सबसे गंभीर मरीज़ कौन हैं?",
-    "quickReadyDischarge": "डिस्चार्ज के लिए कौन तैयार है?",
-    "quickHandoverSummary": "हैंडओवर के लिए Kiran Patil का समरी दें",
-    "quickCurrentMeds": "Kiran Patil की मौजूदा दवाएं दिखाएं",
+    "quickWaitingForVitals": "कितने मरीज़ वाइटल्स के लिए इंतज़ार कर रहे हैं?",
     "quickDiabetes": "किसे डायबिटीज़ है?",
+    "quickFever": "किसे बुखार है?",
+    "quickVisitSummary": "Kiran Patil की विज़िट का समरी दें",
     "title": "नर्सिंग कोपायलट",
-    "grounded": "{count} मरीज़ पर आधारित · {ward}",
+    "grounded": "{count} मरीज़ पर आधारित",
     "emptyTitle": "आपका नर्सिंग कोपायलट",
-    "emptySubtitle": "अपने वॉर्ड के बारे में पूछें — गंभीरता, राउंड, दवाएं, वाइटल्स, डिस्चार्ज — या हैंडओवर समरी लें। लाइव रिकॉर्ड पर आधारित।",
-    "inputPlaceholder": "अपने वॉर्ड, किसी मरीज़, दवाओं या हैंडओवर समरी के बारे में पूछें…",
+    "emptySubtitle": "OPD कतार के बारे में पूछें — कौन इंतज़ार कर रहा है, किसी मरीज़ के वाइटल्स या इतिहास, या किसी लक्षण का समूह। लाइव रिकॉर्ड पर आधारित।",
+    "inputPlaceholder": "OPD कतार या किसी मरीज़ के बारे में पूछें…",
     "send": "भेजें",
-    "disclaimer": "AI · जवाब लाइव वॉर्ड रिकॉर्ड से लिए गए · करने से पहले वेरीफाई करें"
+    "disclaimer": "AI · जवाब लाइव OPD रिकॉर्ड से लिए गए · करने से पहले वेरीफाई करें"
   },
   "fluidBalance": {
     "intake": "इनटेक",

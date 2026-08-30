@@ -17,7 +17,7 @@ type RoleCard = { role: Role; label: string; desc: string; icon: React.ElementTy
 const allRoleGroups: { id: string; label: string; roles: RoleCard[] }[] = [
   { id: "clinical", label: "Clinical", roles: [
     { role: "doctor", label: "Doctor", desc: "AI pre-briefs, e-prescriptions, queue",  icon: Stethoscope, href: "/doctor/dashboard" },
-    { role: "nurse",  label: "Nurse",  desc: "Ward monitoring, vitals, MAR, handover", icon: Activity,    href: "/nurse/dashboard" },
+    { role: "nurse",  label: "Nurse",  desc: "OPD vitals, triage, patient worklist", icon: Activity,    href: "/nurse/dashboard" },
   ] },
   { id: "operations", label: "Operations", roles: [
     { role: "reception", label: "Reception", desc: "OPD queue, registration, kiosk", icon: LayoutDashboard, href: "/reception/dashboard" },

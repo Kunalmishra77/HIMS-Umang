@@ -44,7 +44,7 @@ recognises:
 | Role | Portal | Covers |
 |---|---|---|
 | `reception` | `/reception/*` | OPD queue, walk-in registration, appointments, check-in |
-| `nurse` | `/nurse/*` | Vitals capture, ward worklist |
+| `nurse` | `/nurse/*` | OPD vitals capture, patient worklist |
 | `doctor` | `/doctor/*` | Consultation, prescriptions, lab/imaging orders |
 | `billing` | `/billing/*` | Full billing: dashboard, patient ledger, packages, discounts, refunds |
 | `patient` | `/patient/*` | Registration status, records, downloads, family tracking |

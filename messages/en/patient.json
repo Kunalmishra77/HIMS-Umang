@@ -876,23 +876,6 @@
     "channelEmail": "Email",
     "channelEmailSub": "Mock sender"
   },
-  "teleconsult": {
-    "title": "Video consultation",
-    "aboutToJoin": "You're about to join your call with {doctor}. Check your camera & mic first.",
-    "cameraOff": "Camera off",
-    "joinNow": "Join now",
-    "you": "You",
-    "aiScribe": "AI scribe noting",
-    "end": "End",
-    "consultationComplete": "Consultation complete",
-    "callDuration": "Call duration {time} with {doctor}. Your e-prescription & summary are ready.",
-    "ePrescription": "e-Prescription",
-    "medicinesCount": "2 medicines",
-    "visitSummary": "Visit summary",
-    "plainLanguage": "Plain-language",
-    "backToDashboard": "Back to dashboard",
-    "toastJoined": "Joined call · {doctor} notified"
-  },
   "waiting": {
     "opdQueueStatus": "OPD Queue Status",
     "ipdPatientTracker": "IPD Patient Tracker",

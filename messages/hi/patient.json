@@ -876,23 +876,6 @@
     "channelEmail": "ईमेल",
     "channelEmailSub": "Mock सेंडर"
   },
-  "teleconsult": {
-    "title": "वीडियो कंसल्टेशन",
-    "aboutToJoin": "आप {doctor} के साथ अपनी कॉल जॉइन करने वाले हैं। पहले अपना कैमरा और माइक चेक करें।",
-    "cameraOff": "कैमरा बंद",
-    "joinNow": "अभी जॉइन करें",
-    "you": "आप",
-    "aiScribe": "AI स्क्राइब नोट कर रहा है",
-    "end": "खत्म करें",
-    "consultationComplete": "कंसल्टेशन पूरा हुआ",
-    "callDuration": "{doctor} के साथ कॉल की अवधि {time}। आपका e-प्रिस्क्रिप्शन और समरी तैयार है।",
-    "ePrescription": "e-प्रिस्क्रिप्शन",
-    "medicinesCount": "2 दवाइयाँ",
-    "visitSummary": "विज़िट समरी",
-    "plainLanguage": "आसान भाषा",
-    "backToDashboard": "डैशबोर्ड पर वापस जाएँ",
-    "toastJoined": "कॉल जॉइन की · {doctor} को बताया गया"
-  },
   "waiting": {
     "opdQueueStatus": "OPD कतार स्टेटस",
     "ipdPatientTracker": "IPD पेशेंट ट्रैकर",
