@@ -48,7 +48,7 @@ Required: `tsc: 0`, `build: 0`, `DEAD: 0`, all suites green. The last two suites
 | `src/lib/patientClaim.ts` | **Create.** Pure matching: phone/name normalisation and the three-factor check. No I/O, no Supabase — so it is fully testable. |
 | `src/lib/claimRateLimit.ts` | **Create.** Pure in-memory counters for per-IP and per-UHID limits. Injectable clock so tests don't sleep. |
 | `src/app/api/patient/claim/route.ts` | **Create.** The atomic endpoint. Composes the two modules above with the admin client. |
-| `src/app/patient/claim/page.tsx` | **Create.** The claim form. Public — a patient reaches it before having an account. |
+| `src/app/claim/page.tsx` | **Create.** The claim form. Deliberately OUTSIDE `src/app/patient/`, which is entirely RoleGuard-wrapped — a claiming patient has no session yet. |
 | `src/lib/usePatientMe.ts` | **Rewrite.** Resolve by `authUserId`; become the single source of patient identity. |
 | `src/app/patient/billing/page.tsx` | **Modify.** Read the `Bills` API; remove mock data and the hardcoded `PT-20394` in the printed invoice. |
 | `scripts/seed/provision-demo-accounts.mjs` | **Modify.** Link `demo-patient@example.test` to Kiran Patil's record. |
@@ -533,16 +533,16 @@ with .is('auth_user_id', null) to close the concurrent-claim race."
 ### Task 4: The claim page
 
 **Files:**
-- Create: `src/app/patient/claim/page.tsx`
+- Create: `src/app/claim/page.tsx`
 - Modify: `src/app/login/page.tsx` — add a link to the claim page
 
 **Interfaces:**
 - Consumes: `POST /api/patient/claim` from Task 3.
-- Produces: the route `/patient/claim`, reachable without a session.
+- Produces: the route `/claim`, reachable without a session.
 
 - [ ] **Step 1: Build the form**
 
-Create `src/app/patient/claim/page.tsx` as a `"use client"` component with five controlled fields — full name, UHID, phone, email, password — posting to `/api/patient/claim`.
+Create `src/app/claim/page.tsx` as a `"use client"` component with five controlled fields — full name, UHID, phone, email, password — posting to `/api/patient/claim`.
 
 The submit handler — the load-bearing part — is:
 
@@ -591,7 +591,7 @@ Requirements:
 - Explain where a UHID is found ("printed on your registration slip and prescription").
 - **Do not claim the process is secure or verified.** Assurance here is demo-grade.
 
-**This page must not sit under `RoleGuard`.** `src/app/patient/layout.tsx` applies the guard for the patient portal; a patient reaching `/patient/claim` has no session yet, so the guard would redirect them away. Check how `src/app/patient/layout.tsx` wraps children — if it guards the whole subtree, move the page to `src/app/claim/page.tsx` instead and say so in your report.
+**The path is `/claim`, not `/patient/claim`, and that is deliberate.** `src/app/patient/layout.tsx` is exactly `<RoleGuard allowedRole="patient">{children}</RoleGuard>` — it wraps the entire patient subtree. A claiming patient has no session, so a page under `src/app/patient/` would be redirected away before it rendered, making it unreachable by the only people who need it. Verified by the controller before dispatch; do not move it back.
 
 - [ ] **Step 2: Link it from login**
 
@@ -600,7 +600,7 @@ In `src/app/login/page.tsx`, below the sign-in button, add:
 ```tsx
 <p className="mt-4 text-center text-sm text-foreground-lighter">
   {"First time here? "}
-  <Link href="/patient/claim" className="font-medium text-accent hover:underline">
+  <Link href="/claim" className="font-medium text-accent hover:underline">
     Claim your patient record
   </Link>
 </p>
@@ -623,8 +623,8 @@ Expected: `tsc: 0`, manifest test green. That test asserts every route-shaped st
 
 ```bash
 cd "/e/Umang Hospital HIMS"
-npx eslint src/app/patient/claim/page.tsx src/app/login/page.tsx
-git add src/app/patient/claim/page.tsx src/app/login/page.tsx
+npx eslint src/app/claim/page.tsx src/app/login/page.tsx
+git add src/app/claim/page.tsx src/app/login/page.tsx
 git commit -m "feat(claim): patient record claim page
 
 One form takes name, UHID, phone, email and password, and signs the
