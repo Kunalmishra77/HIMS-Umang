@@ -20,24 +20,23 @@ import { notifyAndAuditMany } from "@/lib/notifyAndAudit"
 import { AadhaarAbhaFlow, type AadhaarAbhaResult } from "@/components/reception/AadhaarAbhaFlow"
 
 const STATUS_TOKEN: Record<QueueStatus, Status> = {
-  waiting: 'pending', vitals: 'caution', consulting: 'info', pharmacy: 'info', billing: 'neutral', done: 'done',
+  waiting: 'pending', vitals: 'caution', consulting: 'info', billing: 'neutral', done: 'done',
 }
 const opdTriageToken = (lvl?: TriageLevel): Status =>
   lvl === 'Critical' ? 'critical' : lvl === 'High' ? 'urgent' : lvl === 'Medium' ? 'caution' : 'stable'
 
 const NEXT_STATUS: Partial<Record<QueueStatus, QueueStatus>> = {
-  waiting: 'vitals', vitals: 'consulting', consulting: 'pharmacy', pharmacy: 'billing', billing: 'done',
+  waiting: 'vitals', vitals: 'consulting', consulting: 'billing', billing: 'done',
 }
 const NEXT_KEY: Partial<Record<QueueStatus, string>> = {
-  waiting: 'nextSendToVitals', vitals: 'nextSendToDoctor', consulting: 'nextSendToPharmacy',
-  pharmacy: 'nextSendToBilling', billing: 'nextMarkDone',
+  waiting: 'nextSendToVitals', vitals: 'nextSendToDoctor', consulting: 'nextSendToBilling',
+  billing: 'nextMarkDone',
 }
 
 const STATUS_PILL: Record<QueueStatus, { key: string; cls: string }> = {
   waiting:    { key: 'statusWaiting',    cls: 'bg-slate-100 text-slate-600' },
   vitals:     { key: 'statusInVitals',  cls: 'bg-amber-100 text-amber-700' },
   consulting: { key: 'statusConsulting', cls: 'bg-surface-sunken text-accent' },
-  pharmacy:   { key: 'statusPharmacy',   cls: 'bg-green-100 text-green-700' },
   billing:    { key: 'statusBilling',   cls: 'bg-amber-100 text-amber-700' },
   done:       { key: 'statusCompleted',  cls: 'bg-green-100 text-green-700' },
 }
@@ -63,7 +62,7 @@ function matchesStatusFilter(status: QueueStatus, hasUhid: boolean, filter: Stat
     case 'Waiting':       return status === 'waiting'
     case 'Needs Aadhaar': return status === 'waiting' && !hasUhid
     case 'In Vitals':     return status === 'vitals'
-    case 'In Care':       return status === 'consulting' || status === 'pharmacy' || status === 'billing'
+    case 'In Care':       return status === 'consulting' || status === 'billing'
     case 'Done':          return status === 'done'
   }
 }

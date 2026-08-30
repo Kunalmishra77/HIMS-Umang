@@ -81,8 +81,6 @@ export default function DoctorConsultation() {
   // Referral + admission drafts.
   const [referSpecialty, setReferSpecialty] = useState("")
   const [admitWard, setAdmitWard] = useState("General Ward")
-  // Track whether an Rx was dispatched so "Complete consultation" routes to pharmacy vs billing.
-  const [sentRx, setSentRx] = useState(false)
   // Prescription — medicines + diet/follow-up/imaging advice for the printout.
   const [meds, setMeds] = useState<RxMed[]>([])
   const [medDraft, setMedDraft] = useState<RxMed>(EMPTY_MED)
@@ -93,7 +91,7 @@ export default function DoctorConsultation() {
   useEffect(() => {
     if (active) { setSoap(loadSoap(active.id)); setHydrated(true) }
     setLabTests([]); setLabPick("")
-    setImagingStudies([]); setImagingPick(""); setReferSpecialty(""); setAdmitWard("General Ward"); setSentRx(false)
+    setImagingStudies([]); setImagingPick(""); setReferSpecialty(""); setAdmitWard("General Ward")
     setMeds([]); setMedDraft(EMPTY_MED); setDiet(""); setFollowUp(""); setImagingAdvice("")
   }, [active?.id])
 
@@ -166,7 +164,6 @@ export default function DoctorConsultation() {
       patientName: active.name,
       audit: { action: 'prescription_create', resource: 'consultation', resourceId: active.id, detail: `Rx (${meds.length} item(s)) ordered for ${active.name}`, userName: currentUser?.name ?? 'Doctor' },
     })
-    setSentRx(true)
     toast.success(`Rx sent`, { description: `${meds.length} medicine(s)` })
   }
 
@@ -326,9 +323,8 @@ export default function DoctorConsultation() {
 
   function completeConsultation() {
     if (!active) return
-    const next = sentRx ? 'pharmacy' : 'billing'
-    updateStatus(active.id, next)
-    toast.success(`Consultation complete · ${active.name} sent to ${next === 'pharmacy' ? 'Pharmacy' : 'Billing'}`)
+    updateStatus(active.id, 'billing')
+    toast.success(`Consultation complete · ${active.name} sent to Billing`)
   }
 
   if (!hydrated) return null

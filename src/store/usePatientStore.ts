@@ -10,28 +10,29 @@ import type { VitalsRecord } from '@/store/useInpatientStore'
 import { DEMO_PATIENTS } from '@/lib/demo-patients'
 import { getSupabaseClient } from '@/lib/supabase/client'
 
-export type QueueStatus = 'waiting' | 'vitals' | 'consulting' | 'pharmacy' | 'billing' | 'done'
+export type QueueStatus = 'waiting' | 'vitals' | 'consulting' | 'billing' | 'done'
 export type TriageLevel = 'Low' | 'Medium' | 'High' | 'Critical'
 
 // Phase 2 (reception→vitals bridge) — local QueueStatus and the backend
 // visit_status_t enum (supabase/migrations/20260703123305_core_schema.sql)
 // are NOT the same set:
-//   QueueStatus:     waiting | vitals | consulting | pharmacy | billing | done
+//   QueueStatus:     waiting | vitals | consulting | billing | done
 //   visit_status_t:  scheduled | waiting | vitals | consulting | pharmacy | billing | completed | cancelled
-// Five values line up 1:1 (waiting/vitals/consulting/pharmacy/billing). The
-// sixth, local 'done', has no direct backend counterpart — the backend
-// instead distinguishes 'completed' (visit ran its course) from 'cancelled'
-// (visit was aborted). A queue reaching "done" via updateStatus always means
-// the visit completed normally (cancellation is its own separate action
-// elsewhere in this store, e.g. sendToEmergency, which does not call
-// updateStatus for this reason), so 'done' maps to 'completed'. There is no
-// local QueueStatus value that should ever map to 'scheduled' or 'cancelled'
-// here, so those are intentionally absent from this table.
-const QUEUE_STATUS_TO_VISIT_STATUS: Record<QueueStatus, 'waiting' | 'vitals' | 'consulting' | 'pharmacy' | 'billing' | 'completed'> = {
+// Four values line up 1:1 (waiting/vitals/consulting/billing). visit_status_t
+// still carries 'pharmacy' and 'scheduled' — the enum lives in an already-
+// applied migration and is never altered here — but this OPD-only build has
+// no local QueueStatus that ever produces those values, so they're
+// intentionally absent from this table. The remaining local 'done' has no
+// direct backend counterpart either — the backend instead distinguishes
+// 'completed' (visit ran its course) from 'cancelled' (visit was aborted). A
+// queue reaching "done" via updateStatus always means the visit completed
+// normally (cancellation is its own separate action elsewhere in this store,
+// e.g. sendToEmergency, which does not call updateStatus for this reason), so
+// 'done' maps to 'completed'.
+const QUEUE_STATUS_TO_VISIT_STATUS: Record<QueueStatus, 'waiting' | 'vitals' | 'consulting' | 'billing' | 'completed'> = {
   waiting: 'waiting',
   vitals: 'vitals',
   consulting: 'consulting',
-  pharmacy: 'pharmacy',
   billing: 'billing',
   done: 'completed',
 }
@@ -42,7 +43,6 @@ const QUEUE_STATUS_TO_VISIT_STATUS: Record<QueueStatus, 'waiting' | 'vitals' | '
 const JOURNEY_FOR_QUEUE: Partial<Record<QueueStatus, JourneyState>> = {
   vitals: 'VITALS_IN_PROGRESS',
   consulting: 'IN_CONSULT',
-  pharmacy: 'PHARMACY_QUEUED',
   billing: 'BILLING_PENDING',
   done: 'COMPLETED',
 }
@@ -248,7 +248,7 @@ const MOCK_PATIENTS: Patient[] = [
   },
   {
     id: 'PT-20396', name: 'Rakesh Verma', age: 61, gender: 'Male', phone: '9988776655', bloodGroup: 'A-', token: 6,
-    queueStatus: 'pharmacy', estimatedWait: 0, doctor: 'Dr. Priya Nair', department: 'General Medicine',
+    queueStatus: 'billing', estimatedWait: 0, doctor: 'Dr. Priya Nair', department: 'General Medicine',
     vitals: { bp: '140/90', temp: '97.8°F', weight: '82 kg', spo2: '97%', pulse: '78 bpm' },
     symptoms: ['Joint pain', 'Swelling in knee'], history: ['Osteoarthritis', 'CKD stage 3'], registeredAt: '08:45 AM', registeredDate: TODAY,
     triageLevel: 'Low',
@@ -259,7 +259,7 @@ const MOCK_PATIENTS: Patient[] = [
     ],
   },
   // M13.0 — OPD board expansion. Realistic mix: 22 patients across departments,
-  // queue stages (waiting / vitals / consulting / pharmacy / billing / done),
+  // queue stages (waiting / vitals / consulting / billing / done),
   // acuities, and ages. Sustains a full-day demo without registering anyone.
   {
     id: 'PT-20399', name: 'Vikas Joshi', age: 38, gender: 'Male', phone: '9833445566', bloodGroup: 'A+', token: 8,
@@ -310,7 +310,7 @@ const MOCK_PATIENTS: Patient[] = [
   },
   {
     id: 'PT-20404', name: 'Latha Subramaniam', age: 52, gender: 'Female', phone: '9811223344', bloodGroup: 'AB+', token: 13,
-    queueStatus: 'pharmacy', estimatedWait: 0, doctor: 'Dr. Priya Nair', department: 'General Medicine',
+    queueStatus: 'billing', estimatedWait: 0, doctor: 'Dr. Priya Nair', department: 'General Medicine',
     vitals: { bp: '128/80', temp: '98.6°F', weight: '64 kg', spo2: '98%', pulse: '76 bpm' },
     symptoms: ['Fatigue', 'Recent weight gain'], history: ['Hypothyroidism', 'T2DM'], registeredAt: '09:00 AM', registeredDate: TODAY,
     triageLevel: 'Low', latestHbA1c: 7.4,

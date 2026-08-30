@@ -21,24 +21,24 @@ import { StatusPill, type Status } from "@/components/ui/StatusPill"
 import { PatientAvatar } from "@/components/ui/PatientAvatar"
 
 const STATUS_TOKEN: Record<QueueStatus, Status> = {
-  waiting: 'pending', vitals: 'caution', consulting: 'info', pharmacy: 'info', billing: 'neutral', done: 'done',
+  waiting: 'pending', vitals: 'caution', consulting: 'info', billing: 'neutral', done: 'done',
 }
 const triageToken = (lvl?: TriageLevel): Status =>
   lvl === 'Critical' ? 'critical' : lvl === 'High' ? 'urgent' : lvl === 'Medium' ? 'caution' : 'stable'
 
 const STATUS_KEY: Record<QueueStatus, string> = {
-  waiting: 'statusWaiting', vitals: 'statusVitals', consulting: 'statusConsulting', pharmacy: 'statusPharmacy', billing: 'statusBilling', done: 'statusCompleted',
+  waiting: 'statusWaiting', vitals: 'statusVitals', consulting: 'statusConsulting', billing: 'statusBilling', done: 'statusCompleted',
 }
 const STATUS_TINT: Record<QueueStatus, string> = {
   waiting: 'bg-amber-50 text-amber-700', vitals: 'bg-surface-sunken text-accent', consulting: 'bg-[rgba(238,107,38,0.07)] text-[var(--color-accent)]',
-  pharmacy: 'bg-[rgba(238,107,38,0.07)] text-[var(--color-accent)]', billing: 'bg-primary-soft text-accent', done: 'bg-green-50 text-green-700',
+  billing: 'bg-primary-soft text-accent', done: 'bg-green-50 text-green-700',
 }
 const TRIAGE_TINT: Record<TriageLevel, string> = {
   Critical: 'bg-red-50 text-red-700', High: 'bg-primary-soft text-accent', Medium: 'bg-amber-50 text-amber-700', Low: 'bg-green-50 text-green-700',
 }
 const NEXT_STATUS: Partial<Record<QueueStatus, { next: QueueStatus; labelKey: string }>> = {
   waiting: { next: 'vitals', labelKey: 'nextSendToVitals' }, vitals: { next: 'consulting', labelKey: 'nextSendToDoctor' },
-  consulting: { next: 'pharmacy', labelKey: 'nextSendToPharmacy' }, pharmacy: { next: 'billing', labelKey: 'nextSendToBilling' },
+  consulting: { next: 'billing', labelKey: 'nextSendToBilling' },
   billing: { next: 'done', labelKey: 'nextMarkDone' },
 }
 const DEPARTMENTS = ['All', 'General Medicine', 'Cardiology', 'Orthopaedics', 'Gynaecology', 'ENT', 'Ophthalmology', 'Dermatology', 'Paediatrics']

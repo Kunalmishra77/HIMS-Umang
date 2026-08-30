@@ -357,7 +357,7 @@ export default function DoctorDashboard() {
   // stranded before consultation just because of a name-string mismatch.
   const mine     = patients.filter(p => belongsToDoctorQueue(p.doctor, currentUser?.name, activeDoctorNames))
   const queue    = mine.filter(p => ["waiting","vitals","consulting"].includes(p.queueStatus))
-  const seen     = mine.filter(p => ["pharmacy","billing","done"].includes(p.queueStatus)).length
+  const seen     = mine.filter(p => ["billing","done"].includes(p.queueStatus)).length
   const filtered = DRUGS.filter(d => d.toLowerCase().includes(medSearch.toLowerCase()) && medSearch.length > 0)
 
   // Open a patient → mark them in consultation (handoff signal to reception/queue).
@@ -496,9 +496,8 @@ export default function DoctorDashboard() {
       updateStatus(currentPatient.id, 'done')
       toast.success(`Consultation complete — ${currentPatient.name} → Admission requested (${admissionOrder.admissionType})`)
     } else {
-      const next = (isPharmacySent || prescriptions.length > 0) ? 'pharmacy' : 'billing'
-      updateStatus(currentPatient.id, next)
-      toast.success(`Consultation complete — ${currentPatient.name} → ${next === 'pharmacy' ? 'Pharmacy' : 'Billing'}`)
+      updateStatus(currentPatient.id, 'billing')
+      toast.success(`Consultation complete — ${currentPatient.name} → Billing`)
     }
     setActiveDrawer(null)
     resetConsultation()

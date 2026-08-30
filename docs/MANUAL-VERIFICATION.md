@@ -64,10 +64,16 @@ patient uses at the front door, no sign-in).
 ## Step 2 — Queue (reception → nurse handoff)
 
 **Account:** `demo-reception@example.test`, then `demo-nurse@example.test`
-**URL:** `http://localhost:3000/reception/queue`, then
+**URL:** `http://localhost:3000/reception/patients`, then
 `http://localhost:3000/nurse/vitals-requests`
 
-1. From `/reception/queue`, use the action that sends the patient for vitals.
+1. From `/reception/patients`, open the patient you registered in Step 1 (row
+   click opens the detail drawer) and click **Send to Vitals**
+   (`src/app/reception/patients/page.tsx:349`). The same action is also
+   available inline from the "Vitals" quick-action button on
+   `/reception/opd`. Note: `/reception/queue` is a passive kiosk/display
+   board for a waiting-room screen — it has no advance action, so don't use
+   it for this step.
 2. Sign out, sign in as `demo-nurse@example.test`, open
    `/nurse/vitals-requests`. Confirm the same patient appears in the "New"
    tab within a few seconds (cross-device polling — see
@@ -83,9 +89,9 @@ patient uses at the front door, no sign-in).
 2. Confirm the patient moves to the "Done" tab, and a NEWS2-derived triage
    toast appears (routine/prioritise/fast-track).
 3. **What to observe:** this is the step Layer 1 could not exercise through a
-   dedicated route (there is no `/api/opd-*` route for vitals — see the Task
-   12 report) — it validates the actual write path
-   (`usePatientStore.recordOpdVitals`), gated on your real signed-in session.
+   dedicated route (there is no `/api/opd-*` route for vitals) — it validates
+   the actual write path (`usePatientStore.recordOpdVitals`), gated on your
+   real signed-in session.
 
 ## Step 4 — Consultation (doctor)
 
@@ -105,13 +111,16 @@ patient uses at the front door, no sign-in).
 
 1. Add a prescription (at least one medicine) and dispatch it.
 2. Order at least one lab test and dispatch it.
-3. Click **Complete Consultation**.
+3. Click **Complete consultation**.
 4. **What to observe:** both orders leave the doctor's screen but **no
    portal in this build ever advances them past dispatch** — there is no
-   pharmacy or lab portal shipped (confirmed 404 in the Task 12 report's
-   Step 5). If you can find any UI control anywhere in the five shipped
-   portals that moves either order to a "dispensed"/"resulted" state, **that
-   is a Critical finding** per the task brief — report it.
+   pharmacy or lab portal shipped (both routes 404; `node
+   scripts/reachability.mjs` confirms neither is a kept route). The queue
+   itself now advances straight from Consulting to Billing (the
+   reception/doctor "Pharmacy" queue stage was removed — it pointed at that
+   same deleted portal). If you can find any UI control anywhere in the five
+   shipped portals that moves either order to a "dispensed"/"resulted"
+   state, **that is a Critical finding** per the task brief — report it.
 
 ## Step 6 — Bill (billing desk)
 
@@ -119,14 +128,15 @@ patient uses at the front door, no sign-in).
 **URL:** `http://localhost:3000/billing/dashboard`, then
 `http://localhost:3000/billing/patient/<id>`
 
-1. Find the patient (routed to billing after consultation). Confirm an OPD
+1. Find the patient (routed straight to billing after consultation — there
+   is no intermediate pharmacy queue stage to click through). Confirm an OPD
    consultation-fee line item is present (or add one).
 2. Record a payment for the full amount, mode "Cash".
 3. Confirm the bill's status becomes "Settled"/"Paid" and the balance shows
    ₹0.
 4. **Known gap — verify it yourself:** sign out, sign in as
-   `demo-patient@example.test`, and open `/patient/billing`. Per the Task 12
-   report, this page currently renders from a local mock store
+   `demo-patient@example.test`, and open `/patient/billing`. This page
+   currently renders from a local mock store
    (`usePatientOrdersStore`, hardcoded to a fixed demo patient "Kiran
    Patil"/"PT-20394"), **not** the real `bills` table you just wrote to — so
    the payment you just captured is **not expected to appear there**. Confirm
@@ -154,6 +164,6 @@ patient uses at the front door, no sign-in).
   very first request after cold start, then never again across the following
   116 requests (58 routes × 2 locales) — including repeat hits on `/`. The
   page itself returned HTTP 200 with a full, correct body both times. The
-  cause wasn't identified within Task 12's scope (see the report). If you
-  see it recur under real interactive use, that's worth a closer look;
+  cause wasn't identified within Task 12's scope. If you see it recur under
+  real interactive use, that's worth a closer look;
   if it's cold-start-only noise, it isn't blocking.

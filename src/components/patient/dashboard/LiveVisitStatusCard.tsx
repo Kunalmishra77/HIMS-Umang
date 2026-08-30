@@ -30,7 +30,7 @@ const CANON: { key: string; label: string; icon: LucideIcon }[] = [
 ]
 
 const STAGE_TO_CANON: Record<OpdStage, number> = {
-  waiting: 1, vitals: 2, consulting: 3, pharmacy: 6, billing: 7, done: 8,
+  waiting: 1, vitals: 2, consulting: 3, billing: 7, done: 8,
   booked: 0, waiting_room: 1, in_call: 3, prescription: 6,
 }
 

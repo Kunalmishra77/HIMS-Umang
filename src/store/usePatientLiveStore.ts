@@ -7,7 +7,7 @@ import { persist, createJSONStorage } from 'zustand/middleware'
 
 export type LiveMode = 'in_person' | 'video'
 export type OpdStage =
-  | 'waiting' | 'vitals' | 'consulting' | 'pharmacy' | 'billing' | 'done'
+  | 'waiting' | 'vitals' | 'consulting' | 'billing' | 'done'
   | 'booked' | 'waiting_room' | 'in_call' | 'prescription'
 export type LiveEventType = 'progress' | 'call' | 'result' | 'ai' | 'message' | 'info'
 
@@ -34,7 +34,6 @@ export const STAGES_IN_PERSON: StageMeta[] = [
   { key: 'waiting',    label: 'In Queue',        short: 'Arrived',  action: "You're checked in — please wait, we'll call you shortly.", isCall: false },
   { key: 'vitals',     label: 'Vitals Check',    short: 'Vitals',   room: 'Vitals Room 2',       action: 'Please proceed to Vitals — Room 2.', isCall: true },
   { key: 'consulting', label: 'With the Doctor', short: 'Consult',  room: 'Consultation Room 5', action: 'Go in to see Dr. Priya Nair — Room 5.', isCall: true },
-  { key: 'pharmacy',   label: 'Pharmacy',        short: 'Pharmacy', room: 'Pharmacy Counter 3',  action: 'Collect your medicines — Pharmacy Counter 3.', isCall: true },
   { key: 'billing',    label: 'Billing',         short: 'Billing',  room: 'Billing Counter 1',   action: 'Settle your bill — Billing Counter 1.', isCall: true },
   { key: 'done',       label: 'Visit Complete',  short: 'Done',     action: 'All done — take care! Your visit summary is ready.', isCall: false },
 ]
@@ -111,8 +110,7 @@ export const usePatientLiveStore = create<LiveState>()(persist((set, get) => ({
 
     if (s.mode === 'in_person') {
       if (next.key === 'consulting') events.unshift(mkEvent('progress', 'Vitals recorded', 'BP 130/85 · SpO₂ 98% · Temp 98.4°F · Pulse 78'))
-      if (next.key === 'pharmacy') events.unshift(mkEvent('result', 'e-Prescription ready', '2 medicines · sent to pharmacy', 'Pharmacy Counter 3'))
-      if (next.key === 'billing') events.unshift(mkEvent('result', 'Lab result ready', 'CBC reviewed — explained in plain language'))
+      if (next.key === 'billing') events.unshift(mkEvent('result', 'e-Prescription ready', '2 medicines · Lab result reviewed — explained in plain language'))
       if (next.key === 'done') events.unshift(mkEvent('result', 'Visit summary ready', 'Plain-language summary + follow-up plan'))
     } else {
       if (next.key === 'waiting_room') events.unshift(mkEvent('progress', 'Pre-consult complete', 'Your details are with the doctor'))

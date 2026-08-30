@@ -7,13 +7,12 @@ const steps: { key: QueueStatus; label: string }[] = [
   { key: 'waiting', label: 'Registered' },
   { key: 'vitals', label: 'Vitals' },
   { key: 'consulting', label: 'Consulting' },
-  { key: 'pharmacy', label: 'Pharmacy' },
   { key: 'billing', label: 'Billing' },
   { key: 'done', label: 'Done' },
 ]
 
 const statusIndex: Record<QueueStatus, number> = {
-  waiting: 0, vitals: 1, consulting: 2, pharmacy: 3, billing: 4, done: 5,
+  waiting: 0, vitals: 1, consulting: 2, billing: 3, done: 4,
 }
 
 interface StatusStepperProps {

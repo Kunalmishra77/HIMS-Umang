@@ -10,7 +10,7 @@ import { useWhatsAppStore } from "@/store/useWhatsAppStore"
 import {
   Users, Activity, Stethoscope, CreditCard, Calendar,
   UserPlus, ArrowRight, AlertTriangle, MessageSquare, Volume2, Clock, ChevronRight,
-  Pill, CheckCircle2, Hourglass,
+  CheckCircle2, Hourglass,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
@@ -22,7 +22,7 @@ const TRIAGE_TINT: Record<TriageLevel, string> = {
   Low: 'bg-green-50 text-green-700',
 }
 const CARD = "rounded-2xl bg-white shadow-[0_1px_4px_rgba(15,23,42,0.06),0_4px_16px_rgba(15,23,42,0.04)]"
-const ACTIVE_STATUSES = ['waiting', 'vitals', 'consulting', 'pharmacy', 'billing'] as const
+const ACTIVE_STATUSES = ['waiting', 'vitals', 'consulting', 'billing'] as const
 
 export default function ReceptionDashboard() {
   const t = useTranslations('reception')
@@ -47,7 +47,6 @@ export default function ReceptionDashboard() {
     waiting:    todayQueue.filter(p => p.queueStatus === 'waiting').length,
     vitals:     todayQueue.filter(p => p.queueStatus === 'vitals').length,
     consulting: todayQueue.filter(p => p.queueStatus === 'consulting').length,
-    pharmacy:   todayQueue.filter(p => p.queueStatus === 'pharmacy').length,
     billing:    todayQueue.filter(p => p.queueStatus === 'billing').length,
     done:       todayQueue.filter(p => p.queueStatus === 'done').length,
   }
@@ -94,9 +93,9 @@ export default function ReceptionDashboard() {
       </div>
 
       {/* M13.4 — OPD walk-in journey pipeline.
-          Six chevron-linked stages mirroring how a walk-in patient moves through
-          the hospital today: Waiting room → Vitals → Consulting → Pharmacy →
-          Billing → Done. Each tile is a direct nav button to the right surface. */}
+          Five chevron-linked stages mirroring how a walk-in patient moves through
+          the hospital today: Waiting room → Vitals → Consulting → Billing → Done.
+          Each tile is a direct nav button to the right surface. */}
       <div className={cn(CARD, "p-4")}>
         <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
           <h2 className="text-sm font-bold text-slate-800 flex items-center gap-2">
@@ -106,12 +105,11 @@ export default function ReceptionDashboard() {
             {t('dashboard.journeySummary', { count: todayPatients.length, wait: avgWait })}
           </p>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 items-stretch">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 items-stretch">
           {[
             { label: t('dashboard.stageWaiting'),    sub: t('dashboard.stageWaitingSub'),  count: pipelineCounts.waiting,    color: 'border-amber-200 bg-amber-50',     icon: Users,        fg: 'text-amber-700',    href: '/reception/opd',     cta: t('dashboard.ctaSendToVitals') },
             { label: t('dashboard.stageVitals'),     sub: t('dashboard.stageVitalsSub'),       count: pipelineCounts.vitals,     color: 'border-primary/20 bg-primary-soft',   icon: Activity,     fg: 'text-accent',   href: '/reception/opd',     cta: t('dashboard.ctaTrack') },
             { label: t('dashboard.stageConsulting'), sub: t('dashboard.stageConsultingSub'),      count: pipelineCounts.consulting, color: 'border-[rgba(238,107,38,0.20)] bg-[rgba(238,107,38,0.07)]',   icon: Stethoscope,  fg: 'text-[var(--color-accent)]',   href: '/reception/queue',   cta: t('dashboard.ctaDisplayBoard') },
-            { label: t('dashboard.stagePharmacy'),   sub: t('dashboard.stagePharmacySub'),    count: pipelineCounts.pharmacy,   color: 'border-[rgba(238,107,38,0.20)] bg-[rgba(238,107,38,0.07)]',       icon: Pill,         fg: 'text-[var(--color-accent)]',     href: '/reception/opd',     cta: t('dashboard.ctaTrack') },
             { label: t('dashboard.stageBilling'),    sub: t('dashboard.stageBillingSub'),    count: pipelineCounts.billing,    color: 'border-rose-200 bg-rose-50',       icon: CreditCard,   fg: 'text-rose-700',     href: '/reception/billing', cta: t('dashboard.ctaCollect') },
             { label: t('dashboard.stageDone'),       sub: t('dashboard.stageDoneSub'),  count: pipelineCounts.done,       color: 'border-emerald-200 bg-emerald-50', icon: CheckCircle2, fg: 'text-emerald-700',  href: '/reception/patients',cta: t('dashboard.ctaReview') },
           ].map((s, i, arr) => (

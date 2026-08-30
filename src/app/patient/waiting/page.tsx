@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import {
-  Clock, CheckCircle, Stethoscope, Pill, CreditCard,
+  Clock, CheckCircle, Stethoscope, CreditCard,
   Sparkles, Bell, ChevronRight, Activity, Users,
   BedDouble, Scissors, ShieldCheck,
 } from "lucide-react"
@@ -169,7 +169,6 @@ const STEPS = [
   { id: 'arrived',     label: 'Arrived',       icon: CheckCircle },
   { id: 'vitals',      label: 'Vitals',         icon: Activity },
   { id: 'consulting',  label: 'Consulting',     icon: Stethoscope },
-  { id: 'pharmacy',    label: 'Pharmacy',       icon: Pill },
   { id: 'billing',     label: 'Billing',        icon: CreditCard },
 ]
 
@@ -413,7 +412,7 @@ export default function WaitingRoomPage() {
         <div className="p-4 rounded-xl flex items-start gap-3 bg-amber-50 border border-amber-200">
           <Clock className="h-5 w-5 mt-0.5 flex-shrink-0 text-amber-600" />
           <p className="text-sm font-medium leading-relaxed text-amber-800">
-            <strong className="text-amber-900">Tip:</strong> The doctor already has your AI brief. Once called, your consultation will take significantly less time. Pharmacy will have your medicines ready before you arrive.
+            <strong className="text-amber-900">Tip:</strong> The doctor already has your AI brief. Once called, your consultation will take significantly less time.
           </p>
         </div>
       </motion.div>
