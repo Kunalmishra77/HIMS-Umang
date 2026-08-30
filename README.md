@@ -136,6 +136,30 @@ different failure sets with no code change between them. `npm run lint` is a
 no-regression gate against the inherited Gov-HIMS baseline, not a pass gate —
 it has never returned zero problems on this codebase.
 
+### Live-server / manual verification (Task 12's three layers)
+
+The binding gate above is hermetic and doesn't touch a running server. Three
+additional, non-hermetic layers close that gap — none of them are part of
+the binding gate (they need a live server and, for Layer 1, the live shared
+Supabase project), so run them separately when you want that extra
+confidence, e.g. before a demo or a release:
+
+- **Layer 1 — `node scripts/journey-walk.mjs`** drives the OPD backbone
+  (register → queue → vitals → consult → orders → bill) against a *running*
+  server and the live Supabase project via the real `/api/opd-*` routes (plus
+  the same direct-Supabase-write path the app itself uses for vitals/billing,
+  which have no dedicated route), asserting every row actually lands in
+  Postgres. Start the app first (`npm run build && npm start`), then run the
+  script from another terminal.
+- **Layer 2 — `node scripts/route-smoke.mjs`** requests every shipped
+  `src/app/**/page.tsx` route in both locales against a running server and
+  asserts HTTP 200 with no `MISSING_MESSAGE`/`IntlError` in the body. Same
+  prerequisite: start the app first, then run the script.
+- **Layer 3 — [`docs/MANUAL-VERIFICATION.md`](docs/MANUAL-VERIFICATION.md)**
+  is the human script for what only a browser can prove: the voice
+  check-in's microphone flow, form validation, and that a button is actually
+  wired to its handler.
+
 ## Known-partial
 
 - Order **fulfilment** (dispensing a prescription, running a lab test,
@@ -170,6 +194,10 @@ it has never returned zero problems on this codebase.
   `deriveUhid()` computes a stable `PUH-YYYY-NNNNN` from the patient id
   wherever a canonical UHID was never captured. This is correct by design,
   not a bug — a `NULL` `uhid` on a freshly registered patient is expected.
+- `src/rules-engine/` (allergy blocking, drug interactions, dosage bounds,
+  critical values) was deleted — it was already dead in the source repo,
+  reachable only from an out-of-scope lab panel and never wired into the
+  consultation flow, so this extraction carries none of it forward.
 
 ---
 
@@ -191,6 +219,8 @@ src/
 messages/{en,hi}/        # Bilingual UI strings, one namespace per module, key-for-key parity enforced
 supabase/migrations/     # Gov-HIMS's applied migration history — verbatim, see above
 scripts/                 # i18n tooling, reachability checker, seed/
+scripts/journey-walk.mjs # Layer 1 live-server/live-DB OPD journey check — see Verification above
+scripts/route-smoke.mjs  # Layer 2 live-server route/i18n smoke test — see Verification above
 scripts/seed/            # provision-demo-accounts.mjs + bills/drug-master/nurse-worklist seeds
 docs/superpowers/        # This extraction's own design spec and implementation plan
 ```

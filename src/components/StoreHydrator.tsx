@@ -27,7 +27,6 @@ import { useFamilyTokenStore } from "@/store/useFamilyTokenStore"
 import { useFeedbackStore } from "@/store/useFeedbackStore"
 import { useFollowupStore } from "@/store/useFollowupStore"
 import { useInsuranceStore } from "@/store/useInsuranceStore"
-import { useInventoryStore } from "@/store/useInventoryStore"
 import { useJourneyStore } from "@/store/useJourneyStore"
 import { useLabOrdersStore } from "@/store/useLabOrdersStore"
 import { useMortuaryStore } from "@/store/useMortuaryStore"
@@ -71,7 +70,6 @@ export function StoreHydrator() {
     useFeedbackStore.persist.rehydrate()
     useFollowupStore.persist.rehydrate()
     useInsuranceStore.persist.rehydrate()
-    useInventoryStore.persist.rehydrate()
     useJourneyStore.persist.rehydrate()
     useLabOrdersStore.persist.rehydrate()
     useMortuaryStore.persist.rehydrate()
@@ -193,7 +191,6 @@ export function StoreHydrator() {
               () => useInsuranceStore.getState().hydrateReal(),
               () => useERStore.getState().hydrateReal(),
               () => useOTStore.getState().hydrateReal(),
-              () => useInventoryStore.getState().hydrateReal(),
               () => useHRStore.getState().hydrateReal(),
               () => useMortuaryStore.getState().hydrateReal(),
               () => usePatientFeedbackStore.getState().hydrateReal(),

@@ -878,7 +878,7 @@ export function activeDoctors(staff: StaffMember[]): DerivedDoctorRef[] {
 // ── Real-backend bridge ──────────────────────────────────────────────────
 // Session-gated write-through: local state is always the source of truth for
 // the UI; the Supabase write is best-effort and never blocks/reverts a
-// mutation on failure (matches useInventoryStore / useAmbulanceStore / useOTStore).
+// mutation on failure (matches useOTStore).
 async function persistHR() {
   const { data: { session } } = await getSupabaseClient().auth.getSession()
   if (!session) return

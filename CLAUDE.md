@@ -19,16 +19,16 @@
 
 ## Branch Discipline
 
-- Work on feature branches, never commit directly to `main`
+- Work on feature branches, never commit directly to `master`
 - Branch naming: `feat/<name>`, `fix/<name>`, `chore/<name>`
-- PRs required to merge to `main`
+- PRs required to merge to `master`
 
 ## Guardrails
 
 - Read `node_modules/next/dist/docs/` before writing any Next.js code (see AGENTS.md)
 - TypeScript always — no `any` unless truly unavoidable
 - Functional components only, no class components
-- `StyleSheet.create()` for React Native styles; for Next.js use Tailwind classes
+- Next.js only — use Tailwind classes for styling, never React Native APIs
 - No inline style objects for reused styles
 - Do not add error handling for scenarios that cannot happen
 - Validate only at system boundaries (user input, external APIs)

@@ -8,11 +8,11 @@ const STORES = ['usePharmacyStore', 'useLabOrdersStore', 'useRadiologyStudiesSto
 // orders and never fulfils them — no portal here could act on these.
 //
 // The brief's initial guesses ('dispense', 'collectSpecimen', 'accession', …)
-// don't match this codebase's real action names (Step 1 inventory) and are
-// kept below for reference/future-proofing, but they under-report: every
-// store passed with only those stems. Widened with the actual per-store
-// action names being removed, found by reading each store's action list and
-// its live callers (docs/task-9-report.md has the full inventory).
+// don't match this codebase's real action names and are kept below for
+// reference/future-proofing, but they under-report: every store passed with
+// only those stems. Widened with the actual per-store action names being
+// removed, found by reading each store's own action list and its live
+// callers directly (see the FULFILMENT array below for the full inventory).
 //
 // A bare 'release' used to be left out here because actionNames() matched
 // ANY 2-space `identifier:` line, including data fields — useLabOrdersStore's
