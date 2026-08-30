@@ -16,7 +16,7 @@ export type ClaimInput = {
 
 // Indian numbers are stored inconsistently across intake paths ("+91 98109 44012",
 // "098109-44012", "9810944012"). Compare on digits alone, dropping a leading 91 or
-// 0 so the same subscriber matches however it was typed.
+// 0 so the same subscriber matches however it was typed. Result must be exactly 10 digits.
 export function normalizePhone(raw: string): string {
   const digits = raw.replace(/\D/g, '')
   if (digits.length === 12 && digits.startsWith('91')) return digits.slice(2)
@@ -24,8 +24,12 @@ export function normalizePhone(raw: string): string {
   return digits
 }
 
+export function isValidNormalizedPhone(normalized: string): boolean {
+  return normalized.length === 10
+}
+
 export function normalizeName(raw: string): string {
-  return raw.trim().toLowerCase().replace(/\s+/g, ' ')
+  return raw.trim().toLowerCase().replace(/\s+/g, ' ').normalize('NFC')
 }
 
 // All three factors must match, and the record must be unclaimed. The UHID is
@@ -35,6 +39,11 @@ export function matchesClaim(patient: ClaimCandidate, claim: ClaimInput): boolea
   if (patient.authUserId) return false
   const expected = resolveUhid(patient.id, patient.uhid).toUpperCase()
   if (expected !== claim.uhid.trim().toUpperCase()) return false
-  if (normalizePhone(patient.phone) !== normalizePhone(claim.phone)) return false
+
+  const patientPhone = normalizePhone(patient.phone)
+  const claimPhone = normalizePhone(claim.phone)
+  if (!isValidNormalizedPhone(patientPhone) || !isValidNormalizedPhone(claimPhone)) return false
+  if (patientPhone !== claimPhone) return false
+
   return normalizeName(patient.fullName) === normalizeName(claim.fullName)
 }
