@@ -395,17 +395,20 @@ const BodySchema = z.object({
   fullName: z.string().min(2),
 })
 
-// One response for every failure. Distinguishing "no such UHID" from "wrong
-// phone" would turn this into a UHID-existence oracle.
-const FAILED = NextResponse.json({ ok: false, error: 'CLAIM_FAILED' }, { status: 400 })
+// One response shape for every failure. Distinguishing "no such UHID" from
+// "wrong phone" would turn this into a UHID-existence oracle.
+//
+// Built per call, never shared: a Response body is a single-use stream, so a
+// module-scope instance would serve the first request and fail every one after.
+const failed = () => NextResponse.json({ ok: false, error: 'CLAIM_FAILED' }, { status: 400 })
 
 export async function POST(req: NextRequest) {
   const parsed = BodySchema.safeParse(await req.json().catch(() => null))
-  if (!parsed.success) return FAILED
+  if (!parsed.success) return failed()
   const { email, password, uhid, phone, fullName } = parsed.data
 
   const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown'
-  if (!checkAndRecord({ ip, uhid }).allowed) return FAILED
+  if (!checkAndRecord({ ip, uhid }).allowed) return failed()
 
   const admin = getSupabaseAdminClient()
 
@@ -413,7 +416,7 @@ export async function POST(req: NextRequest) {
     .from('patients')
     .select('id, uhid, phone, full_name, auth_user_id')
     .is('deleted_at', null)
-  if (error || !rows) return FAILED
+  if (error || !rows) return failed()
 
   const candidates: ClaimCandidate[] = rows.map((r) => ({
     id: r.id as string,
@@ -426,7 +429,7 @@ export async function POST(req: NextRequest) {
   const patient = candidates.find((c) => matchesClaim(c, { uhid, phone, fullName }))
   if (!patient) {
     recordFailure({ ip, uhid })
-    return FAILED
+    return failed()
   }
 
   const { data: created, error: userErr } = await admin.auth.admin.createUser({
@@ -438,7 +441,7 @@ export async function POST(req: NextRequest) {
   })
   if (userErr || !created?.user) {
     recordFailure({ ip, uhid })
-    return FAILED
+    return failed()
   }
   const userId = created.user.id
 
@@ -454,7 +457,7 @@ export async function POST(req: NextRequest) {
     .upsert({ id: userId, role: 'patient', full_name: patient.fullName, is_active: true }, { onConflict: 'id' })
   if (profileErr) {
     await rollback()
-    return FAILED
+    return failed()
   }
 
   const { error: linkErr } = await admin
@@ -464,7 +467,7 @@ export async function POST(req: NextRequest) {
     .is('auth_user_id', null)
   if (linkErr) {
     await rollback()
-    return FAILED
+    return failed()
   }
 
   return NextResponse.json({ ok: true })
