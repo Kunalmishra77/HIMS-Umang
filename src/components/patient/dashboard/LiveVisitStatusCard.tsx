@@ -1,18 +1,19 @@
 "use client"
 
 /* Live Visit Status — the patient's real-time journey through the hospital,
- * shown as a 9-stage track (Checked In → Waiting → Vitals → Consultation →
- * Laboratory → Radiology → Pharmacy → Billing → Completed). Position is derived
- * from the live journey engine (usePatientLiveStore); the Laboratory & Radiology
- * steps are enriched from the diagnostics store so they reflect real report
- * progress rather than being skipped over. */
+ * shown as a 6-stage track (Checked In → Waiting → Vitals → Consultation →
+ * Billing → Completed). This is an OPD-only build (no Laboratory, Radiology
+ * or Pharmacy portal), so the track only shows stages the patient actually
+ * passes through in person. Position is derived from the live journey engine
+ * (usePatientLiveStore). A prescription is written during the consultation,
+ * so the 'prescription' OpdStage (video-mode e-prescription step) maps back
+ * onto the Consultation index rather than a separate fulfilment stage. */
 
 import {
-  DoorOpen, Clock, Activity, Stethoscope, FlaskConical, ScanLine, Pill, Receipt,
+  DoorOpen, Clock, Activity, Stethoscope, Receipt,
   CheckCircle2, ArrowRight, type LucideIcon,
 } from "lucide-react"
 import { usePatientLiveStore, stagesFor, type OpdStage } from "@/store/usePatientLiveStore"
-import { usePatientDiagnosticsStore, byKind } from "@/store/usePatientDiagnosticsStore"
 import { cn } from "@/lib/utils"
 
 type StepState = "done" | "current" | "upcoming"
@@ -22,16 +23,13 @@ const CANON: { key: string; label: string; icon: LucideIcon }[] = [
   { key: "waiting", label: "Waiting", icon: Clock },
   { key: "vitals", label: "Vitals", icon: Activity },
   { key: "consultation", label: "Consultation", icon: Stethoscope },
-  { key: "laboratory", label: "Laboratory", icon: FlaskConical },
-  { key: "radiology", label: "Radiology", icon: ScanLine },
-  { key: "pharmacy", label: "Pharmacy", icon: Pill },
   { key: "billing", label: "Billing", icon: Receipt },
   { key: "completed", label: "Completed", icon: CheckCircle2 },
 ]
 
 const STAGE_TO_CANON: Record<OpdStage, number> = {
-  waiting: 1, vitals: 2, consulting: 3, billing: 7, done: 8,
-  booked: 0, waiting_room: 1, in_call: 3, prescription: 6,
+  waiting: 1, vitals: 2, consulting: 3, billing: 4, done: 5,
+  booked: 0, waiting_room: 1, in_call: 3, prescription: 3,
 }
 
 export function LiveVisitStatusCard() {
@@ -40,20 +38,13 @@ export function LiveVisitStatusCard() {
   const token = usePatientLiveStore((s) => s.token)
   const aheadOfYou = usePatientLiveStore((s) => s.aheadOfYou)
   const etaMinutes = usePatientLiveStore((s) => s.etaMinutes)
-  const items = usePatientDiagnosticsStore((s) => s.items)
 
   const currentIndex = STAGE_TO_CANON[stage] ?? 0
   const isDone = stage === "done"
   const meta = stagesFor(mode).find((m) => m.key === stage)
 
   function stateFor(i: number): StepState {
-    let state: StepState = i < currentIndex ? "done" : i === currentIndex ? "current" : "upcoming"
-    // Lab (4) & Radiology (5) reflect real diagnostics progress once consultation is past.
-    if ((i === 4 || i === 5) && currentIndex >= 3) {
-      const group = byKind(items, i === 4 ? "lab" : "radiology")
-      if (group.length) state = group.every((g) => g.status === "completed") ? "done" : "current"
-    }
-    return state
+    return i < currentIndex ? "done" : i === currentIndex ? "current" : "upcoming"
   }
 
   return (
