@@ -25,14 +25,10 @@ import { getSupabaseClient } from '@/lib/supabase/client'
 // ─────────────────────────────────────────────────────────────────────────
 
 // ─── Branch concept ──────────────────────────────────────────────────────
-export type BranchId = 'BRANCH_MAIN' | 'BRANCH_WHITEFIELD' | 'BRANCH_INDIRANAGAR'
+// Umang Hospital is a single site — one branch value, kept so StaffMember
+// records carry the field the shared schema expects.
+export type BranchId = 'BRANCH_MAIN'
 export const DEFAULT_BRANCH: BranchId = 'BRANCH_MAIN'
-
-export const BRANCH_LABEL: Record<BranchId, string> = {
-  BRANCH_MAIN:        'Umang Hospital — MG Road',
-  BRANCH_WHITEFIELD:  'Umang Hospital — Whitefield',
-  BRANCH_INDIRANAGAR: 'Umang Hospital — Indiranagar',
-}
 
 // ─── Enums ──────────────────────────────────────────────────────────────
 export type ContractType = 'permanent' | 'visiting' | 'locum' | 'intern' | 'contract'

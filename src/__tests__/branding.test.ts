@@ -25,7 +25,7 @@ const ALLOWED_IDENTIFIERS = new Set([
   'agentix-doctor-profile', 'agentix-doctorstatsstore', 'agentix-emergencystore',
   'agentix-erstore', 'agentix-family-token-store', 'agentix-feedbackstore',
   'agentix-followupstore', 'agentix-hr', 'agentix-insurancestore',
-  'agentix-inventorystore', 'agentix-ipd', 'agentix-journeystore',
+  'agentix-ipd', 'agentix-journeystore',
   'agentix-labordersstore', 'agentix-messaging', 'agentix-mortuarystore',
   'agentix-notifications', 'agentix-nurse-shift', 'agentix-nursing-tasks',
   'agentix-otstore', 'agentix-patient-feedback', 'agentix-patient-profiles',
