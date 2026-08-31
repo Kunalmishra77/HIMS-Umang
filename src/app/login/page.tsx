@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
 import { getSupabaseClient } from "@/lib/supabase/client"
 import { useAuthStore } from "@/store/useAuthStore"
 import { Input } from "@/components/ui/input"
@@ -91,6 +92,12 @@ export default function LoginPage() {
         <Button type="submit" disabled={submitting || !email || !password} className="w-full">
           {submitting ? "Signing in..." : "Sign in"}
         </Button>
+        <p className="mt-4 text-center text-sm text-foreground-lighter">
+          {"First time here? "}
+          <Link href="/claim" className="font-medium text-accent hover:underline">
+            Claim your patient record
+          </Link>
+        </p>
       </form>
     </div>
   )
