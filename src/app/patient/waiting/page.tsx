@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import {
   Clock, CheckCircle, Stethoscope, CreditCard,
   Sparkles, Bell, ChevronRight, Activity, Users,
-  BedDouble, Scissors, ShieldCheck,
+  BedDouble, Scissors, ShieldCheck, Hourglass,
 } from "lucide-react"
 import { NeonBadge } from "@/components/ui/neon-badge"
 import { ProgressRing } from "@/components/ui/progress-ring"
@@ -234,7 +234,14 @@ export default function WaitingRoomPage() {
 
       {viewMode === 'ipd' && <IPDFamilyTracker />}
 
-      {viewMode === 'opd' && <>
+      {viewMode === 'opd' && !myPatient && (
+        <div className="hms-card p-8 text-center text-slate-400">
+          <Hourglass className="h-10 w-10 mx-auto mb-3 opacity-40" />
+          <p className="font-semibold">No active OPD visit linked to this account</p>
+        </div>
+      )}
+
+      {viewMode === 'opd' && myPatient && <>
       {/* Header */}
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex items-center justify-between bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
         <div>

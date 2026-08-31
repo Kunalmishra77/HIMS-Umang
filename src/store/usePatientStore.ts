@@ -159,6 +159,12 @@ interface PatientState {
    *  it into the local board, so a patient registered/checked-in on ANY device
    *  appears here. Safe to call repeatedly (idempotent, dedups by id). */
   hydrateReal: () => Promise<void>
+  /** Load the signed-in patient's own row via /api/patient/me and merge it into
+   *  `patients`, independent of whether they have an active visit. hydrateReal
+   *  only sources from /api/opd-queue (active visits only), so a patient who
+   *  claimed their record but has no visit in progress would otherwise never
+   *  appear locally and usePatientMe would resolve undefined forever. */
+  hydrateMe: () => Promise<void>
   addPatient: (patient: Partial<Patient> & { name: string; phone: string }) => Promise<void>
   bookAppointment: (appt: Omit<Appointment, 'id'>) => void
   updateAppointment: (id: string, patch: Partial<Appointment>) => void
@@ -597,6 +603,26 @@ export const usePatientStore = create<PatientState>()(persist((set, get) => ({
       })
     } catch (err) {
       console.error('[usePatientStore] hydrateReal failed:', err)
+    }
+  },
+
+  hydrateMe: async () => {
+    try {
+      const res = await fetch('/api/patient/me', { cache: 'no-store' })
+      if (!res.ok) return
+      const { patient } = (await res.json()) as { patient: Patient | null }
+      if (!patient) return
+      set((s) => {
+        // If hydrateReal already brought this patient in (they have an active
+        // visit), it already carries accurate queueStatus/visitId — leave it
+        // alone rather than clobbering it with this route's placeholder
+        // "no active visit" status. Only add the row when it's genuinely new.
+        if (s.patients.some(p => p.id === patient.id)) return s
+        const patients = [...s.patients, patient]
+        return { patients, queue: patients.filter(p => ['waiting', 'vitals', 'consulting'].includes(p.queueStatus)) }
+      })
+    } catch (err) {
+      console.error('[usePatientStore] hydrateMe failed:', err)
     }
   },
 
