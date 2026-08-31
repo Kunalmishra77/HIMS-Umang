@@ -47,8 +47,13 @@ async function withFloor<T>(startedAt: number, response: T): Promise<T> {
 export async function POST(req: NextRequest) {
   const startedAt = Date.now()
 
+  // No floor here: the floor exists only to mask whether the three factors
+  // matched, and a body that fails validation never reaches that comparison —
+  // it touches no patient data, so its latency reveals nothing. Flooring it
+  // would instead let unlimited malformed-body POSTs (never rate-limited,
+  // since checkAndRecord hasn't run yet) pin a request slot for 500ms each.
   const parsed = BodySchema.safeParse(await req.json().catch(() => null))
-  if (!parsed.success) return withFloor(startedAt, failed())
+  if (!parsed.success) return failed()
   const { email, password, uhid, phone, fullName } = parsed.data
 
   const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown'
