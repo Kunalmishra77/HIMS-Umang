@@ -868,6 +868,14 @@ if (patientUserId) {
 }
 ```
 
+- [ ] **Step 1b: Give the demo patient a bill to show**
+
+Linking alone leaves the demo unable to demonstrate what this plan delivers. Measured against the live database: there are 4 bills, and **`PT-20394` has none.** `seed-bills.mjs` seeds only `PT-1783414555843` and `PT-1783500191570`. So the moment this task relinks the demo account away from the `ZZ-JourneyTest` row (which does have a ₹600 bill) to Kiran Patil, `/patient/billing` shows "No bills yet" — and the headline outcome, *a settled bill is visible to the patient who paid it*, becomes undemonstrable in the demo.
+
+Add a **paid OPD consultation bill for `PT-20394`** to `scripts/seed/seed-bills.mjs`, following the shape of the existing `BIL-opd-1` entry (cash payer, `status: 'paid'`, a consultation line). Give it a stable id such as `BIL-opd-kiran` so re-running the script is idempotent — it upserts rather than duplicating. Check how the existing rows handle `total`/`paid`/`balance` and match that; a bill whose `balance` disagrees with `total - paid` would render a nonsensical figure on the patient's page.
+
+This writes to the database shared with Gov-HIMS. It is seed data in a seed script, which is what that script is for, but record the row's id in your report.
+
 - [ ] **Step 2: Run it and verify the link landed**
 
 ```bash
