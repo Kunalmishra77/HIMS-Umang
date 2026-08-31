@@ -4,27 +4,48 @@ import { useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { QRCodeSVG } from "qrcode.react"
 import { QrCode, ExternalLink, Share2 } from "lucide-react"
-import { usePatientStore } from "@/store/usePatientStore"
 import { useAuthStore } from "@/store/useAuthStore"
+import { usePatientMe } from "@/lib/usePatientMe"
 import { useFamilyTokenStore } from "@/store/useFamilyTokenStore"
 
 export function FamilyTrackingCard() {
   const router = useRouter()
   const currentUser = useAuthStore(s => s.currentUser)
-  const patients = usePatientStore(s => s.patients)
-  const me = patients.find(p => p.id === currentUser?.id)
+  const { me } = usePatientMe()
   // M13.11 — Public WhatsApp-style page; same URL we SMS to the attendant
   // at ER registration. The link now carries a consented, time-boxed access
   // token (?t=…) so the UHID alone can't open the page.
-  const uhid = me?.id ?? currentUser?.id ?? 'PT-20394'
+  //
+  // No demo/auth-id fallback here: minting a token against a fallback id
+  // used to mean an unlinked patient shared a live link into SOMEONE ELSE'S
+  // record (the demo patient's). Below, the whole card renders an empty
+  // state instead when `me` is undefined.
+  const uhid = me?.id
   const issue = useFamilyTokenStore(s => s.issue)
-  const record = useFamilyTokenStore(s => s.records[uhid.toUpperCase()])
-  // Ensure a consented token exists for the patient's own share link.
+  const record = useFamilyTokenStore(s => (uhid ? s.records[uhid.toUpperCase()] : undefined))
+  // Ensure a consented token exists for the patient's own share link — only
+  // once a real linked patient record is resolved.
   useEffect(() => {
     if (uhid && (!record || record.expiresAt <= Date.now())) {
       issue(uhid, me?.name ?? 'Patient', { consent: true, issuedBy: currentUser?.id })
     }
   }, [uhid, record, me?.name, currentUser?.id, issue])
+
+  if (!uhid) {
+    return (
+      <div className="rounded-3xl bg-white shadow-[0_1px_4px_rgba(15,23,42,0.06),0_8px_28px_rgba(15,23,42,0.05)] p-5">
+        <div className="flex items-center gap-2 mb-1">
+          <span className="h-8 w-8 rounded-xl bg-[rgba(238,107,38,0.07)] flex items-center justify-center"><QrCode className="h-4.5 w-4.5 text-[var(--color-accent)]" /></span>
+          <div>
+            <h3 className="text-[15px] font-bold text-slate-900 leading-tight">Family live tracking</h3>
+            <p className="text-[12px] text-slate-400">Let your family follow your visit — no medical data</p>
+          </div>
+        </div>
+        <p className="text-[12.5px] text-slate-400 mt-3">No hospital record linked to this account yet — link your record to generate a family tracking link.</p>
+      </div>
+    )
+  }
+
   const query = record?.token ? `?t=${record.token}` : ''
   const url = typeof window !== 'undefined'
     ? `${window.location.origin}/p/${uhid}${query}`

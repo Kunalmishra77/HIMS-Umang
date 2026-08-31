@@ -10,7 +10,7 @@ import {
 import { NeonBadge } from "@/components/ui/neon-badge"
 import { ProgressRing } from "@/components/ui/progress-ring"
 import { usePatientStore } from "@/store/usePatientStore"
-import { useAuthStore } from "@/store/useAuthStore"
+import { usePatientMe } from "@/lib/usePatientMe"
 import { useDischargeStore } from "@/store/useDischargeStore"
 import { cn } from "@/lib/utils"
 
@@ -184,8 +184,7 @@ function getFirstName(name: string) { return name.split(' ')[0] }
 
 export default function WaitingRoomPage() {
   const { patients } = usePatientStore()
-  const { currentUser } = useAuthStore()
-  const myPatient = patients.find(p => p.id === (currentUser?.id ?? 'PT-20394'))
+  const { me: myPatient } = usePatientMe()
 
   const waiting = patients.filter(p => ['waiting', 'vitals'].includes(p.queueStatus))
   const myPosition = myPatient ? waiting.findIndex(p => p.id === myPatient.id) + 1 : 4

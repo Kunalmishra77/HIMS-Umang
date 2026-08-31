@@ -109,6 +109,13 @@ export type Patient = {
   // (src/lib/api). Older/demo-seeded patients won't have this; the nurse-vitals
   // wiring (Task 9) checks for its presence before attempting a real write.
   visitId?: string
+  // Supabase auth uuid this patient row is linked to (patients.auth_user_id),
+  // stamped by the claim flow (POST /api/patient/claim). usePatientMe resolves
+  // the signed-in patient by matching this against useAuthStore's currentUser.id
+  // — never by id, which is a hospital PT-XXXXX string, not the auth uuid.
+  // Local/demo-seeded patients won't have one until claimed; hydrateReal is
+  // what brings it in from the real backend.
+  authUserId?: string
 }
 
 export type Appointment = {
@@ -582,7 +589,7 @@ export const usePatientStore = create<PatientState>()(persist((set, get) => ({
         const dbById = new Map(fromDb.map(p => [p.id, p]))
         const merged = s.patients.map(p => {
           const d = dbById.get(p.id)
-          return d ? { ...p, queueStatus: d.queueStatus, visitId: d.visitId } : p
+          return d ? { ...p, queueStatus: d.queueStatus, visitId: d.visitId, authUserId: d.authUserId } : p
         })
         const seen = new Set(merged.map(p => p.id))
         const all = [...fromDb.filter(p => !seen.has(p.id)), ...merged]

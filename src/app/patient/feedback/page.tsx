@@ -8,6 +8,7 @@ import { usePatientFeedbackStore, type SubmitFeedbackInput } from "@/store/usePa
 import { useNotificationStore } from "@/store/useNotificationStore"
 import { useAuditStore } from "@/store/useAuditStore"
 import { useAuthStore } from "@/store/useAuthStore"
+import { usePatientMe } from "@/lib/usePatientMe"
 import type { FeedbackRequest, FeedbackRecord, FeedbackCategoryRatings } from "@/types/feedback"
 import { Star, CheckCircle, ThumbsUp, ThumbsDown, ChevronDown, ChevronUp, MessageSquarePlus } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -248,7 +249,7 @@ function FeedbackForm({ request, onSubmitted }: { request: FeedbackRequest; onSu
 
 // ── Main page ─────────────────────────────────────────────────────────────────
 export default function PatientFeedbackPage() {
-  const currentUser = useAuthStore(s => s.currentUser)
+  const { me }      = usePatientMe()
   const records     = usePatientFeedbackStore(s => s.records)
   const requests    = usePatientFeedbackStore(s => s.requests)
   const getPending  = usePatientFeedbackStore(s => s.getPendingForPatient)
@@ -263,9 +264,10 @@ export default function PatientFeedbackPage() {
     return () => clearTimeout(t)
   }, [expireStale])
 
-  const patientId   = currentUser?.id ?? 'PT-20394'
-  const pending     = getPending(patientId)
-  const myRecords   = getRecords(patientId)
+  // No demo fallback: an unlinked account has no feedback requests/records to show.
+  const patientId   = me?.id
+  const pending     = patientId ? getPending(patientId) : []
+  const myRecords   = patientId ? getRecords(patientId) : []
 
   void records; void requests // used via getPending/getRecords selectors
 

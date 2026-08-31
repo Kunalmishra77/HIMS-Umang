@@ -61,6 +61,10 @@ export async function GET() {
         registeredAt: '', registeredDate: today, triageLevel: v.triage_level ?? 'Low',
         source: 'appointment', aadhaarVerified: p.aadhaar_verified ?? false,
         abhaId: p.abha_id ?? undefined, visitId: v.id,
+        // Surfaced so usePatientStore.hydrateReal can carry it into the local
+        // Patient record — this is what lets usePatientMe resolve a claimed
+        // patient's own row instead of falling through to undefined.
+        authUserId: p.auth_user_id ?? undefined,
       }]
     })
 
