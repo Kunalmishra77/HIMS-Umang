@@ -807,6 +807,42 @@ The portal currently "works" in demos because of the fallback that hid the bug. 
 - Consumes: the existing `admin` client and `ROLES` map in that script.
 - Produces: `demo-patient@example.test` linked to Kiran Patil (`PT-20394`) via `patients.auth_user_id`.
 
+**Before linking, clear the stray link that already exists.**
+
+`demo-patient@example.test` (auth uuid `0d4214d4-d026-4340-8fef-518431ccce84`) is **already** linked — not to Kiran Patil, but to `ZZ-JourneyTest-2026-08-29T17-17-26-312Z`, a throwaway row the previous project's journey walk created and deliberately linked to exercise the RLS ownership check. It is documented in `docs/JOURNEY-TEST-DATA.md`, which already noted the link "should probably be cleared" if the row were kept.
+
+Verified live: exactly one patient row carries a non-null `auth_user_id`, and it is that one. `PT-20394` is `null`.
+
+If you link `PT-20394` without clearing it, **two rows share one `auth_user_id`**, and `usePatientMe`'s `find()` returns whichever appears first in the array — nondeterministic, and it would intermittently show the wrong record. Note the schema does **not** enforce uniqueness on `auth_user_id`, and adding a constraint is out of scope (no migrations in this plan, and the database is shared with Gov-HIMS), so nothing will stop this but the script.
+
+Clear it first, in the same script, before the link step:
+
+```js
+// The previous project's journey walk linked this account to a throwaway test
+// row (see docs/JOURNEY-TEST-DATA.md). auth_user_id has no uniqueness
+// constraint, so leaving it would give two rows the same owner and make
+// usePatientMe's lookup nondeterministic.
+const { error: clearErr } = await admin
+  .from('patients')
+  .update({ auth_user_id: null })
+  .eq('auth_user_id', patientUserId)
+  .neq('id', DEMO_PATIENT_ROW);
+if (clearErr) { console.error(`clear stray links: ${clearErr.message}`); process.exit(1); }
+```
+
+After linking, assert exactly one row carries that uuid and fail loudly if not — this is the invariant the whole feature rests on:
+
+```js
+const { data: owned, error: ownErr } = await admin
+  .from('patients').select('id').eq('auth_user_id', patientUserId);
+if (ownErr) { console.error(`verify link: ${ownErr.message}`); process.exit(1); }
+if (owned.length !== 1) {
+  console.error(`expected exactly 1 patient linked to demo-patient, found ${owned.length}: ${owned.map(r => r.id).join(', ')}`);
+  process.exit(1);
+}
+console.log(`ok verified exactly one patient row linked to demo-patient@example.test`);
+```
+
 - [ ] **Step 1: Add the link step**
 
 After the existing `profiles.upsert` loop, add a step that links the patient demo account. Follow the script's established style — `console.log` progress, `process.exit(1)` on error:
