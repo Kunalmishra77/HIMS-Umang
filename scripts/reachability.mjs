@@ -12,6 +12,10 @@ const KEEP_ROUTES = [
   'src/app/page.tsx', 'src/app/layout.tsx', 'src/app/globals.css',
   'src/app/actions', 'src/middleware.ts', 'src/i18n',
   'src/app/login', 'src/app/checkin', 'src/app/p', 'src/app/discovery', 'src/app/abha',
+  // Added by the patient-portal-identity plan: the record-claim flow. /claim sits
+  // outside src/app/patient/ deliberately — that subtree is RoleGuard-wrapped and a
+  // claiming patient has no session yet.
+  'src/app/claim', 'src/app/api/patient/claim', 'src/app/api/patient/me',
   'src/app/journey',
   'src/app/billing',
   'src/app/reception/layout.tsx',
