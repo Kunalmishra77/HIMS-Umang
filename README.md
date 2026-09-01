@@ -62,7 +62,10 @@ claim their own existing record at `/claim`, matching three factors against
 an unclaimed row in `patients`: **UHID + phone number + full name**, all
 three exactly. A match mints a real Supabase auth account and links it to
 that patient row (`patients.auth_user_id`); the account can then sign in
-normally and see that patient's own dashboard, records and bills.
+normally. Identity resolution and `/patient/billing` are real from that
+point on — they read that patient's own row and bills. **`/patient/dashboard`
+is not**: its clinical cards are pre-existing front-end simulation, unkeyed
+by identity — see Known-partial below for what that means in practice.
 
 **This is demo-grade assurance, not identity proofing.** UHID + phone + name
 is enough to stop casual cross-patient snooping and to demonstrate the
@@ -124,7 +127,7 @@ and demo data is common to both. There is no tenant boundary between them at
 the database level.
 
 The patient-record claim flow (`/claim`, see "Claiming a patient record"
-below) is the first feature in this build that creates real `auth.users`
+above) is the first feature in this build that creates real `auth.users`
 rows of its own at runtime, rather than only reading/seeding them — every
 successful claim mints a new Supabase auth account in the pool shared with
 Gov-HIMS.
@@ -237,6 +240,16 @@ confidence, e.g. before a demo or a release:
   by neither the per-IP nor the per-UHID counter. If this endpoint is ever
   exposed publicly, an edge or WAF-level limiter is the right layer to stop
   that kind of generic flood; the in-app limiters are not it.
+- **`/patient/dashboard`'s clinical cards are pre-existing front-end
+  simulation, unkeyed by identity.** `usePatientLiveStore`/
+  `usePatientOrdersStore` and the `PrescriptionsCard`/`DiagnosticsCard` they
+  feed were never wired to the signed-in patient's own id — every claimed
+  account that signs in sees the same fabricated prescriptions, diagnostics
+  and financial summary on that page, regardless of who they are. This
+  predates the claim flow and was a deliberate call, not a fix-round item —
+  see "Claiming a patient record" above for what *is* real once an account
+  claims a record: identity resolution and `/patient/billing`. Only those
+  two read that patient's actual row and bills; the dashboard does not.
 
 ---
 
