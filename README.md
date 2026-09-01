@@ -50,8 +50,30 @@ recognises:
 | `patient` | `/patient/*` | Registration status, records, downloads, family tracking |
 | `admin` | *(none)* | Recognised by auth/RLS for seeding and ops scripts only — ships no UI in this build |
 
-Public, no-login routes: `/` (landing), `/login`, `/checkin` (kiosk), `/abha`
-(ABHA consent), `/discovery`, `/p/[uhid]` (public visit tracking).
+Public, no-login routes: `/` (landing), `/login`, `/claim` (patient record
+claim), `/checkin` (kiosk), `/abha` (ABHA consent), `/discovery`, `/p/[uhid]`
+(public visit tracking).
+
+## Claiming a patient record
+
+A patient who was registered at the hospital (by Reception, at a kiosk, or
+via voice check-in) doesn't get portal credentials automatically — they
+claim their own existing record at `/claim`, matching three factors against
+an unclaimed row in `patients`: **UHID + phone number + full name**, all
+three exactly. A match mints a real Supabase auth account and links it to
+that patient row (`patients.auth_user_id`); the account can then sign in
+normally and see that patient's own dashboard, records and bills.
+
+**This is demo-grade assurance, not identity proofing.** UHID + phone + name
+is enough to stop casual cross-patient snooping and to demonstrate the
+pattern end to end, but none of the three factors is a secret a hospital
+staff member, a printed prescription, or a chatty relative couldn't supply —
+there is no OTP to the phone on file, no ABHA verification, nothing that
+proves the claimant *is* the patient. Do not read `/claim` as a real
+identity-verification flow; see Known-partial below for the specific gaps
+(residual response-timing signal, rate-limiter bypass on malformed input).
+Production-grade identity proofing — OTP to the phone on file, or ABHA
+verification — is deliberately out of scope for this build.
 
 ## Setup
 
@@ -77,10 +99,12 @@ NEW_SUPABASE_URL=... NEW_SERVICE_ROLE_KEY=... node scripts/seed/provision-demo-a
 
 Creates (or resets) one real Supabase auth account per role — idempotent, so
 it's safe to re-run. Each account is `demo-<role>@example.test` with password
-`Demo@HIMS2026!` (override with `DEMO_PASSWORD`). For this build, the roles
-that matter are `doctor`, `nurse`, `reception`, `billing`, `admin`, `patient`.
-Note the script provisions accounts for every role in the shared Gov-HIMS
-system, not just Umang's six — the rest are simply unused here. Visiting
+`Demo@HIMS2026!` (override with `DEMO_PASSWORD`). The script provisions
+exactly the six roles this build ships — `doctor`, `nurse`, `reception`,
+`billing`, `admin`, `patient` (see `src/types/roles.ts`) — and no others: it
+used to provision all 29 Gov-HIMS roles, which meant every run rewrote demo
+credentials for 23 accounts belonging to portals this build doesn't have.
+Visiting
 `/login?role=doctor` prefills the email field so a tester only has to type the
 password. `scripts/seed/seed-bills.mjs`, `seed-drug-master.mjs` and
 `seed-nurse-worklist.mjs` seed supporting demo data over `NEW_DB_SESSION`
@@ -98,6 +122,12 @@ deliberate, explicit decision to avoid a second migration effort, not an
 oversight. The consequence: a schema change made for either app affects both,
 and demo data is common to both. There is no tenant boundary between them at
 the database level.
+
+The patient-record claim flow (`/claim`, see "Claiming a patient record"
+below) is the first feature in this build that creates real `auth.users`
+rows of its own at runtime, rather than only reading/seeding them — every
+successful claim mints a new Supabase auth account in the pool shared with
+Gov-HIMS.
 
 `supabase/migrations/` holds **Gov-HIMS's applied migration history, copied
 verbatim — all 61 files**. This project adds none of its own. The files stay
@@ -171,16 +201,6 @@ confidence, e.g. before a demo or a release:
 - `npm run lint` and the full `vitest run` are not clean — see Verification.
 - Some seeded demo data (IPD/ICU rows) predates this extraction and is
   Gov-HIMS-shaped, not OPD-shaped — a side effect of the shared database.
-- **A settled bill is not patient-visible from Postgres.**
-  `patients.auth_user_id` is never set anywhere in `src/`, so patient-owned
-  RLS policies such as `bills_read_own` can never fire for a real signed-in
-  patient, and `/patient/billing` reads `usePatientOrdersStore` (local
-  state) rather than the `bills` table. This is pre-existing Gov-HIMS
-  behaviour, not a consequence of this extraction — `auth_user_id` is unused
-  the same way in the source repo. User-visible symptom: a patient can pay
-  their OPD bill at the billing desk and it will settle correctly in
-  Postgres, but that patient's own `/patient/billing` page will never show
-  it — it shows fixed local demo data instead.
 - **Appointments do not persist to Postgres.** `lib/api/appointments.ts` was
   found dead in Task 6 and removed; the reception, patient and discovery
   booking pages all run on `usePatientStore` local state instead. This is
@@ -198,6 +218,25 @@ confidence, e.g. before a demo or a release:
   critical values) was deleted — it was already dead in the source repo,
   reachable only from an out-of-scope lab panel and never wired into the
   consultation flow, so this extraction carries none of it forward.
+- **`/api/patient/claim`'s response-time floor narrows the timing signal, it
+  does not eliminate it.** A non-matching guess returns after one `select`
+  plus an in-process scan; a matching guess also makes an Auth Admin API
+  round trip (`createUser`) before it can fail later in the flow. Holding
+  every response to a 500ms floor (`MIN_RESPONSE_MS` in the route) narrows
+  that gap, but a `createUser` call slower than the floor still shows
+  through, and it assumes a *warm* server — on a cold instance, a matching
+  guess pays the SDK's warm-up cost that a non-matching guess never touches,
+  so the observable gap can be *wider* during warm-up, not narrower. The
+  real control is the per-UHID lockout in `src/lib/claimRateLimit.ts` (5
+  failures/hour), which makes collecting enough samples to exploit the
+  residual signal impractical. This is a narrowed leak, not a closed one.
+- **Malformed-body requests to `/api/patient/claim` bypass both rate
+  limiters by design.** Body validation runs before `checkAndRecord`,
+  because there is no trustworthy UHID to key a limiter on until the body
+  parses — so a flood of junk POSTs (bad JSON, missing fields) is rate-limited
+  by neither the per-IP nor the per-UHID counter. If this endpoint is ever
+  exposed publicly, an edge or WAF-level limiter is the right layer to stop
+  that kind of generic flood; the in-app limiters are not it.
 
 ---
 
