@@ -90,3 +90,42 @@ for (const [role, [full_name, department]] of Object.entries(ROLES)) {
 fs.writeFileSync(OUT, rows.join('\n'));
 console.log(`\nprovisioned ${Object.keys(ROLES).length} roles (created ${created}, updated ${updated})`);
 console.log(`credentials written to ${OUT}`);
+
+// The patient portal resolves identity through patients.auth_user_id (see
+// src/lib/usePatientMe.ts). Without this link the demo patient signs in
+// successfully and then sees an empty portal.
+const DEMO_PATIENT_ROW = 'PT-20394';
+const patientUserId = existing.get('demo-patient@example.test')
+  ?? (await allUsers()).get('demo-patient@example.test');
+
+if (patientUserId) {
+  // The previous project's journey walk linked this account to a throwaway test
+  // row (see docs/JOURNEY-TEST-DATA.md). auth_user_id has no uniqueness
+  // constraint, so leaving it would give two rows the same owner and make
+  // usePatientMe's lookup nondeterministic.
+  const { error: clearErr } = await admin
+    .from('patients')
+    .update({ auth_user_id: null })
+    .eq('auth_user_id', patientUserId)
+    .neq('id', DEMO_PATIENT_ROW);
+  if (clearErr) { console.error(`clear stray links: ${clearErr.message}`); process.exit(1); }
+
+  const { error: linkErr } = await admin
+    .from('patients')
+    .update({ auth_user_id: patientUserId })
+    .eq('id', DEMO_PATIENT_ROW);
+  if (linkErr) { console.error(`link ${DEMO_PATIENT_ROW}: ${linkErr.message}`); process.exit(1); }
+  console.log(`ok linked ${DEMO_PATIENT_ROW} -> demo-patient@example.test`);
+
+  const { data: owned, error: ownErr } = await admin
+    .from('patients').select('id').eq('auth_user_id', patientUserId);
+  if (ownErr) { console.error(`verify link: ${ownErr.message}`); process.exit(1); }
+  if (owned.length !== 1) {
+    console.error(`expected exactly 1 patient linked to demo-patient, found ${owned.length}: ${owned.map(r => r.id).join(', ')}`);
+    process.exit(1);
+  }
+  console.log(`ok verified exactly one patient row linked to demo-patient@example.test`);
+} else {
+  console.error('demo-patient user not found — cannot link patient record');
+  process.exit(1);
+}
