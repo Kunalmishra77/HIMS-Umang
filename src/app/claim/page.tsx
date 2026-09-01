@@ -44,6 +44,8 @@ export default function ClaimPage() {
         return
       }
       router.push("/patient/dashboard")
+    } catch {
+      setError(GENERIC_ERROR)
     } finally {
       setSubmitting(false)
     }
