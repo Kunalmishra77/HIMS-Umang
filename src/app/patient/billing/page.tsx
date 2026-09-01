@@ -39,6 +39,7 @@ export default function PatientBilling() {
   const [bills, setBills] = useState<Bill[]>([])
 
   useEffect(() => {
+    setBills([])
     if (!me) return
     let cancelled = false
     Bills.byPatient(me.id).then((rows) => { if (!cancelled) setBills(rows) })
@@ -63,7 +64,7 @@ export default function PatientBilling() {
       {/* Summary tiles */}
       <div className="grid grid-cols-3 gap-3">
         <div className="rounded-2xl bg-white shadow-[0_1px_4px_rgba(15,23,42,0.06),0_8px_28px_rgba(15,23,42,0.05)] p-4">
-          <p className="text-[12px] text-slate-400 font-semibold">{t('billing.billedThisVisit')}</p>
+          <p className="text-[12px] text-slate-400 font-semibold">{t('billing.totalBilled')}</p>
           <p className="text-[20px] font-bold text-slate-900 mt-0.5">₹{billedTotal.toLocaleString('en-IN')}</p>
         </div>
         <div className="rounded-2xl bg-white shadow-[0_1px_4px_rgba(15,23,42,0.06),0_8px_28px_rgba(15,23,42,0.05)] p-4">

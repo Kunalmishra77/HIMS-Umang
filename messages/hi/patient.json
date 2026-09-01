@@ -143,7 +143,7 @@
   },
   "billing": {
     "title": "बिलिंग और पेमेंट",
-    "billedThisVisit": "इस विज़िट का बिल",
+    "totalBilled": "कुल बिल",
     "insuranceCovered": "इंश्योरेंस से कवर",
     "outstanding": "बकाया",
     "opdConsultation": "OPD कंसल्टेशन",
