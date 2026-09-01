@@ -595,7 +595,7 @@ export const usePatientStore = create<PatientState>()(persist((set, get) => ({
         const dbById = new Map(fromDb.map(p => [p.id, p]))
         const merged = s.patients.map(p => {
           const d = dbById.get(p.id)
-          return d ? { ...p, queueStatus: d.queueStatus, visitId: d.visitId, authUserId: d.authUserId } : p
+          return d ? { ...p, queueStatus: d.queueStatus, visitId: d.visitId, authUserId: d.authUserId, phone: d.phone } : p
         })
         const seen = new Set(merged.map(p => p.id))
         const all = [...fromDb.filter(p => !seen.has(p.id)), ...merged]

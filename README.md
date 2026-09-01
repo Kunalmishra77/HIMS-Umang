@@ -250,6 +250,21 @@ confidence, e.g. before a demo or a release:
   see "Claiming a patient record" above for what *is* real once an account
   claims a record: identity resolution and `/patient/billing`. Only those
   two read that patient's actual row and bills; the dashboard does not.
+- **Staff who sign in through the landing page's demo role switcher see
+  blank patient phone numbers, and doctor/records' phone search will not
+  match.** `HeroSignIn.tsx`'s role switcher (`useAuthStore.setRole()`) is a
+  client-side fake login — it sets `isRealSession: false` and creates no
+  Supabase auth session, so to the server that browser is indistinguishable
+  from an anonymous one. `GET /api/opd-queue` deliberately withholds `phone`
+  (and `authUserId`) from unauthenticated callers — see that route's
+  comments — because `phone` is the one factor `/api/patient/claim`
+  matches on that isn't otherwise derivable from this same public response,
+  so publishing it to an anonymous caller would hand out a complete claim
+  on any queued patient. The demo switcher carries no credential a server
+  could verify, so it cannot be granted an exception without reopening that
+  hole. Signing in with real credentials at `/login` creates a genuine
+  Supabase session, which restores phone numbers on the next queue
+  hydration.
 
 ---
 
