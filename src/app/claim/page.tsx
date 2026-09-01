@@ -4,6 +4,7 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { getSupabaseClient } from "@/lib/supabase/client"
+import { useAuthStore } from "@/store/useAuthStore"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 
@@ -36,13 +37,37 @@ export default function ClaimPage() {
         return
       }
       const supabase = getSupabaseClient()
-      const { error: signInError } = await supabase.auth.signInWithPassword({ email, password })
-      if (signInError) {
+      const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({ email, password })
+      if (signInError || !signInData.session) {
         // The record is claimed but the session failed — send them to sign in
         // rather than leaving them on a form that would now report "already claimed".
         router.push("/login")
         return
       }
+
+      // Mirror /login's post-sign-in sequence exactly (see login/page.tsx):
+      // bridge the browser session into server-readable cookies, then
+      // hydrate the app-wide auth store from it, before routing anywhere.
+      // getSupabaseClient() stores the session in localStorage while
+      // getSupabaseServerClient() (used by /api/patient/me and RoleGuard's
+      // downstream reads) only sees cookies — and useAuthStore otherwise
+      // keeps its pre-hydration default (currentUser: DEMO_USERS.doctor,
+      // activeRole: 'doctor'). Skipping either step, as this page previously
+      // did, lands a freshly claimed patient in the doctor console instead
+      // of their own dashboard.
+      const syncRes = await fetch("/api/auth/session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          access_token: signInData.session.access_token,
+          refresh_token: signInData.session.refresh_token,
+        }),
+      })
+      if (!syncRes.ok) {
+        router.push("/login")
+        return
+      }
+      await useAuthStore.getState().hydrateFromSession()
       router.push("/patient/dashboard")
     } catch {
       setError(GENERIC_ERROR)
