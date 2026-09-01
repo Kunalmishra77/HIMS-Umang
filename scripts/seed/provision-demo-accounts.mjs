@@ -9,37 +9,17 @@ import { createClient } from '@supabase/supabase-js';
 const PASSWORD = process.env.DEMO_PASSWORD || 'Demo@HIMS2026!';
 const OUT = 'd:/tmp/hims-migration/demo-credentials.csv';
 
-// role -> display identity (mirrors DEMO_USERS in src/store/useAuthStore.ts)
+// role -> display identity (mirrors DEMO_USERS in src/store/useAuthStore.ts).
+// This build ships exactly the six roles in src/types/roles.ts. The Supabase
+// project is shared with Gov-HIMS, so provisioning roles beyond that set
+// creates and repeatedly updates accounts belonging to a different product.
 const ROLES = {
   doctor: ['Dr. Priya Nair', 'General Medicine'],
   nurse: ['Anjali Desai', 'General Ward'],
-  pharmacy: ['Ritu Sharma', 'Pharmacy'],
-  lab: ['Neha Gupta', 'Pathology'],
-  radiology: ['Dr. Sameer Khan', 'Radiology'],
-  emergency: ['Dr. Vikram Rathore', 'Emergency Room'],
   reception: ['Sunita Joshi', 'Front Office'],
-  bed_manager: ['Aditi Verma', 'Admission Desk'],
-  discharge: ['Meena Agarwal', 'Discharge Desk'],
-  ot: ['Dr. Anisha Sharma', 'Operation Theater'],
   billing: ['Suresh Nair', 'Billing Dept'],
-  insurance: ['Karan Patel', 'TPA Desk'],
   admin: ['Rajesh Kulkarni', 'Administration'],
-  hr: ['Anita Rao', 'Human Resources'],
-  quality: ['Dr. Lalitha Iyer', 'Quality & Compliance'],
-  feedback_analyst: ['Preethi Menon', 'Patient Experience'],
-  housekeeping: ['Ramesh Kumar', 'Housekeeping'],
-  inventory: ['Vikram Singh', 'Procurement'],
-  vendor_manager: ['Arun Kapoor', 'Procurement & Vendor Management'],
-  blood_bank: ['Dr. Pooja Srivastava', 'Blood Bank'],
-  cssd: ['Shalini Mehta', 'CSSD'],
-  dietary: ['Nalini Bose', 'Dietary & Nutrition'],
-  bmw: ['Ganesh Rao', 'Bio-Medical Waste'],
-  mortuary: ['Shyam Tiwari', 'Mortuary'],
-  ambulance: ['Deepak Pandey', 'Ambulance Services'],
-  audit_officer: ['Preethi Krishnan', 'Audit & Compliance'],
   patient: ['Kiran Patil', 'Patient'],
-  cmo: ['Dr. Rajesh Sharma', 'CMHO Bhopal'],
-  secretary: ['Smt. Anuradha Verma', 'Principal Secretary Health, MP'],
 };
 
 const admin = createClient(process.env.NEW_SUPABASE_URL, process.env.NEW_SERVICE_ROLE_KEY, {
