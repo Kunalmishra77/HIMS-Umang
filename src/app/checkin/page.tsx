@@ -69,7 +69,7 @@ export default function CheckinPage() {
           </div>
 
           <p className="t-overline text-foreground-lighter">{t('overline')}</p>
-          <h1 className="t-h1 text-foreground mt-1.5">{t('title')}</h1>
+          <h1 className="t-h1 font-display text-foreground mt-1.5">{t('title')}</h1>
           <p className="t-body-lg text-foreground-muted mt-2">
             {t('subtitle')}
           </p>

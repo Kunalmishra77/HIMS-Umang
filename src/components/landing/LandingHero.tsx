@@ -38,7 +38,7 @@ export function LandingHero() {
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-[0.12em] text-[var(--color-accent)] bg-[var(--color-primary)]/[0.07] border border-[var(--color-primary)]/15">
             <Sparkles className="h-3.5 w-3.5" /> {t("hero.badge")}
           </span>
-          <h1 className="text-[40px] sm:text-[52px] lg:text-[58px] font-bold leading-[1.05] tracking-tight text-[#0B1220] mt-5">
+          <h1 className="text-[40px] sm:text-[52px] lg:text-[58px] font-bold leading-[1.05] tracking-tight text-[#0B1220] mt-5 font-display">
             {t("hero.titleLine1")}<br />
             <span className="relative whitespace-nowrap">{t("hero.titleEmphasis")}
               <span className="absolute left-0 -bottom-1 h-[6px] w-full rounded-full" style={{ background: "linear-gradient(90deg,#1E97B2,#196b7e)" }} /></span>

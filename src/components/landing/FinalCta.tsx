@@ -30,7 +30,7 @@ export function FinalCta() {
             <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-[600px] h-[400px] rounded-full pointer-events-none"
               style={{ background: "radial-gradient(closest-side, rgba(30,151,178,0.28), transparent)" }} />
             <div className="relative text-center">
-              <h2 className="text-[30px] lg:text-[44px] font-bold tracking-tight leading-[1.1]" style={{ color: "#FFFFFF" }}>
+              <h2 className="text-[30px] lg:text-[44px] font-bold tracking-tight leading-[1.1] font-display" style={{ color: "#FFFFFF" }}>
                 {t("finalCta.title")}
               </h2>
               <p className="text-[15.5px] text-white/60 mt-4 max-w-xl mx-auto">

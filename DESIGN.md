@@ -4,133 +4,31 @@ name: Stripi-Inspired-design-analysis
 description: An inspired interpretation of Stripi's design language — a financial-infrastructure brand built on a deep navy ink, an electric indigo primary, and a recurring atmospheric gradient mesh that occupies the upper third of nearly every marketing page. The system pairs the proprietary Sohne family at thin (300) weights with negative letter-spacing for editorial-density display headlines, and uses tabular-figure body type where money and numerics matter. Buttons are tight-radius pills, cards live on near-white surfaces, and the dashboard track flips polarity to a familiar dark-app shell.
 
 colors:
-  primary: "#533afd"
-  primary-deep: "#4434d4"
-  primary-press: "#2e2b8c"
-  primary-soft: "#665efd"
-  primary-bg-subdued-hover: "#b9b9f9"
-  brand-dark-900: "#1c1e54"
-  ink: "#0d253d"
-  ink-secondary: "#273951"
-  ink-mute: "#64748d"
-  ink-mute-2: "#61718a"
-  on-primary: "#ffffff"
-  canvas: "#ffffff"
-  canvas-soft: "#f6f9fc"
-  canvas-cream: "#f5e9d4"
-  hairline: "#e3e8ee"
-  hairline-input: "#a8c3de"
-  ruby: "#ea2261"
-  magenta: "#f96bee"
-  lemon: "#9b6829"
-  shadow-blue: "#003770"
+  primary: "#1E97B2"
+  primary-dark: "#196b7e"
+  primary-light: "#6acdd9"
+  on-primary: "#0D2032"
+  accent: "#955408"
+  brand-orange: "#FFA600"
+  brand-amber: "#F59E0B"
+  brand-green: "#16A34A"
+  warning: "#F59E0B"
+  danger: "#DC2626"
+  success: "#16A34A"
+  urgent: "#C2410C"
+  urgent-bg: "#FFF4ED"
 
 typography:
-  display-xxl:
-    fontFamily: "sohne-var, 'SF Pro Display', system-ui, -apple-system, sans-serif"
-    fontSize: 56px
-    fontWeight: 300
-    lineHeight: 1.03
-    letterSpacing: -1.4px
-    fontFeature: ss01
-  display-xl:
-    fontFamily: "sohne-var, 'SF Pro Display', system-ui, -apple-system, sans-serif"
-    fontSize: 48px
-    fontWeight: 300
-    lineHeight: 1.15
-    letterSpacing: -0.96px
-    fontFeature: ss01
-  display-lg:
-    fontFamily: "sohne-var, 'SF Pro Display', system-ui, -apple-system, sans-serif"
-    fontSize: 32px
-    fontWeight: 300
-    lineHeight: 1.1
-    letterSpacing: -0.64px
-    fontFeature: ss01
-  display-md:
-    fontFamily: "sohne-var, 'SF Pro Display', system-ui, -apple-system, sans-serif"
-    fontSize: 26px
-    fontWeight: 300
-    lineHeight: 1.12
-    letterSpacing: -0.26px
-    fontFeature: ss01
-  heading-lg:
-    fontFamily: "sohne-var, 'SF Pro Display', system-ui, -apple-system, sans-serif"
-    fontSize: 22px
-    fontWeight: 300
-    lineHeight: 1.1
-    letterSpacing: -0.22px
-    fontFeature: ss01
-  heading-md:
-    fontFamily: "sohne-var, 'SF Pro Display', system-ui, -apple-system, sans-serif"
-    fontSize: 20px
-    fontWeight: 300
-    lineHeight: 1.4
-    letterSpacing: -0.2px
-    fontFeature: ss01
-  heading-sm:
-    fontFamily: "sohne-var, 'SF Pro Display', system-ui, -apple-system, sans-serif"
-    fontSize: 18px
-    fontWeight: 300
-    lineHeight: 1.4
-    letterSpacing: 0
-    fontFeature: ss01
-  body-lg:
-    fontFamily: "sohne-var, 'SF Pro Display', system-ui, -apple-system, sans-serif"
-    fontSize: 16px
-    fontWeight: 300
-    lineHeight: 1.4
-    letterSpacing: 0
-    fontFeature: ss01
-  body-md:
-    fontFamily: "sohne-var, 'SF Pro Display', system-ui, -apple-system, sans-serif"
-    fontSize: 15px
-    fontWeight: 300
-    lineHeight: 1.4
-    letterSpacing: 0
-    fontFeature: ss01
-  body-tabular:
-    fontFamily: "sohne-var, 'SF Pro Display', system-ui, -apple-system, sans-serif"
-    fontSize: 14px
-    fontWeight: 300
-    lineHeight: 1.4
-    letterSpacing: -0.42px
-    fontFeature: tnum
-  button-md:
-    fontFamily: "sohne-var, 'SF Pro Display', system-ui, -apple-system, sans-serif"
-    fontSize: 16px
-    fontWeight: 400
-    lineHeight: 1.0
-    letterSpacing: 0
-    fontFeature: ss01
-  button-sm:
-    fontFamily: "sohne-var, 'SF Pro Display', system-ui, -apple-system, sans-serif"
-    fontSize: 14px
-    fontWeight: 400
-    lineHeight: 1.0
-    letterSpacing: 0
-    fontFeature: ss01
-  caption:
-    fontFamily: "sohne-var, 'SF Pro Display', system-ui, -apple-system, sans-serif"
-    fontSize: 13px
-    fontWeight: 400
-    lineHeight: 1.4
-    letterSpacing: -0.39px
-    fontFeature: tnum
-  micro:
-    fontFamily: "sohne-var, 'SF Pro Display', system-ui, -apple-system, sans-serif"
-    fontSize: 11px
-    fontWeight: 300
-    lineHeight: 1.4
-    letterSpacing: 0
-    fontFeature: ss01
-  micro-cap:
-    fontFamily: "sohne-var, 'SF Pro Display', system-ui, -apple-system, sans-serif"
-    fontSize: 10px
-    fontWeight: 400
-    lineHeight: 1.15
-    letterSpacing: 0.1px
-    fontFeature: ss01
+  font-body:
+    fontFamily: "Figtree, 'SF Pro Display', 'Segoe UI', system-ui, -apple-system, Arial, sans-serif"
+    use: body copy and UI, all surfaces
+  font-heading:
+    fontFamily: "Figtree, 'SF Pro Display', 'Segoe UI', system-ui, -apple-system, Arial, sans-serif"
+    use: in-content headings, all surfaces
+  font-display:
+    fontFamily: "'Playfair Display', 'Iowan Old Style', Georgia, serif"
+    weight: 300 (thin)
+    use: landing hero `<h1>`/`<h2>` and the check-in `<h1>` only — never clinical worklists
 
 rounded:
   xs: 4px
@@ -262,72 +160,45 @@ Typography is built around **Sohne** at weight 300 with negative letter-spacing 
 
 ## Colors
 
-> **Source pages:** home (`/`), `/payments`, `/pricing`, `dashboard.stripe.com/register/payments`.
+> **Scope note:** this section and the `colors:`/`typography:` blocks in the frontmatter above describe Umang HIMS's actual, shipped brand system. Everything from **Overview** through **Responsive Behavior** below retains this document's original Stripi-pattern-language token names (`{colors.primary-press}`, `{colors.brand-dark-900}`, the gradient-mesh, Sohne, etc.) as generic component-pattern reference material inherited at project seed — it does not describe Umang's implementation and its token names do not resolve against the list above. The single source of truth for implemented tokens is `src/app/globals.css`; the narrative equivalent is `docs/DESIGN-LANGUAGE.md`.
+
+> **Source:** the Umang Hospital website, matched in `src/app/globals.css` (`:root` and the scoped `.intake-theme` override used by the check-in wizard).
 
 ### Brand & Accent
-- **Indigo** (`{colors.primary}` — `#533afd`): The brand's signature CTA color. Filled-pill button, link emphasis, gradient anchor.
-- **Indigo Deep** (`{colors.primary-deep}` — `#4434d4`): A deeper indigo used in gradient mid-stops and as the press-state warmer alternative.
-- **Indigo Press** (`{colors.primary-press}` — `#2e2b8c`): Pressed-state lift of the primary.
-- **Indigo Soft** (`{colors.primary-soft}` — `#665efd`): A lighter indigo used in product-UI accents and chart highlights.
-- **Indigo Subdued** (`{colors.primary-bg-subdued-hover}` — `#b9b9f9`): Pale indigo fill used as soft tag background.
-- **Brand Dark 900** (`{colors.brand-dark-900}` — `#1c1e54`): The deep navy used on the featured pricing tier and dashboard chrome.
-- **Ruby** (`{colors.ruby}` — `#ea2261`): Gradient accent and chart highlight; never a button.
-- **Magenta** (`{colors.magenta}` — `#f96bee`): Brighter pink stop in gradient meshes.
-- **Lemon** (`{colors.lemon}` — `#9b6829`): Warm sherbet stop in gradient backdrops.
+- **Teal** (`--color-primary` — `#1E97B2`): The brand's signature colour, matching the Umang website. **Fill-only.** `#1E97B2` on white text measures **3.43:1** and fails AA, so it is never used as text — it fills buttons, active states, and focus rings, always paired with navy `--color-on-primary` (`#0D2032`, **4.82:1** on teal).
+- **Teal Dark** (`--color-primary-dark` — `#196b7e`): The text-safe teal. **6.09:1** with white text, so any teal fill that *carries white text* (CTA hover/press, dark hero surfaces, gradient stops) uses this shade, not `#1E97B2`.
+- **Teal Light** (`--color-primary-light` — `#6acdd9`): Light-teal tint for soft backgrounds and decorative accents; not a text colour.
+- **Accent — deep orange** (`--color-accent` — `#955408`): The AA-safe text/link shade, **5.92:1** on white. Deliberately *not* the website's `accent-700` (`#B86D02`, 4.02:1 — fails AA); `#955408` was chosen instead so the accent is safe wherever it appears as text.
+- **Brand Orange** (`--color-brand-orange` — `#FFA600`): The website's raw accent orange. **Fill-only** — **1.96:1** on white, never used as text.
 
-### Surface
-- **Canvas** (`{colors.canvas}` — `#ffffff`): Default page background.
-- **Canvas Soft** (`{colors.canvas-soft}` — `#f6f9fc`): Cool-tinted off-white used on feature bands beneath the gradient hero.
-- **Canvas Cream** (`{colors.canvas-cream}` — `#f5e9d4`): Warm cream used as a feature-band fill — the brand's chromatic interlude.
-- **Hairline** (`{colors.hairline}` — `#e3e8ee`): 1px borders on cards and tables.
-- **Hairline Input** (`{colors.hairline-input}` — `#a8c3de`): Slightly cooler hairline used on form inputs.
+### Semantic / clinical (frozen — never brand)
+These are visually adjacent to the teal/orange brand pair but carry a different meaning (clinical severity, not identity) and must never be substituted for brand tokens or vice versa:
+- `--color-brand-amber` `#F59E0B`, `--color-warning` `#F59E0B` — caution / abnormal.
+- `--color-danger` `#DC2626` — critical / life-threatening.
+- `--color-brand-green` `#16A34A`, `--color-success` `#16A34A` — normal / resolved.
+- Triage "High" tiers use `bg-urgent-bg text-urgent` (`--color-urgent` `#C2410C` / `--color-urgent-bg` `#FFF4ED`), not brand orange.
 
-### Text
-- **Ink** (`{colors.ink}` — `#0d253d`): Default body text color across the brand. Deep navy, never pure black.
-- **Ink Secondary** (`{colors.ink-secondary}` — `#273951`): Secondary text on white.
-- **Ink Mute** (`{colors.ink-mute}` — `#64748d`): Helper text, captions, table labels.
-- **Ink Mute 2** (`{colors.ink-mute-2}` — `#61718a`): Near-equivalent to ink-mute used in nav.
-- **On Primary** (`{colors.on-primary}` — `#ffffff`): Text on indigo / dark-navy surfaces.
+### The `.intake-theme` scoped override
+`globals.css` carries a **second** palette, `.intake-theme`, wrapping the check-in wizard (`/checkin/intake`). It redefines `--color-primary`, `--color-primary-dark`, `--color-accent`, and related tokens with the *same* teal/orange values as `:root` — it does not inherit `:root`, so any future palette change must be applied in both places or the wizard silently drifts back to its old colours.
 
-### Semantic
-The brand does not use a separate semantic color palette in the marketing system — error / success states live in dashboard-product UI specifically.
+### Enforcement
+Every ratio above is asserted by `src/app/__tests__/theme-contrast.test.ts`. The retired blue and orange palettes (`#EE6B26`, `#B84A16`, and the old blue brand hexes) are blocked outright by a `no-restricted-syntax` ESLint rule in `eslint.config.mjs`, so they cannot silently reappear in a future edit.
 
 ## Typography
 
 ### Font Family
 
-The display and UI tier is **Sohne** (proprietary, licensed from Klim Type Foundry) at weights 300 (thin) and 400 (regular). The variable font (`sohne-var`) is loaded with `font-feature-settings: "ss01"` enabled globally — the stylistic set substitutes a single-story `a` and other character variants that are part of the brand's typographic signature.
-
-When Sohne is unavailable, fall back to **SF Pro Display** at thin weights, then system-ui. For maximum brand fidelity, **Inter** (open-source) at weight 300 with `font-feature-settings: "ss01"` and `letter-spacing: -1.4px` on display sizes approximates the rhythm closely.
+Two families, one split by role:
+- **Figtree** — `--font-body` and `--font-heading`. Used for all body copy, UI chrome, and in-content headings, on every surface (clinical and patient-facing alike).
+- **Playfair Display** — `--font-display`. A display serif, generated by Tailwind v4 as the `font-display` utility. Applied to exactly three headings: the landing hero `<h1>` (`LandingHero.tsx`), the closing-CTA `<h2>` (`FinalCta.tsx`), and the check-in `<h1>` (`checkin/page.tsx`) — landing and patient-facing surfaces only. It must never reach a clinical worklist, table, queue, or form, where a serif costs scanning speed.
 
 ### Hierarchy
 
-| Token | Size | Weight | Line Height | Letter Spacing | Use |
-|---|---|---|---|---|---|
-| `{typography.display-xxl}` | 56px | 300 | 1.03 | -1.4px | Hero headline |
-| `{typography.display-xl}` | 48px | 300 | 1.15 | -0.96px | Section opener |
-| `{typography.display-lg}` | 32px | 300 | 1.1 | -0.64px | Card title / sub-section |
-| `{typography.display-md}` | 26px | 300 | 1.12 | -0.26px | Compact card title |
-| `{typography.heading-lg}` | 22px | 300 | 1.1 | -0.22px | Pricing tier name |
-| `{typography.heading-md}` | 20px | 300 | 1.4 | -0.2px | Section sub-heading |
-| `{typography.heading-sm}` | 18px | 300 | 1.4 | 0 | Mini-section label |
-| `{typography.body-lg}` | 16px | 300 | 1.4 | 0 | Marketing body lead |
-| `{typography.body-md}` | 15px | 300 | 1.4 | 0 | Default UI body |
-| `{typography.body-tabular}` | 14px | 300 | 1.4 | -0.42px | Money / numeric tables (uses `tnum`) |
-| `{typography.button-md}` | 16px | 400 | 1.0 | 0 | Pill button label |
-| `{typography.button-sm}` | 14px | 400 | 1.0 | 0 | Compact pill label |
-| `{typography.caption}` | 13px | 400 | 1.4 | -0.39px | Helper, table labels |
-| `{typography.micro}` | 11px | 300 | 1.4 | 0 | Fine print |
-| `{typography.micro-cap}` | 10px | 400 | 1.15 | 0.1px | All-caps eyebrow |
+The product's actual type scale is the `.t-*` classes in `globals.css` (`t-display`, `t-h1`, `t-h2`, `t-h3`, `t-title`, `t-body`, `t-label`, `t-caption`, `t-overline` — a font-**size** scale, unrelated to the `font-display` family utility above; `t-display` and `font-display` are two different axes and compose, e.g. `t-h1 font-display`). See `docs/DESIGN-LANGUAGE.md §6` for the full scale and the clinical weight-700 override.
 
 ### Principles
-- **Thin weight is the brand.** Display tiers always render at weight 300. Bumping to 400+ removes the brand's editorial air.
-- **Negative tracking on display.** -1.4px at 56px, scaling proportionally down to -0.2px at 20px. The negative tracking is the brand's typographic signature.
-- **Tabular figures for money.** Any cell rendering currency, transaction amounts, or numeric counts uses `font-feature-settings: "tnum"` plus a tightening tracking. The brand quietly signals its financial DNA through this micro-detail.
-- **`ss01` globally.** Apply `font-feature-settings: "ss01"` to the body element so the stylistic-set substitution is on for every text role.
-
-### Note on Font Substitutes
-Sohne is proprietary. Use **Inter** (open-source via Google Fonts) at weight 300 with `letter-spacing: -1.4px` and `font-feature-settings: "ss01"` for display tiers — Inter is the closest open-source analogue. For body sizes, Inter at 300 weight with `font-feature-settings: "tnum"` (where applicable) is the canonical substitute. Avoid Helvetica or system-ui defaults — they're heavier than the brand needs.
+- **Family is scoped by audience, not by size.** Figtree carries every clinical surface end-to-end; Playfair is opt-in, landing/patient-only, and applied only via the `font-display` utility class — never a bespoke `font-family` declaration.
+- **Size and family compose independently.** A heading's `.t-*` size class and its `font-display` family class are added together, never in place of one another.
 
 ## Layout
 
