@@ -224,7 +224,7 @@ export default function AbhaSandboxPage() {
       dob: "1984-04-12",
       gender: "Male",
       mobile: mobileNum || "9876543210",
-      photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop"
+      photo: "/umang/consultant.webp"
     })
     setCustomAddress("ramesh.kumar")
     setCreateStep("details")
@@ -276,7 +276,7 @@ export default function AbhaSandboxPage() {
       dob: "1984-04-12",
       gender: "Male",
       mobile: "9876543210",
-      photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop"
+      photo: "/umang/consultant.webp"
     })
     setLoginStep("success")
     toast.success(t("toastLoggedIn"))
@@ -676,7 +676,7 @@ export default function AbhaSandboxPage() {
                     <div className="flex gap-4">
                       {/* Avatar */}
                       <Image
-                        src={createdCardData?.photo || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&h=150&fit=crop"}
+                        src={createdCardData?.photo || "/umang/consultant.webp"}
                         alt={t("cardAvatarAlt")}
                         width={64}
                         height={64}
