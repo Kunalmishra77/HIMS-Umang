@@ -4,34 +4,68 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { motion } from "framer-motion"
 import { Mail, Lock, Eye, EyeOff, ArrowRight, QrCode, ShieldCheck, Loader2 } from "lucide-react"
-import { useAuthStore, type Role } from "@/store/useAuthStore"
+import { toast } from "sonner"
+import { useAuthStore } from "@/store/useAuthStore"
+import { getSupabaseClient } from "@/lib/supabase/client"
 
-// `admin` is deliberately absent — it ships no portal (src/types/roles.ts).
-const ROLES: { value: Role; label: string; href: string }[] = [
-  { value: "doctor", label: "Doctor", href: "/doctor/dashboard" },
-  { value: "nurse", label: "Nurse", href: "/nurse/dashboard" },
-  { value: "reception", label: "Reception", href: "/reception/dashboard" },
-  { value: "billing", label: "Billing", href: "/billing/dashboard" },
-  { value: "patient", label: "Patient", href: "/patient/dashboard" },
-]
+// Where each real role lands after signing in. Mirrors /login's map; `admin` is
+// deliberately absent — it ships no portal (src/types/roles.ts) — and falls
+// through to the landing page.
+const ROLE_DASHBOARD: Record<string, string> = {
+  doctor: "/doctor/dashboard",
+  nurse: "/nurse/dashboard",
+  reception: "/reception/dashboard",
+  billing: "/billing/dashboard",
+  patient: "/patient/dashboard",
+}
 
 export function HeroSignIn() {
   const router = useRouter()
-  const setRole = useAuthStore(s => s.setRole)
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [role, setRole_] = useState<Role>("doctor")
   const [showPw, setShowPw] = useState(false)
   const [busy, setBusy] = useState(false)
 
-  const submit = (e: React.FormEvent) => {
+  // Same real sign-in as /login: authenticate against Supabase, bridge the
+  // session into server-readable cookies so the proxy and Server Components
+  // (and the session-gated /api/opd-advance) see it, then route by the
+  // account's TRUE role rather than anything chosen in this form.
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (busy) return
     setBusy(true)
-    const target = ROLES.find(r => r.value === role) ?? ROLES[0]
-    setRole(target.value)
-    // Brief delay so the button state reads as a real sign-in.
-    setTimeout(() => router.push(target.href), 450)
+    try {
+      const supabase = getSupabaseClient()
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+      if (error || !data.session) {
+        toast.error(error?.message ?? "Sign-in failed")
+        return
+      }
+
+      const syncRes = await fetch("/api/auth/session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          access_token: data.session.access_token,
+          refresh_token: data.session.refresh_token,
+        }),
+      })
+      if (!syncRes.ok) {
+        toast.error("Signed in, but couldn't sync the session — try again")
+        return
+      }
+
+      await useAuthStore.getState().hydrateFromSession()
+      const currentUser = useAuthStore.getState().currentUser
+      if (!currentUser) {
+        toast.error("Signed in, but no staff profile found for this account")
+        return
+      }
+
+      router.push(ROLE_DASHBOARD[currentUser.role as string] ?? "/")
+    } finally {
+      setBusy(false)
+    }
   }
 
   return (
@@ -58,7 +92,7 @@ export function HeroSignIn() {
           <div className="relative">
             <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#98A2B3]" />
             <input
-              type="email" value={email} onChange={e => setEmail(e.target.value)}
+              type="email" required value={email} onChange={e => setEmail(e.target.value)}
               placeholder="you@hospital.org" autoComplete="username"
               className="w-full h-11 pl-9 pr-3 rounded-xl border border-[#EAECF2] bg-white text-[14px] text-[#101828] placeholder:text-[#98A2B3] outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 transition"
             />
@@ -73,7 +107,7 @@ export function HeroSignIn() {
           <div className="relative">
             <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#98A2B3]" />
             <input
-              type={showPw ? "text" : "password"} value={password} onChange={e => setPassword(e.target.value)}
+              type={showPw ? "text" : "password"} required value={password} onChange={e => setPassword(e.target.value)}
               placeholder="••••••••" autoComplete="current-password"
               className="w-full h-11 pl-9 pr-10 rounded-xl border border-[#EAECF2] bg-white text-[14px] text-[#101828] placeholder:text-[#98A2B3] outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 transition"
             />
@@ -82,14 +116,6 @@ export function HeroSignIn() {
               {showPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
             </button>
           </div>
-        </div>
-
-        <div>
-          <label className="block text-[12.5px] font-semibold text-[#344054] mb-1.5">Role</label>
-          <select value={role} onChange={e => setRole_(e.target.value as Role)}
-            className="w-full h-11 px-3 rounded-xl border border-[#EAECF2] bg-white text-[14px] font-medium text-[#101828] outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 cursor-pointer transition">
-            {ROLES.map(r => <option key={r.value} value={r.value}>{r.label}</option>)}
-          </select>
         </div>
 
         <button type="submit" disabled={busy}
@@ -110,7 +136,7 @@ export function HeroSignIn() {
       </button>
 
       <p className="mt-3 text-center text-[11.5px] text-[#98A2B3]">
-        Demo environment — any credentials work. Pick a role to explore.
+        Your console opens automatically based on your account&apos;s role.
       </p>
     </motion.div>
   )
