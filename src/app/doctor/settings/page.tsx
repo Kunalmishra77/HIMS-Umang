@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils"
 import { toast } from "sonner"
 
 const CARD = "rounded-2xl bg-white shadow-[0_1px_4px_rgba(15,23,42,0.06),0_4px_16px_rgba(15,23,42,0.04)] p-5"
-const field = "w-full h-10 rounded-xl border border-slate-200 px-3 text-sm text-slate-900 outline-none focus:border-[rgba(238,107,38,0.30)] focus:ring-2 focus:ring-primary/20"
+const field = "w-full h-10 rounded-xl border border-slate-200 px-3 text-sm text-slate-900 outline-none focus:border-[rgba(30,151,178,0.30)] focus:ring-2 focus:ring-primary/20"
 const label = "block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1.5"
 
 function Toggle({ on, onClick, label }: { on: boolean; onClick: () => void; label: string }) {

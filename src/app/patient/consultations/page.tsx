@@ -69,7 +69,7 @@ function ConsultCard({
     <div className={cn("rounded-2xl bg-slate-50 p-4", cancelled && "opacity-70")}>
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-start gap-3 min-w-0">
-          <span className="h-10 w-10 rounded-2xl flex items-center justify-center flex-shrink-0 bg-[rgba(238,107,38,0.07)] text-[var(--color-accent)]">
+          <span className="h-10 w-10 rounded-2xl flex items-center justify-center flex-shrink-0 bg-[rgba(30,151,178,0.07)] text-[var(--color-accent)]">
             <Building2 className="h-5 w-5" />
           </span>
           <div className="min-w-0">
@@ -151,8 +151,8 @@ function BookingPanel({
         {DOCTORS.map((d, i) => (
           <button key={d.name} onClick={() => setDocIdx(i)}
             className={cn("w-full flex items-center gap-3 p-3 rounded-2xl text-left transition-all active:scale-[0.99]",
-              docIdx === i ? "bg-[rgba(238,107,38,0.07)]/60 ring-1 ring-primary/25" : "bg-slate-50")}>
-            <span className="h-10 w-10 rounded-2xl bg-[rgba(238,107,38,0.07)] text-[var(--color-accent)] flex items-center justify-center flex-shrink-0"><Stethoscope className="h-5 w-5" /></span>
+              docIdx === i ? "bg-[rgba(30,151,178,0.07)]/60 ring-1 ring-primary/25" : "bg-slate-50")}>
+            <span className="h-10 w-10 rounded-2xl bg-[rgba(30,151,178,0.07)] text-[var(--color-accent)] flex items-center justify-center flex-shrink-0"><Stethoscope className="h-5 w-5" /></span>
             <span className="flex-1 min-w-0">
               <span className="block text-[14px] font-semibold text-slate-900">{d.name}</span>
               <span className="block text-[12.5px] text-slate-500">{d.specialty}</span>

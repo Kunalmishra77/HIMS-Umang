@@ -58,7 +58,7 @@ export function StaffMessages({ meId }: { meId: string }) {
           const unread = unreadFor(c, meId)
           return (
             <button key={c.id} onClick={() => setSelectedId(c.id)}
-              className={cn("w-full text-left p-3.5 border-b border-slate-50 transition flex gap-3", selectedId === c.id ? "bg-[rgba(238,107,38,0.07)]/50" : "hover:bg-slate-50")}>
+              className={cn("w-full text-left p-3.5 border-b border-slate-50 transition flex gap-3", selectedId === c.id ? "bg-[rgba(30,151,178,0.07)]/50" : "hover:bg-slate-50")}>
               <span className="h-10 w-10 rounded-full bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-light)] text-white flex items-center justify-center font-bold text-[13px] flex-shrink-0">{initials(other.name)}</span>
               <span className="flex-1 min-w-0">
                 <span className="flex items-center justify-between gap-2">
@@ -101,7 +101,7 @@ export function StaffMessages({ meId }: { meId: string }) {
               </div>
               <div className="p-3 border-t border-slate-100 flex items-center gap-2">
                 <input value={reply} onChange={e => setReply(e.target.value)} onKeyDown={e => { if (e.key === 'Enter') send() }}
-                  placeholder={`Message ${other.name.split(' ')[0]}…`} className="flex-1 h-10 px-3.5 rounded-xl bg-slate-50 border border-slate-200 text-[14px] text-slate-800 outline-none focus:border-[rgba(238,107,38,0.30)] focus:ring-2 focus:ring-primary/20" />
+                  placeholder={`Message ${other.name.split(' ')[0]}…`} className="flex-1 h-10 px-3.5 rounded-xl bg-slate-50 border border-slate-200 text-[14px] text-slate-800 outline-none focus:border-[rgba(30,151,178,0.30)] focus:ring-2 focus:ring-primary/20" />
                 <button onClick={send} disabled={!reply.trim()} aria-label="Send" className="h-10 w-10 rounded-xl bg-[var(--color-primary)] disabled:bg-slate-200 text-white flex items-center justify-center active:scale-95 transition"><Send className="h-4 w-4" /></button>
               </div>
             </>
@@ -141,12 +141,12 @@ function ComposeModal({ meId, onClose, onSend }: { meId: string; onClose: () => 
         <div className="relative mb-3">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
           <input value={q} onChange={e => setQ(e.target.value)} placeholder="Search staff by name, role or department…"
-            className="w-full h-10 pl-9 pr-3 rounded-xl bg-slate-50 border border-slate-200 text-[13.5px] text-slate-800 outline-none focus:border-[rgba(238,107,38,0.30)] focus:ring-2 focus:ring-primary/20" />
+            className="w-full h-10 pl-9 pr-3 rounded-xl bg-slate-50 border border-slate-200 text-[13.5px] text-slate-800 outline-none focus:border-[rgba(30,151,178,0.30)] focus:ring-2 focus:ring-primary/20" />
         </div>
         <div className="max-h-52 overflow-y-auto -mx-1 px-1 space-y-1 mb-3">
           {list.map(c => (
             <button key={c.id} onClick={() => setToId(c.id)}
-              className={cn("w-full text-left flex items-center gap-3 p-2.5 rounded-xl transition", toId === c.id ? "bg-[rgba(238,107,38,0.07)] ring-1 ring-primary/25" : "hover:bg-slate-50")}>
+              className={cn("w-full text-left flex items-center gap-3 p-2.5 rounded-xl transition", toId === c.id ? "bg-[rgba(30,151,178,0.07)] ring-1 ring-primary/25" : "hover:bg-slate-50")}>
               <span className="h-9 w-9 rounded-full bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-light)] text-white flex items-center justify-center font-bold text-[12px]">{initials(c.name)}</span>
               <span className="flex-1 min-w-0"><span className="block text-[13.5px] font-semibold text-slate-900 truncate">{c.name}</span><span className="block text-[11.5px] text-slate-400">{ROLE_LABEL[c.role]} · {c.department}</span></span>
             </button>

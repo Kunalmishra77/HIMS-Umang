@@ -55,14 +55,14 @@ function AskAI() {
       <div className="px-4 pt-2 pb-4 border-t border-slate-100">
         <div className="flex flex-wrap gap-2 mb-3">
           {SUGGESTIONS.map(s => { const Icon = s.icon; const label = t(s.key); return (
-            <button key={s.key} onClick={() => send(label)} className="flex items-center gap-1.5 text-[12.5px] font-medium px-3 py-1.5 rounded-full border border-slate-200 text-slate-600 hover:border-[rgba(238,107,38,0.30)] hover:text-[var(--color-accent)] transition-colors active:scale-95">
+            <button key={s.key} onClick={() => send(label)} className="flex items-center gap-1.5 text-[12.5px] font-medium px-3 py-1.5 rounded-full border border-slate-200 text-slate-600 hover:border-[rgba(30,151,178,0.30)] hover:text-[var(--color-accent)] transition-colors active:scale-95">
               <Icon className="h-3.5 w-3.5" /> {label}
             </button>
           ) })}
         </div>
         <div className="flex items-center gap-2 rounded-2xl bg-slate-50 border border-slate-200 px-3 h-12 focus-within:ring-2 focus-within:ring-inset focus-within:ring-primary/25 transition-shadow">
           <input value={text} onChange={e => setText(e.target.value)} onKeyDown={e => { if (e.key === 'Enter') send(text) }} placeholder={t('aiCare.inputPlaceholder')} aria-label={t('aiCare.inputAria')} className="intake-input flex-1 bg-transparent border-none text-[15px] text-slate-900 placeholder:text-slate-400" />
-          <button aria-label={t('aiCare.speak')} className="h-8 w-8 rounded-full flex items-center justify-center text-slate-400 hover:text-[var(--color-accent)] hover:bg-[rgba(238,107,38,0.10)] transition-colors"><Mic className="h-4.5 w-4.5" /></button>
+          <button aria-label={t('aiCare.speak')} className="h-8 w-8 rounded-full flex items-center justify-center text-slate-400 hover:text-[var(--color-accent)] hover:bg-[rgba(30,151,178,0.10)] transition-colors"><Mic className="h-4.5 w-4.5" /></button>
           <button aria-label={t('aiCare.send')} onClick={() => send(text)} className="h-8 w-8 rounded-full bg-[var(--color-primary)] text-white flex items-center justify-center active:scale-95 transition-transform"><ArrowUp className="h-4.5 w-4.5" /></button>
         </div>
       </div>

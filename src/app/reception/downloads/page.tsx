@@ -26,10 +26,10 @@ const DOCS: Doc[] = [
 ]
 const FILTERS = ['All', 'Forms', 'Receipts', 'Token slips', 'Reports', 'Insurance'] as const
 const STYLE: Record<Cat, { Icon: typeof FileText; tint: string }> = {
-  'Forms': { Icon: ClipboardList, tint: 'bg-[rgba(238,107,38,0.07)] text-[var(--color-accent)]' },
+  'Forms': { Icon: ClipboardList, tint: 'bg-[rgba(30,151,178,0.07)] text-[var(--color-accent)]' },
   'Receipts': { Icon: Receipt, tint: 'bg-amber-50 text-amber-600' },
-  'Token slips': { Icon: Ticket, tint: 'bg-[rgba(238,107,38,0.07)] text-[var(--color-accent)]' },
-  'Reports': { Icon: FileText, tint: 'bg-[rgba(238,107,38,0.07)] text-[var(--color-accent)]' },
+  'Token slips': { Icon: Ticket, tint: 'bg-[rgba(30,151,178,0.07)] text-[var(--color-accent)]' },
+  'Reports': { Icon: FileText, tint: 'bg-[rgba(30,151,178,0.07)] text-[var(--color-accent)]' },
   'Insurance': { Icon: ShieldCheck, tint: 'bg-rose-50 text-rose-600' },
 }
 
@@ -48,7 +48,7 @@ export default function ReceptionDownloads() {
         <div className="relative">
           <Search className="h-4.5 w-4.5 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input value={query} onChange={e => setQuery(e.target.value)} placeholder={t('downloads.searchPlaceholder')}
-            className="w-full rounded-2xl bg-slate-50 border border-slate-100 pl-11 pr-4 py-3 text-[14px] text-slate-800 placeholder:text-slate-400 outline-none focus:border-[rgba(238,107,38,0.20)] focus:bg-white transition" />
+            className="w-full rounded-2xl bg-slate-50 border border-slate-100 pl-11 pr-4 py-3 text-[14px] text-slate-800 placeholder:text-slate-400 outline-none focus:border-[rgba(30,151,178,0.20)] focus:bg-white transition" />
         </div>
         <div className="mt-4 flex flex-wrap gap-2">
           {FILTERS.map(f => (

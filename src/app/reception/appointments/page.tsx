@@ -206,7 +206,7 @@ export default function ReceptionAppointments() {
                   <div className="relative">
                     <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                     <input list="rc-patient-list" value={draft.patientName} onChange={e => setDraft(d => ({ ...d, patientName: e.target.value }))} placeholder={t('appointments.patientNamePlaceholder')}
-                      className="w-full h-10 pl-9 pr-3 rounded-xl border border-slate-200 text-sm text-slate-900 outline-none focus:ring-2 focus:ring-primary/20 focus:border-[rgba(238,107,38,0.30)]" />
+                      className="w-full h-10 pl-9 pr-3 rounded-xl border border-slate-200 text-sm text-slate-900 outline-none focus:ring-2 focus:ring-primary/20 focus:border-[rgba(30,151,178,0.30)]" />
                     <datalist id="rc-patient-list">{patients.map(p => <option key={p.id} value={p.name} />)}</datalist>
                   </div>
                 </div>

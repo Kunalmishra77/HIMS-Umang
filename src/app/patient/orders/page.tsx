@@ -22,7 +22,7 @@ function relativeFrom(ts: number | null) {
 
 function TestIcon({ item }: { item: OrderItem }) {
   const Icon = item.dept === 'Radiology' ? ScanLine : FlaskConical
-  const tint = item.dept === 'Radiology' ? 'bg-[rgba(238,107,38,0.07)] text-[var(--color-accent)]' : 'bg-rose-50 text-rose-600'
+  const tint = item.dept === 'Radiology' ? 'bg-[rgba(30,151,178,0.07)] text-[var(--color-accent)]' : 'bg-rose-50 text-rose-600'
   return <span className={cn("h-10 w-10 rounded-2xl flex items-center justify-center flex-shrink-0", tint)}><Icon className="h-5 w-5" /></span>
 }
 
@@ -97,7 +97,7 @@ export default function DoctorOrdersPage() {
         <div className="flex items-start gap-3">
           {item.kind === 'test'
             ? <TestIcon item={item} />
-            : <span className="h-10 w-10 rounded-2xl bg-[rgba(238,107,38,0.07)] text-[var(--color-accent)] flex items-center justify-center flex-shrink-0"><Pill className="h-5 w-5" /></span>}
+            : <span className="h-10 w-10 rounded-2xl bg-[rgba(30,151,178,0.07)] text-[var(--color-accent)] flex items-center justify-center flex-shrink-0"><Pill className="h-5 w-5" /></span>}
 
           <div className="min-w-0 flex-1">
             <div className="flex items-start justify-between gap-3">
@@ -213,7 +213,7 @@ export default function DoctorOrdersPage() {
           </button>
         </div>
       ) : (
-        <div className="rounded-2xl bg-[rgba(238,107,38,0.07)] border border-[rgba(238,107,38,0.15)] p-4 flex items-start gap-3">
+        <div className="rounded-2xl bg-[rgba(30,151,178,0.07)] border border-[rgba(30,151,178,0.15)] p-4 flex items-start gap-3">
           <ShieldCheck className="h-5 w-5 text-[var(--color-accent)] flex-shrink-0 mt-0.5" />
           <p className="text-[13px] text-[var(--color-primary-dark)] leading-relaxed">
             <b>You decide what to keep.</b> Accept what you need, reduce the quantity of anything you already have at home, or skip an item with a reason. You only pay for what you keep.
@@ -255,7 +255,7 @@ export default function DoctorOrdersPage() {
               <p className="text-[22px] font-bold leading-tight tabular-nums">₹{total}</p>
             </div>
             <button onClick={openPay} disabled={total <= 0}
-              className="bg-[var(--color-primary)] disabled:bg-white/10 disabled:text-slate-400 text-white font-bold text-[14.5px] rounded-xl px-5 py-3 flex items-center gap-2 active:scale-[0.97] transition shadow-[0_8px_20px_rgba(238,107,38,0.25)]">
+              className="bg-[var(--color-primary)] disabled:bg-white/10 disabled:text-slate-400 text-white font-bold text-[14.5px] rounded-xl px-5 py-3 flex items-center gap-2 active:scale-[0.97] transition shadow-[0_8px_20px_rgba(30,151,178,0.25)]">
               <CreditCard className="h-4.5 w-4.5" /> Pay ₹{total} <ArrowRight className="h-4 w-4" />
             </button>
           </div>

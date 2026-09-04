@@ -19,7 +19,7 @@ type Mode = 'in_person' | 'online'
 type Row = Patient & { mode: Mode }
 
 const STATUS_TINT: Record<QueueStatus, string> = {
-  waiting: 'bg-amber-50 text-amber-700', vitals: 'bg-surface-sunken text-accent', consulting: 'bg-[rgba(238,107,38,0.07)] text-[var(--color-accent)]',
+  waiting: 'bg-amber-50 text-amber-700', vitals: 'bg-surface-sunken text-accent', consulting: 'bg-[rgba(30,151,178,0.07)] text-[var(--color-accent)]',
   billing: 'bg-primary-soft text-accent', done: 'bg-green-50 text-green-700',
 }
 const TRIAGE_TINT: Record<string, string> = {
@@ -82,7 +82,7 @@ export default function DoctorRecords() {
         <div className="relative w-full sm:w-72">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
           <input value={search} onChange={e => setSearch(e.target.value)} placeholder={t('records.searchPlaceholder')}
-            className="w-full h-10 pl-9 pr-3 rounded-xl bg-white border border-slate-200 text-[14px] text-slate-800 placeholder:text-slate-400 outline-none focus:border-[rgba(238,107,38,0.30)] focus:ring-2 focus:ring-primary/20" />
+            className="w-full h-10 pl-9 pr-3 rounded-xl bg-white border border-slate-200 text-[14px] text-slate-800 placeholder:text-slate-400 outline-none focus:border-[rgba(30,151,178,0.30)] focus:ring-2 focus:ring-primary/20" />
         </div>
       </div>
 
@@ -92,7 +92,7 @@ export default function DoctorRecords() {
           <button key={key} onClick={() => setTab(key)}
             className={cn("flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-[13px] font-semibold transition", tab === key ? "bg-white text-slate-900 shadow-sm" : "text-slate-500 hover:text-slate-700")}>
             {key === 'online' && <Video className="h-3.5 w-3.5" />}{key === 'in_person' && <Building2 className="h-3.5 w-3.5" />}
-            {label} <span className={cn("text-[11px] font-bold px-1.5 rounded-full", tab === key ? "bg-[rgba(238,107,38,0.12)] text-[var(--color-accent)]" : "bg-slate-200 text-slate-500")}>{counts[key]}</span>
+            {label} <span className={cn("text-[11px] font-bold px-1.5 rounded-full", tab === key ? "bg-[rgba(30,151,178,0.12)] text-[var(--color-accent)]" : "bg-slate-200 text-slate-500")}>{counts[key]}</span>
           </button>
         ))}
       </div>
@@ -116,7 +116,7 @@ export default function DoctorRecords() {
               <tbody>
                 {filtered.map(r => (
                   <tr key={r.id} onClick={() => setSelectedId(r.id)}
-                    className="border-b border-slate-50 last:border-0 hover:bg-[rgba(238,107,38,0.10)]/40 cursor-pointer transition">
+                    className="border-b border-slate-50 last:border-0 hover:bg-[rgba(30,151,178,0.10)]/40 cursor-pointer transition">
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
                         <span className={cn("h-9 w-9 rounded-xl text-white flex items-center justify-center font-bold text-[12.5px] flex-shrink-0", r.mode === 'online' ? "bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-light)]" : "bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-light)]")}>{initials(r.name)}</span>
@@ -131,7 +131,7 @@ export default function DoctorRecords() {
                     </td>
                     <td className="px-4 py-3 text-[13px] text-slate-600 whitespace-nowrap">{r.age}y · {r.gender}</td>
                     <td className="px-4 py-3">
-                      <span className={cn("inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-full", r.mode === 'online' ? "bg-[rgba(238,107,38,0.07)] text-[var(--color-accent)]" : "bg-[rgba(238,107,38,0.07)] text-[var(--color-accent)]")}>
+                      <span className={cn("inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-full", r.mode === 'online' ? "bg-[rgba(30,151,178,0.07)] text-[var(--color-accent)]" : "bg-[rgba(30,151,178,0.07)] text-[var(--color-accent)]")}>
                         {r.mode === 'online' ? <><Video className="h-3 w-3" /> {t('common.onlineLabel')}</> : <><Building2 className="h-3 w-3" /> {t('common.inPersonLabel')}</>}
                       </span>
                     </td>

@@ -28,7 +28,7 @@ export function FinalCta() {
             />
             <div className="absolute inset-0" style={{ background: "linear-gradient(150deg,rgba(6,49,59,0.93) 0%,rgba(12,83,102,0.88) 55%,rgba(5,42,51,0.95) 100%)" }} />
             <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-[600px] h-[400px] rounded-full pointer-events-none"
-              style={{ background: "radial-gradient(closest-side, rgba(238,107,38,0.28), transparent)" }} />
+              style={{ background: "radial-gradient(closest-side, rgba(30,151,178,0.28), transparent)" }} />
             <div className="relative text-center">
               <h2 className="text-[30px] lg:text-[44px] font-bold tracking-tight leading-[1.1]" style={{ color: "#FFFFFF" }}>
                 {t("finalCta.title")}

@@ -64,7 +64,7 @@ export function AadhaarScanStep({ update }: { form: IntakeForm; update: Update }
 
       {scan === 'idle' && (
         <div className="flex gap-3">
-          <button onClick={runScan} className="flex-1 h-12 rounded-[16px] bg-[#EE6B26] text-[#0D2032] font-semibold text-[15px] active:scale-[0.97] transition-all flex items-center justify-center gap-2 shadow-[0_4px_12px_rgba(238,107,38,0.25)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#EE6B26]">
+          <button onClick={runScan} className="flex-1 h-12 rounded-[16px] bg-[#1E97B2] text-[#0D2032] font-semibold text-[15px] active:scale-[0.97] transition-all flex items-center justify-center gap-2 shadow-[0_4px_12px_rgba(30,151,178,0.25)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1E97B2]">
             <ScanLine className="h-5 w-5" aria-hidden="true" /> Scan Card
           </button>
           <button className="flex-1 h-12 rounded-[16px] bg-white text-slate-700 font-semibold text-[15px] active:scale-[0.97] transition-all flex items-center justify-center gap-2 shadow-[0_1px_4px_rgba(0,0,0,0.06)]">
@@ -128,7 +128,7 @@ export function VoiceStep({ update }: { form: IntakeForm; update: Update }) {
           <button
             key={l}
             onClick={() => setLang(l)}
-            className={cn("flex-1 h-9 rounded-lg text-[13px] font-semibold transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-[#EE6B26]", lang === l ? "bg-white text-slate-900 shadow-sm" : "text-slate-500")}
+            className={cn("flex-1 h-9 rounded-lg text-[13px] font-semibold transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1E97B2]", lang === l ? "bg-white text-slate-900 shadow-sm" : "text-slate-500")}
           >
             {l === 'en' ? 'English' : 'हिंदी'}
           </button>
@@ -141,9 +141,9 @@ export function VoiceStep({ update }: { form: IntakeForm; update: Update }) {
           disabled={state === 'processing'}
           aria-label={state === 'listening' ? 'Stop listening' : 'Tap to speak'}
           className={cn(
-            "h-24 w-24 rounded-full flex items-center justify-center transition-all active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#EE6B26] focus-visible:ring-offset-2",
+            "h-24 w-24 rounded-full flex items-center justify-center transition-all active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1E97B2] focus-visible:ring-offset-2",
             state === 'listening' ? "bg-red-500 animate-pulse shadow-[0_0_0_12px_rgba(239,68,68,0.15)]"
-              : state === 'processing' ? "bg-amber-400" : "bg-[#EE6B26] shadow-[0_8px_20px_rgba(238,107,38,0.25)]"
+              : state === 'processing' ? "bg-amber-400" : "bg-[#1E97B2] shadow-[0_8px_20px_rgba(30,151,178,0.25)]"
           )}
         >
           {state === 'listening' ? <MicOff className="h-10 w-10 text-white" aria-hidden="true" /> : <Mic className="h-10 w-10 text-white" aria-hidden="true" />}

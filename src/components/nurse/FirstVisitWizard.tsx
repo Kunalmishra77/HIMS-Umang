@@ -146,7 +146,7 @@ export function FirstVisitWizard({ title, subtitle, meta, initial, onClose, onCo
       )
       case 3: return (
         <div className="space-y-4">
-          <div className="rounded-xl border border-[rgba(238,107,38,0.20)] bg-[rgba(238,107,38,0.07)] p-4">
+          <div className="rounded-xl border border-[rgba(30,151,178,0.20)] bg-[rgba(30,151,178,0.07)] p-4">
             <p className="flex items-center gap-2 text-xs font-bold text-[var(--color-accent)] uppercase tracking-wider mb-1"><Sparkles className="h-4 w-4" /> AI risk snapshot</p>
             <p className="text-sm font-semibold text-slate-800">{snapshot}</p>
           </div>
@@ -191,7 +191,7 @@ export function FirstVisitWizard({ title, subtitle, meta, initial, onClose, onCo
         <div className="px-6 py-4 border-b border-slate-100">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="h-9 w-9 rounded-xl bg-[rgba(238,107,38,0.07)] border border-[rgba(238,107,38,0.15)] flex items-center justify-center"><UserPlus className="h-5 w-5 text-[var(--color-accent)]" /></div>
+              <div className="h-9 w-9 rounded-xl bg-[rgba(30,151,178,0.07)] border border-[rgba(30,151,178,0.15)] flex items-center justify-center"><UserPlus className="h-5 w-5 text-[var(--color-accent)]" /></div>
               <div>
                 <h2 id="wizard-title" className="text-base font-bold text-slate-900">Complete Vitals</h2>
                 <p className="text-sm text-slate-500 font-medium">{title}{subtitle ? ` · ${subtitle}` : ""}</p>

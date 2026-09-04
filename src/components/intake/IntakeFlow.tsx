@@ -124,18 +124,18 @@ export function IntakeFlow() {
       return (
         <div className="flex flex-col flex-1 justify-center px-8 relative h-full">
           {/* Ambient medical gradient */}
-          <div aria-hidden className="pointer-events-none absolute -top-12 -right-12 h-80 w-80 rounded-full opacity-60 blur-3xl" style={{ background: 'radial-gradient(circle, rgba(238,107,38,0.22), transparent 70%)' }} />
-          <div aria-hidden className="pointer-events-none absolute -bottom-16 -left-12 h-80 w-80 rounded-full opacity-50 blur-3xl" style={{ background: 'radial-gradient(circle, rgba(238,107,38,0.12), transparent 70%)' }} />
+          <div aria-hidden className="pointer-events-none absolute -top-12 -right-12 h-80 w-80 rounded-full opacity-60 blur-3xl" style={{ background: 'radial-gradient(circle, rgba(30,151,178,0.22), transparent 70%)' }} />
+          <div aria-hidden className="pointer-events-none absolute -bottom-16 -left-12 h-80 w-80 rounded-full opacity-50 blur-3xl" style={{ background: 'radial-gradient(circle, rgba(30,151,178,0.12), transparent 70%)' }} />
 
           <div className="relative z-10 flex flex-col items-center justify-center text-center -mt-12">
-            <div className="h-24 w-24 rounded-[32px] flex items-center justify-center shadow-[0_16px_40px_rgba(238,107,38,0.35)]" style={{ background: 'radial-gradient(circle at 32% 28%, #FBD5BC 0%, #F7B98E 40%, #EE6B26 100%)' }}>
+            <div className="h-24 w-24 rounded-[32px] flex items-center justify-center shadow-[0_16px_40px_rgba(30,151,178,0.35)]" style={{ background: 'radial-gradient(circle at 32% 28%, #FBD5BC 0%, #F7B98E 40%, #1E97B2 100%)' }}>
               <HeartPulse className="h-11 w-11 text-white" aria-hidden="true" />
             </div>
             <h1 className="text-[32px] font-bold text-slate-900 tracking-tight leading-tight mt-8 whitespace-pre-line">{t('welcome.title')}</h1>
             <p className="text-[16.5px] text-slate-500 mt-4 max-w-[310px] leading-relaxed">{t('welcome.subtitle')}</p>
 
             <div className="flex items-center gap-2 mt-8">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-[rgba(238,107,38,0.08)] px-3 py-1.5 text-[13px] font-semibold text-[#B84A16]"><ShieldCheck className="h-3.5 w-3.5" aria-hidden="true" /> {t('welcome.badgePrivate')}</span>
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-[rgba(30,151,178,0.08)] px-3 py-1.5 text-[13px] font-semibold text-[#955408]"><ShieldCheck className="h-3.5 w-3.5" aria-hidden="true" /> {t('welcome.badgePrivate')}</span>
               <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-3 py-1.5 text-[13px] font-semibold text-slate-600"><Clock className="h-3.5 w-3.5" aria-hidden="true" /> {t('welcome.badgeTime')}</span>
             </div>
           </div>
@@ -144,7 +144,7 @@ export function IntakeFlow() {
             <div className="shadow-2xl rounded-2xl pointer-events-auto">
               <button
                 onClick={goNext}
-                className="w-full h-14 rounded-2xl font-semibold text-[17px] text-[#0D2032] bg-[#EE6B26] hover:bg-[#C2481A] transition-all shadow-[0_10px_24px_rgba(238,107,38,0.3)] active:scale-[0.98] flex items-center justify-center gap-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#EE6B26] focus-visible:ring-offset-2 cursor-pointer"
+                className="w-full h-14 rounded-2xl font-semibold text-[17px] text-[#0D2032] bg-[#1E97B2] hover:bg-[#196b7e] transition-all shadow-[0_10px_24px_rgba(30,151,178,0.3)] active:scale-[0.98] flex items-center justify-center gap-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1E97B2] focus-visible:ring-offset-2 cursor-pointer"
               >
                 {t('welcome.start')} <ArrowRight className="h-5 w-5" aria-hidden="true" />
               </button>
@@ -175,9 +175,9 @@ export function IntakeFlow() {
         case 'about': return <AboutStep form={form} update={update} />
         case 'symptoms': {
           const aiBar = form.symptoms.length > 0 ? (
-            <div className="flex items-center justify-between px-4 py-2.5 rounded-[14px] bg-white border border-[rgba(238,107,38,0.15)] shadow-[0_2px_12px_rgba(5,150,105,0.12)]">
+            <div className="flex items-center justify-between px-4 py-2.5 rounded-[14px] bg-white border border-[rgba(30,151,178,0.15)] shadow-[0_2px_12px_rgba(5,150,105,0.12)]">
               <span className="flex items-center gap-2.5">
-                <span className="h-8 w-8 rounded-full bg-[rgba(238,107,38,0.07)] flex items-center justify-center border border-[rgba(238,107,38,0.15)]"><Activity className="h-4 w-4 text-[#B84A16]" aria-hidden="true" /></span>
+                <span className="h-8 w-8 rounded-full bg-[rgba(30,151,178,0.07)] flex items-center justify-center border border-[rgba(30,151,178,0.15)]"><Activity className="h-4 w-4 text-[#955408]" aria-hidden="true" /></span>
                 <span className="text-[13px] font-bold text-slate-900">{t('symptomsUi.aiAssessment')}</span>
               </span>
               <NeonBadge variant={triage.variant} dot pulse className="px-3 py-1">{t(`triage.${triage.level}`)}</NeonBadge>

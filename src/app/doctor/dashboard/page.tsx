@@ -977,7 +977,7 @@ export default function DoctorDashboard() {
             <div className="hms-card p-5">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
-                  <div className="h-7 w-7 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'linear-gradient(135deg,var(--color-primary-dark),var(--color-primary))', boxShadow: '0 3px 8px rgba(238,107,38,0.30)' }}>
+                  <div className="h-7 w-7 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'linear-gradient(135deg,var(--color-primary-dark),var(--color-primary))', boxShadow: '0 3px 8px rgba(30,151,178,0.30)' }}>
                     <Activity className="h-3.5 w-3.5 text-white" aria-hidden="true" />
                   </div>
                   <h3 className="text-sm font-bold text-foreground">Consultation Notes</h3>
@@ -1139,7 +1139,7 @@ export default function DoctorDashboard() {
                         className="flex-1 h-10 rounded-xl font-bold text-[13px] flex items-center justify-center gap-2 text-white transition-all cursor-pointer disabled:opacity-50"
                         style={isPharmacySent
                           ? { background: 'linear-gradient(135deg,var(--color-success),var(--color-success-strong))', boxShadow: '0 4px 14px rgba(22,163,74,0.30)' }
-                          : { background: 'linear-gradient(135deg,var(--color-primary),var(--color-primary-dark))', boxShadow: '0 4px 14px rgba(238,107,38,0.30)' }}
+                          : { background: 'linear-gradient(135deg,var(--color-primary),var(--color-primary-dark))', boxShadow: '0 4px 14px rgba(30,151,178,0.30)' }}
                       >
                         {isPharmacySent
                           ? <><CheckCircle2 className="h-4 w-4" aria-hidden="true" /> Sent to Pharmacy</>
@@ -1182,7 +1182,7 @@ export default function DoctorDashboard() {
             {/* AI Assistant */}
             <div className="ai-card p-4 flex flex-col">
               <div className="flex items-center gap-2 mb-3 flex-shrink-0">
-                <div className="h-7 w-7 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg,var(--color-primary-dark),var(--color-primary))', boxShadow: '0 3px 8px rgba(238,107,38,0.30)' }}>
+                <div className="h-7 w-7 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg,var(--color-primary-dark),var(--color-primary))', boxShadow: '0 3px 8px rgba(30,151,178,0.30)' }}>
                   <Bot className="h-3.5 w-3.5 text-white" aria-hidden="true" />
                 </div>
                 <span className="font-bold text-sm text-foreground">AI Assistant</span>
@@ -1215,7 +1215,7 @@ export default function DoctorDashboard() {
             {/* ── Clinical Actions ── */}
             <div className="hms-card p-4">
               <div className="flex items-center gap-2 mb-3">
-                <div className="h-7 w-7 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg,var(--color-primary-dark),var(--color-primary))', boxShadow: '0 3px 8px rgba(238,107,38,0.30)' }}>
+                <div className="h-7 w-7 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg,var(--color-primary-dark),var(--color-primary))', boxShadow: '0 3px 8px rgba(30,151,178,0.30)' }}>
                   <Activity className="h-3.5 w-3.5 text-white" aria-hidden="true" />
                 </div>
                 <h3 className="text-sm font-bold text-foreground">Clinical Actions</h3>
@@ -1268,7 +1268,7 @@ export default function DoctorDashboard() {
             {/* Bed Availability */}
             <div className="hms-card p-4 flex flex-col gap-3">
               <div className="flex items-center gap-2">
-                <div className="h-7 w-7 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'linear-gradient(135deg,var(--color-primary-dark),var(--color-primary))', boxShadow: '0 3px 8px rgba(238,107,38,0.30)' }}>
+                <div className="h-7 w-7 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'linear-gradient(135deg,var(--color-primary-dark),var(--color-primary))', boxShadow: '0 3px 8px rgba(30,151,178,0.30)' }}>
                   <Bed className="h-3.5 w-3.5 text-white" aria-hidden="true" />
                 </div>
                 <span className="font-bold text-sm text-foreground">Bed Availability</span>

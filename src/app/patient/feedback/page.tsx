@@ -44,7 +44,7 @@ const CAT_LABELS: Record<keyof FeedbackCategoryRatings, { label: string; low: st
 }
 
 const NPS_COLORS = [
-  '#EF4444','#EF4444','#EE6B26','#EE6B26','#EE6B26',
+  '#EF4444','#EF4444','#1E97B2','#1E97B2','#1E97B2',
   '#EAB308','#EAB308','#22C55E','#22C55E','#22C55E','#16A34A',
 ]
 
@@ -366,7 +366,7 @@ export default function PatientFeedbackPage() {
                   {rec.themes.length > 0 && (
                     <div className="flex flex-wrap gap-1">
                       {rec.themes.map(t => (
-                        <span key={t} className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[rgba(238,107,38,0.07)] text-[var(--color-accent)]">{t}</span>
+                        <span key={t} className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[rgba(30,151,178,0.07)] text-[var(--color-accent)]">{t}</span>
                       ))}
                     </div>
                   )}

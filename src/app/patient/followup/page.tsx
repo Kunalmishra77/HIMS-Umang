@@ -67,7 +67,7 @@ export default function FollowUpPage() {
       </div>
 
       {/* Patient + visit header */}
-      <div className="rounded-3xl bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-dark)] text-white p-5 shadow-[0_10px_30px_rgba(238,107,38,0.25)]">
+      <div className="rounded-3xl bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-dark)] text-white p-5 shadow-[0_10px_30px_rgba(30,151,178,0.25)]">
         <div className="flex items-center gap-2 text-[12px] font-semibold text-white/80 mb-1">
           {mode === 'video' ? <Video className="h-4 w-4" /> : <Building2 className="h-4 w-4" />}
           {mode === 'video' ? 'Video consultation' : 'In-person OPD visit'} · today
@@ -77,9 +77,9 @@ export default function FollowUpPage() {
       </div>
 
       {/* AI visit summary */}
-      <div className="rounded-3xl bg-[rgba(238,107,38,0.07)] border border-[rgba(238,107,38,0.15)] p-5">
+      <div className="rounded-3xl bg-[rgba(30,151,178,0.07)] border border-[rgba(30,151,178,0.15)] p-5">
         <div className="flex items-center gap-2 mb-2">
-          <span className="h-9 w-9 rounded-2xl bg-[rgba(238,107,38,0.12)] flex items-center justify-center flex-shrink-0"><Sparkles className="h-4.5 w-4.5 text-[var(--color-accent)]" /></span>
+          <span className="h-9 w-9 rounded-2xl bg-[rgba(30,151,178,0.12)] flex items-center justify-center flex-shrink-0"><Sparkles className="h-4.5 w-4.5 text-[var(--color-accent)]" /></span>
           <div>
             <p className="text-[14px] font-bold text-[var(--color-primary-dark)]">Your visit, in plain language</p>
             <p className="text-[12px] text-[var(--color-accent)]">AI summary · reviewed by your doctor</p>
@@ -100,7 +100,7 @@ export default function FollowUpPage() {
             <input
               type="date" value={followupDate} min={new Date().toISOString().slice(0, 10)}
               onChange={e => setFollowupDate(e.target.value)}
-              className="flex-1 rounded-xl border border-slate-200 px-3.5 py-2.5 text-[14px] text-slate-800 outline-none focus:border-[rgba(238,107,38,0.30)] focus:ring-2 focus:ring-primary/20"
+              className="flex-1 rounded-xl border border-slate-200 px-3.5 py-2.5 text-[14px] text-slate-800 outline-none focus:border-[rgba(30,151,178,0.30)] focus:ring-2 focus:ring-primary/20"
             />
             <button
               onClick={() => { if (!followupDate) { toast.error('Please pick a date'); return } setBooked(true); toast.success('Follow-up booked', { description: `${doctor} on ${new Date(followupDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}` }) }}
@@ -194,7 +194,7 @@ export default function FollowUpPage() {
       {/* Documents + emergency */}
       <div className="grid sm:grid-cols-2 gap-3">
         <Link href="/patient/downloads" className="rounded-3xl bg-white shadow-[0_1px_4px_rgba(15,23,42,0.06),0_8px_28px_rgba(15,23,42,0.05)] p-5 flex items-center gap-3 hover:bg-slate-50 transition">
-          <span className="h-10 w-10 rounded-2xl bg-[rgba(238,107,38,0.07)] flex items-center justify-center flex-shrink-0"><FileText className="h-5 w-5 text-[var(--color-accent)]" /></span>
+          <span className="h-10 w-10 rounded-2xl bg-[rgba(30,151,178,0.07)] flex items-center justify-center flex-shrink-0"><FileText className="h-5 w-5 text-[var(--color-accent)]" /></span>
           <div className="flex-1">
             <p className="text-[14px] font-bold text-slate-900">Visit documents</p>
             <p className="text-[12px] text-slate-500">Summary, prescription & bills</p>

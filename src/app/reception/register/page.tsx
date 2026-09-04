@@ -429,7 +429,7 @@ export default function RegisterPatientPage() {
       {/* ── Stage: OTP ── */}
       {stage === "otp" && (
         <Panel icon={Fingerprint} title={t('register.verifyAadhaarOtp')}>
-          <div className="flex items-center gap-2 rounded-xl bg-[rgba(238,107,38,0.05)] px-3 py-2">
+          <div className="flex items-center gap-2 rounded-xl bg-[rgba(30,151,178,0.05)] px-3 py-2">
             <IdCard className="h-4 w-4 text-[var(--color-accent)]" />
             <p className="text-[12.5px] text-slate-700">{t('register.aadhaarOtpInfo', { aadhaar, mobile: maskedMobile })}</p>
           </div>
@@ -456,7 +456,7 @@ export default function RegisterPatientPage() {
           </div>
 
           <div className="rounded-2xl border border-slate-200 overflow-hidden">
-            <div className={cn("px-4 py-2.5 flex items-center gap-2 text-[12px] font-bold", detectedExists ? "bg-[rgba(238,107,38,0.08)] text-[var(--color-primary-dark)]" : "bg-amber-50 text-amber-800")}>
+            <div className={cn("px-4 py-2.5 flex items-center gap-2 text-[12px] font-bold", detectedExists ? "bg-[rgba(30,151,178,0.08)] text-[var(--color-primary-dark)]" : "bg-amber-50 text-amber-800")}>
               <BadgeCheck className="h-4 w-4" />
               {detectedExists ? t('register.existingAbhaFound') : t('register.noAbhaLinked')}
             </div>
@@ -503,7 +503,7 @@ export default function RegisterPatientPage() {
                 <p className="text-[16px] font-bold text-slate-900">{form.name}</p>
                 <p className="text-[12.5px] font-mono text-[var(--color-primary-dark)]">{abha.abhaNumber}</p>
                 <p className="text-[12px] font-mono text-slate-500">{abha.abhaAddress}</p>
-                <span className={cn("inline-flex items-center gap-1 mt-1 text-[10.5px] font-bold px-2 py-0.5 rounded-full", detectedExists ? "bg-emerald-100 text-emerald-700" : "bg-[rgba(238,107,38,0.12)] text-[var(--color-primary-dark)]")}>
+                <span className={cn("inline-flex items-center gap-1 mt-1 text-[10.5px] font-bold px-2 py-0.5 rounded-full", detectedExists ? "bg-emerald-100 text-emerald-700" : "bg-[rgba(30,151,178,0.12)] text-[var(--color-primary-dark)]")}>
                   <BadgeCheck className="h-3 w-3" /> {detectedExists ? t('register.existingAbha') : t('register.newlyCreatedAbha')}
                 </span>
               </div>
@@ -529,7 +529,7 @@ export default function RegisterPatientPage() {
             </div>
           </div>
 
-          <div className="rounded-xl bg-[rgba(238,107,38,0.05)] border border-[rgba(238,107,38,0.15)] px-3 py-2 flex items-center gap-2 text-[12px] text-[var(--color-primary-dark)]">
+          <div className="rounded-xl bg-[rgba(30,151,178,0.05)] border border-[rgba(30,151,178,0.15)] px-3 py-2 flex items-center gap-2 text-[12px] text-[var(--color-primary-dark)]">
             <Sparkles className="h-3.5 w-3.5" /> {t('register.uhidGenerated', { uhid })}
           </div>
 
@@ -592,7 +592,7 @@ export default function RegisterPatientPage() {
           {/* Chief complaint + AI triage */}
           <Field label={t('register.labelChiefComplaint')}><Input value={form.symptoms} onChange={(e) => set({ symptoms: e.target.value })} placeholder={t('register.chiefComplaintPlaceholder')} className="h-10 rounded-xl" /></Field>
           {suggestion && form.symptoms.trim() && (
-            <div className="rounded-xl bg-[rgba(238,107,38,0.07)] border border-[rgba(238,107,38,0.15)] p-3">
+            <div className="rounded-xl bg-[rgba(30,151,178,0.07)] border border-[rgba(30,151,178,0.15)] p-3">
               <div className="flex items-center gap-1.5 mb-1"><Sparkles className="h-3.5 w-3.5 text-[var(--color-accent)]" /><span className="text-[12px] font-bold text-[var(--color-primary-dark)]">{t('register.aiTriageSuggestion')}</span></div>
               <p className="text-[12px] text-[var(--color-primary-dark)]">{t('register.aiTriageText', { triage: t(`register.${TRIAGE_KEY[suggestion.triage]}`), department: DEPT_KEY[suggestion.department] ? t(`register.${DEPT_KEY[suggestion.department]}`) : suggestion.department, reason: suggestion.reason })}</p>
               {(form.triage !== suggestion.triage || form.department !== suggestion.department) && (
@@ -727,12 +727,12 @@ function fmtDob(aadhaar: string) {
 function MethodCard({ icon: Icon, title, desc, recommended, recommendedLabel, busy, onClick }: { icon: React.ElementType; title: string; desc: string; recommended?: boolean; recommendedLabel?: string; busy?: boolean; onClick: () => void }) {
   return (
     <button onClick={onClick} disabled={busy}
-      className="group text-left rounded-2xl border-2 border-[rgba(238,107,38,0.20)] bg-[rgba(238,107,38,0.04)] hover:bg-[rgba(238,107,38,0.08)] hover:border-[var(--color-primary)] transition p-4 disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]">
+      className="group text-left rounded-2xl border-2 border-[rgba(30,151,178,0.20)] bg-[rgba(30,151,178,0.04)] hover:bg-[rgba(30,151,178,0.08)] hover:border-[var(--color-primary)] transition p-4 disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]">
       <div className="flex items-center justify-between mb-2">
         <span className="h-10 w-10 rounded-xl bg-[var(--color-primary)] text-white flex items-center justify-center">
           {busy ? <Loader2 className="h-5 w-5 animate-spin" /> : <Icon className="h-5 w-5" />}
         </span>
-        {recommended && <span className="text-[10px] font-bold uppercase tracking-wide text-[var(--color-primary-dark)] bg-[rgba(238,107,38,0.12)] px-2 py-0.5 rounded-full">{recommendedLabel}</span>}
+        {recommended && <span className="text-[10px] font-bold uppercase tracking-wide text-[var(--color-primary-dark)] bg-[rgba(30,151,178,0.12)] px-2 py-0.5 rounded-full">{recommendedLabel}</span>}
       </div>
       <p className="text-[13.5px] font-bold text-slate-900">{title}</p>
       <p className="text-[12px] text-slate-500 mt-0.5">{desc}</p>
@@ -744,7 +744,7 @@ function Panel({ icon: Icon, title, children }: { icon: React.ElementType; title
   return (
     <div className="rounded-2xl border border-slate-200 bg-white p-5 space-y-4">
       <div className="flex items-center gap-2">
-        <span className="h-7 w-7 rounded-lg bg-[rgba(238,107,38,0.10)] text-[var(--color-accent)] flex items-center justify-center"><Icon className="h-4 w-4" /></span>
+        <span className="h-7 w-7 rounded-lg bg-[rgba(30,151,178,0.10)] text-[var(--color-accent)] flex items-center justify-center"><Icon className="h-4 w-4" /></span>
         <h3 className="text-[14px] font-bold text-slate-900">{title}</h3>
       </div>
       {children}

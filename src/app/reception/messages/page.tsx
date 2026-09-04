@@ -25,7 +25,7 @@ const TO_ROLE: Record<string, Role> = {
 }
 
 const THREAD_STATUS: Record<string, string> = {
-  active: 'bg-[rgba(238,107,38,0.07)] text-[var(--color-accent)]', escalated: 'bg-red-50 text-red-600', resolved: 'bg-green-50 text-green-700',
+  active: 'bg-[rgba(30,151,178,0.07)] text-[var(--color-accent)]', escalated: 'bg-red-50 text-red-600', resolved: 'bg-green-50 text-green-700',
 }
 const PRIORITY_TINT: Record<string, string> = {
   critical: 'bg-red-50 text-red-600', high: 'bg-primary-soft text-accent', medium: 'bg-amber-50 text-amber-700', low: 'bg-slate-100 text-slate-500',
@@ -83,7 +83,7 @@ export default function ReceptionMessages() {
           <User className="h-3.5 w-3.5" /> {t('messages.staffMessages')}
         </button>
         <button onClick={() => setTab('inbox')} className={cn("flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-[13px] font-semibold transition", tab === 'inbox' ? "bg-white text-slate-900 shadow-sm" : "text-slate-500")}>
-          <Bell className="h-3.5 w-3.5" /> {t('messages.teamInbox')} {unreadCount > 0 && <span className="text-[11px] font-bold px-1.5 rounded-full bg-[rgba(238,107,38,0.12)] text-[var(--color-accent)]">{unreadCount}</span>}
+          <Bell className="h-3.5 w-3.5" /> {t('messages.teamInbox')} {unreadCount > 0 && <span className="text-[11px] font-bold px-1.5 rounded-full bg-[rgba(30,151,178,0.12)] text-[var(--color-accent)]">{unreadCount}</span>}
         </button>
       </div>
 
@@ -96,7 +96,7 @@ export default function ReceptionMessages() {
               const last = th.messages[th.messages.length - 1]
               return (
                 <button key={th.id} onClick={() => setSelectedId(th.id)}
-                  className={cn("w-full text-left p-3.5 border-b border-slate-50 transition", selectedId === th.id ? "bg-[rgba(238,107,38,0.07)]/50" : "hover:bg-slate-50")}>
+                  className={cn("w-full text-left p-3.5 border-b border-slate-50 transition", selectedId === th.id ? "bg-[rgba(30,151,178,0.07)]/50" : "hover:bg-slate-50")}>
                   <div className="flex items-center justify-between gap-2 mb-0.5">
                     <p className="text-[13.5px] font-bold text-slate-900 truncate flex items-center gap-1.5">
                       {th.patientName ?? th.patientPhone}
@@ -133,7 +133,7 @@ export default function ReceptionMessages() {
                     const ai = m.from === 'ai'
                     return (
                       <div key={m.id} className={cn("flex", mine ? "justify-end" : "justify-start")}>
-                        <div className={cn("max-w-[75%] rounded-2xl px-3.5 py-2", mine ? "bg-[var(--color-primary)] text-white" : ai ? "bg-[rgba(238,107,38,0.07)] text-[var(--color-primary-dark)] border border-[rgba(238,107,38,0.15)]" : "bg-white text-slate-800 border border-slate-100")}>
+                        <div className={cn("max-w-[75%] rounded-2xl px-3.5 py-2", mine ? "bg-[var(--color-primary)] text-white" : ai ? "bg-[rgba(30,151,178,0.07)] text-[var(--color-primary-dark)] border border-[rgba(30,151,178,0.15)]" : "bg-white text-slate-800 border border-slate-100")}>
                           {!mine && <p className="text-[10px] font-bold mb-0.5 flex items-center gap-1 opacity-70">{ai ? <><Bot className="h-3 w-3" /> {t('messages.aiAssistant')}</> : <><User className="h-3 w-3" /> {t('messages.patient')}</>}</p>}
                           <p className="text-[13px] leading-snug">{m.text}</p>
                         </div>
@@ -144,7 +144,7 @@ export default function ReceptionMessages() {
 
                 <div className="p-3 border-t border-slate-100 flex items-center gap-2">
                   <input value={reply} onChange={e => setReply(e.target.value)} onKeyDown={e => { if (e.key === 'Enter') sendReply() }}
-                    placeholder={t('messages.replyPlaceholder')} className="flex-1 h-10 px-3.5 rounded-xl bg-slate-50 border border-slate-200 text-[14px] text-slate-800 outline-none focus:border-[rgba(238,107,38,0.30)] focus:ring-2 focus:ring-primary/20" />
+                    placeholder={t('messages.replyPlaceholder')} className="flex-1 h-10 px-3.5 rounded-xl bg-slate-50 border border-slate-200 text-[14px] text-slate-800 outline-none focus:border-[rgba(30,151,178,0.30)] focus:ring-2 focus:ring-primary/20" />
                   <button onClick={sendReply} disabled={!reply.trim()} aria-label={t('messages.send')} className="h-10 w-10 rounded-xl bg-[var(--color-primary)] disabled:bg-slate-200 text-white flex items-center justify-center active:scale-95 transition"><Send className="h-4 w-4" /></button>
                 </div>
               </>
@@ -163,8 +163,8 @@ export default function ReceptionMessages() {
           <div className="space-y-2">
             {notifications.map(n => (
               <button key={n.id} onClick={() => markRead(n.id)}
-                className={cn("w-full text-left flex items-start gap-3 rounded-xl p-3 transition", n.read ? "bg-white hover:bg-slate-50" : "bg-[rgba(238,107,38,0.07)]/50 hover:bg-[rgba(238,107,38,0.10)]")}>
-                {!n.read && <span className="h-2 w-2 rounded-full bg-[rgba(238,107,38,0.07)]0 mt-1.5 flex-shrink-0" />}
+                className={cn("w-full text-left flex items-start gap-3 rounded-xl p-3 transition", n.read ? "bg-white hover:bg-slate-50" : "bg-[rgba(30,151,178,0.07)]/50 hover:bg-[rgba(30,151,178,0.10)]")}>
+                {!n.read && <span className="h-2 w-2 rounded-full bg-[rgba(30,151,178,0.07)]0 mt-1.5 flex-shrink-0" />}
                 <div className={cn("flex-1 min-w-0", n.read && "ml-5")}>
                   <div className="flex items-center justify-between gap-2">
                     <p className="text-[13.5px] font-semibold text-slate-900 truncate">{n.title}</p>

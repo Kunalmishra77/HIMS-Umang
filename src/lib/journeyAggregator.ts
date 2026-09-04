@@ -375,7 +375,7 @@ export function aggregateJourney(patientId: string, patientName: string): Journe
 }
 
 export const DEPT_COLOR: Record<Department, string> = {
-  Reception: '#0EA5E9',  // sky
+  Reception: '#0284C7',  // sky-600
   Emergency: '#DC2626',  // red
   Nursing:   '#10B981',  // emerald
   Doctor:    '#7C3AED',  // violet
@@ -383,7 +383,7 @@ export const DEPT_COLOR: Record<Department, string> = {
   Radiology: '#9333EA',  // purple
   Pharmacy:  '#EC4899',  // pink
   OT:        '#2563EB',  // blue
-  IPD:       '#EE6B26',  // brand orange
+  IPD:       '#1E97B2',  // brand teal
   Discharge: '#059669',  // green
   Billing:   '#EAB308',  // yellow
   Insurance: '#64748B',  // slate

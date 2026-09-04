@@ -113,10 +113,10 @@ function AbdmLogo({ className }: { className?: string }) {
         fill="#2e9e4f"
       />
       {/* Saffron figure forming a care/heart motif */}
-      <circle cx="56" cy="36" r="6.5" fill="#F58C4E" />
+      <circle cx="56" cy="36" r="6.5" fill="#6acdd9" />
       <path
         d="M44 64 C44 50 52 44 58 44 C66 44 72 52 70 64 C62 60 52 60 44 64 Z"
-        fill="#F58C4E"
+        fill="#6acdd9"
       />
       {/* Health cross */}
       <g fill="#ffffff">

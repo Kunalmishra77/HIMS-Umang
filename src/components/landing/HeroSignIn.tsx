@@ -119,7 +119,7 @@ export function HeroSignIn() {
         </div>
 
         <button type="submit" disabled={busy}
-          className="w-full inline-flex items-center justify-center gap-2 h-11 rounded-xl text-[15px] font-semibold text-white bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] transition-colors cursor-pointer shadow-[0_8px_24px_rgba(238,107,38,0.18)] disabled:opacity-70">
+          className="w-full inline-flex items-center justify-center gap-2 h-11 rounded-xl text-[15px] font-semibold text-white bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] transition-colors cursor-pointer shadow-[0_8px_24px_rgba(30,151,178,0.18)] disabled:opacity-70">
           {busy ? <><Loader2 className="h-4 w-4 animate-spin" /> Signing in…</> : <>Sign in <ArrowRight className="h-4 w-4" /></>}
         </button>
       </form>

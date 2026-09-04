@@ -64,10 +64,10 @@ export default function DoctorInbox() {
       {/* Tabs */}
       <div className="flex items-center gap-1 p-1 rounded-xl bg-slate-100 w-fit mb-4">
         <button onClick={() => setTab('messages')} className={cn("flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-[13px] font-semibold transition", tab === 'messages' ? "bg-white text-slate-900 shadow-sm" : "text-slate-500")}>
-          <MessageSquare className="h-3.5 w-3.5" /> {t('inbox.tabMessages')} {unreadMsgs > 0 && <span className="text-[11px] font-bold px-1.5 rounded-full bg-[rgba(238,107,38,0.12)] text-[var(--color-accent)]">{unreadMsgs}</span>}
+          <MessageSquare className="h-3.5 w-3.5" /> {t('inbox.tabMessages')} {unreadMsgs > 0 && <span className="text-[11px] font-bold px-1.5 rounded-full bg-[rgba(30,151,178,0.12)] text-[var(--color-accent)]">{unreadMsgs}</span>}
         </button>
         <button onClick={() => setTab('results')} className={cn("flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-[13px] font-semibold transition", tab === 'results' ? "bg-white text-slate-900 shadow-sm" : "text-slate-500")}>
-          <ClipboardCheck className="h-3.5 w-3.5" /> {t('inbox.tabResults')} {results.length > 0 && <span className="text-[11px] font-bold px-1.5 rounded-full bg-[rgba(238,107,38,0.12)] text-[var(--color-accent)]">{results.length}</span>}
+          <ClipboardCheck className="h-3.5 w-3.5" /> {t('inbox.tabResults')} {results.length > 0 && <span className="text-[11px] font-bold px-1.5 rounded-full bg-[rgba(30,151,178,0.12)] text-[var(--color-accent)]">{results.length}</span>}
         </button>
         <button onClick={() => setTab('alerts')} className={cn("flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-[13px] font-semibold transition", tab === 'alerts' ? "bg-white text-slate-900 shadow-sm" : "text-slate-500")}>
           <Bell className="h-3.5 w-3.5" /> {t('inbox.tabAlerts')} {unreadAlerts > 0 && <span className="text-[11px] font-bold px-1.5 rounded-full bg-accent-soft text-accent">{unreadAlerts}</span>}
@@ -87,7 +87,7 @@ export default function DoctorInbox() {
               </div>
             )}
             {alerts.map(n => (
-              <div key={n.id} className={cn("p-4 rounded-xl border bg-white", n.priority === 'critical' ? "border-l-4 border-l-red-500" : n.priority === 'high' ? "border-l-4 border-l-orange-400" : "border-l-4 border-l-slate-200", !n.read && "ring-1 ring-primary/25 bg-[rgba(238,107,38,0.07)]/30")}>
+              <div key={n.id} className={cn("p-4 rounded-xl border bg-white", n.priority === 'critical' ? "border-l-4 border-l-red-500" : n.priority === 'high' ? "border-l-4 border-l-orange-400" : "border-l-4 border-l-slate-200", !n.read && "ring-1 ring-primary/25 bg-[rgba(30,151,178,0.07)]/30")}>
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-start gap-3">
                     <Bell className={cn("h-5 w-5 mt-0.5 flex-shrink-0", n.priority === 'critical' ? "text-red-500" : n.priority === 'high' ? "text-accent" : "text-slate-400")} />
@@ -95,7 +95,7 @@ export default function DoctorInbox() {
                       <div className="flex items-center gap-2 flex-wrap">
                         <p className="font-bold text-slate-900 text-sm">{n.title}</p>
                         <span className="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-slate-200/70 text-slate-500">{TYPE_LABEL_KEY[n.type] ? t(`inbox.${TYPE_LABEL_KEY[n.type]}`) : t('inbox.typeAlert')}</span>
-                        {!n.read && <span className="h-2 w-2 rounded-full bg-[rgba(238,107,38,0.07)]0" />}
+                        {!n.read && <span className="h-2 w-2 rounded-full bg-[rgba(30,151,178,0.07)]0" />}
                       </div>
                       <p className="text-sm text-slate-600 mt-0.5">{n.body}</p>
                       <p className="text-xs text-slate-400 mt-1">{new Date(n.createdAt).toLocaleString()}{n.patientName ? ` · ${n.patientName}` : ''}</p>
@@ -121,8 +121,8 @@ export default function DoctorInbox() {
 }
 
 const RESULT_SRC = {
-  lab: { labelKey: 'srcLab', icon: FlaskConical, tint: 'bg-[rgba(238,107,38,0.07)] text-[var(--color-accent)]' },
-  radiology: { labelKey: 'srcRadiology', icon: ScanLine, tint: 'bg-[rgba(238,107,38,0.07)] text-[var(--color-accent)]' },
+  lab: { labelKey: 'srcLab', icon: FlaskConical, tint: 'bg-[rgba(30,151,178,0.07)] text-[var(--color-accent)]' },
+  radiology: { labelKey: 'srcRadiology', icon: ScanLine, tint: 'bg-[rgba(30,151,178,0.07)] text-[var(--color-accent)]' },
   ipd: { labelKey: 'srcInpatient', icon: ClipboardCheck, tint: 'bg-rose-50 text-rose-700' },
 }
 function ResultsTab({ results, onAck }: { results: ResultItem[]; onAck: (r: ResultItem) => void }) {

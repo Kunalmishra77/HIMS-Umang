@@ -99,7 +99,7 @@ export default function LiveJourneyBoardPage() {
     <div className="p-1 space-y-5">
       <div className="flex items-center justify-between gap-4 flex-wrap">
         <div className="flex items-center gap-2.5">
-          <span className="h-9 w-9 rounded-xl bg-[rgba(238,107,38,0.10)] text-[var(--color-accent)] flex items-center justify-center"><Activity className="h-4.5 w-4.5" /></span>
+          <span className="h-9 w-9 rounded-xl bg-[rgba(30,151,178,0.10)] text-[var(--color-accent)] flex items-center justify-center"><Activity className="h-4.5 w-4.5" /></span>
           <div>
             <h1 className="text-[18px] font-bold text-slate-900 leading-tight">{t('journey.pageTitle')}</h1>
             <p className="text-[12px] text-slate-500">{t('journey.pageSubtitle')}</p>

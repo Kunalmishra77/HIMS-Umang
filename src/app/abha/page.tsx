@@ -651,7 +651,7 @@ export default function AbhaSandboxPage() {
               <Card className="overflow-hidden border-none shadow-[0_8px_30px_rgb(12,97,122,0.18)]">
                 <div
                   className="p-6 text-white relative"
-                  style={{ background: "linear-gradient(135deg,#C2481A 0%,var(--color-primary) 45%,var(--color-primary) 100%)" }}
+                  style={{ background: "linear-gradient(135deg,#196b7e 0%,var(--color-primary) 45%,var(--color-primary) 100%)" }}
                 >
                   {/* Card Background Overlay pattern */}
                   <div

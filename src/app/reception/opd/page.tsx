@@ -43,7 +43,7 @@ const STATUS_PILL: Record<QueueStatus, { key: string; cls: string }> = {
 
 const SOURCE_META: Record<NonNullable<ReturnType<typeof sourceOf>>, { key: string; cls: string }> = {
   walk_in:     { key: 'sourceWalkIn',     cls: 'bg-slate-100 text-slate-600' },
-  online:      { key: 'sourceOnline', cls: 'bg-[rgba(238,107,38,0.10)] text-[var(--color-primary-dark)]' },
+  online:      { key: 'sourceOnline', cls: 'bg-[rgba(30,151,178,0.10)] text-[var(--color-primary-dark)]' },
   appointment: { key: 'sourceAppointment', cls: 'bg-accent-soft text-accent' },
 }
 function sourceOf(s?: 'walk_in' | 'online' | 'appointment') { return s ?? 'walk_in' }
@@ -209,7 +209,7 @@ export default function OpdQueuePage() {
             {canAnnounce && (
               <button onClick={() => announce(p.token, p.name, p.queueStatus === 'consulting' ? t('opd.consultation') : undefined)}
                 aria-label={t('opd.announceTokenAria', { token: p.token })} title={t('opd.announceTitle')}
-                className="h-8 w-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-[var(--color-accent)] hover:bg-[rgba(238,107,38,0.10)] transition cursor-pointer"><Volume2 className="h-4 w-4" /></button>
+                className="h-8 w-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-[var(--color-accent)] hover:bg-[rgba(30,151,178,0.10)] transition cursor-pointer"><Volume2 className="h-4 w-4" /></button>
             )}
             {canAnnounce && (
               <button onClick={() => escalate(p.id, p.name, p.triageLevel)}

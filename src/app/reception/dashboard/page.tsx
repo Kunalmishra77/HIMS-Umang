@@ -68,11 +68,11 @@ export default function ReceptionDashboard() {
   const dateLabel = new Date().toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' })
 
   const kpis = [
-    { label: t('dashboard.kpiPatientsToday'), value: `${todayPatients.length}`, icon: Users, tint: 'bg-[rgba(238,107,38,0.07)] text-[var(--color-accent)]', href: '/reception/patients' },
+    { label: t('dashboard.kpiPatientsToday'), value: `${todayPatients.length}`, icon: Users, tint: 'bg-[rgba(30,151,178,0.07)] text-[var(--color-accent)]', href: '/reception/patients' },
     { label: t('dashboard.kpiInQueue'), value: `${inQueue.length}`, sub: t('dashboard.kpiInQueueSub', { wait: avgWait }), icon: Activity, tint: 'bg-amber-50 text-amber-600', href: '/reception/opd' },
-    { label: t('dashboard.kpiNowServing'), value: nowServing ? `#${nowServing.token}` : '—', sub: nowServing?.name, icon: Volume2, tint: 'bg-[rgba(238,107,38,0.07)] text-[var(--color-accent)]', href: '/reception/queue' },
+    { label: t('dashboard.kpiNowServing'), value: nowServing ? `#${nowServing.token}` : '—', sub: nowServing?.name, icon: Volume2, tint: 'bg-[rgba(30,151,178,0.07)] text-[var(--color-accent)]', href: '/reception/queue' },
     { label: t('dashboard.kpiPendingBills'), value: `${pendingBills.length}`, sub: t('dashboard.kpiPendingBillsSub', { amount: totalDue.toLocaleString('en-IN') }), icon: CreditCard, tint: 'bg-rose-50 text-rose-600', href: '/reception/billing' },
-    { label: t('dashboard.kpiAppointments'), value: `${todayAppts.length}`, sub: t('dashboard.kpiToday'), icon: Calendar, tint: 'bg-[rgba(238,107,38,0.07)] text-[var(--color-accent)]', href: '/reception/appointments' },
+    { label: t('dashboard.kpiAppointments'), value: `${todayAppts.length}`, sub: t('dashboard.kpiToday'), icon: Calendar, tint: 'bg-[rgba(30,151,178,0.07)] text-[var(--color-accent)]', href: '/reception/appointments' },
   ]
 
   return (
@@ -105,7 +105,7 @@ export default function ReceptionDashboard() {
           {[
             { label: t('dashboard.stageWaiting'),    sub: t('dashboard.stageWaitingSub'),  count: pipelineCounts.waiting,    color: 'border-amber-200 bg-amber-50',     icon: Users,        fg: 'text-amber-700',    href: '/reception/opd',     cta: t('dashboard.ctaSendToVitals') },
             { label: t('dashboard.stageVitals'),     sub: t('dashboard.stageVitalsSub'),       count: pipelineCounts.vitals,     color: 'border-primary/20 bg-primary-soft',   icon: Activity,     fg: 'text-accent',   href: '/reception/opd',     cta: t('dashboard.ctaTrack') },
-            { label: t('dashboard.stageConsulting'), sub: t('dashboard.stageConsultingSub'),      count: pipelineCounts.consulting, color: 'border-[rgba(238,107,38,0.20)] bg-[rgba(238,107,38,0.07)]',   icon: Stethoscope,  fg: 'text-[var(--color-accent)]',   href: '/reception/queue',   cta: t('dashboard.ctaDisplayBoard') },
+            { label: t('dashboard.stageConsulting'), sub: t('dashboard.stageConsultingSub'),      count: pipelineCounts.consulting, color: 'border-[rgba(30,151,178,0.20)] bg-[rgba(30,151,178,0.07)]',   icon: Stethoscope,  fg: 'text-[var(--color-accent)]',   href: '/reception/queue',   cta: t('dashboard.ctaDisplayBoard') },
             { label: t('dashboard.stageBilling'),    sub: t('dashboard.stageBillingSub'),    count: pipelineCounts.billing,    color: 'border-rose-200 bg-rose-50',       icon: CreditCard,   fg: 'text-rose-700',     href: '/reception/billing', cta: t('dashboard.ctaCollect') },
             { label: t('dashboard.stageDone'),       sub: t('dashboard.stageDoneSub'),  count: pipelineCounts.done,       color: 'border-emerald-200 bg-emerald-50', icon: CheckCircle2, fg: 'text-emerald-700',  href: '/reception/patients',cta: t('dashboard.ctaReview') },
           ].map((s, i, arr) => (
@@ -162,7 +162,7 @@ export default function ReceptionDashboard() {
                   title={t('dashboard.attnBillsPending', { count: pendingBills.length })} sub={t('dashboard.attnBillsOutstanding', { amount: totalDue.toLocaleString('en-IN') })} cta={t('dashboard.attnBilling')} />
               )}
               {escalations.length > 0 && (
-                <AttnRow href="/reception/messages" tint="bg-[rgba(238,107,38,0.07)] text-[var(--color-accent)]" icon={MessageSquare}
+                <AttnRow href="/reception/messages" tint="bg-[rgba(30,151,178,0.07)] text-[var(--color-accent)]" icon={MessageSquare}
                   title={t('dashboard.attnEscalatedChats', { count: escalations.length })} sub={escalations.map(e => e.patientName ?? e.patientPhone).join(', ')} cta={t('dashboard.attnMessages')} />
               )}
               {criticalNotifs.map(n => (
@@ -237,7 +237,7 @@ export default function ReceptionDashboard() {
                   const pt = patients.find(p => p.id === a.patientId)
                   return (
                     <div key={a.id} className="flex items-center gap-3 rounded-xl bg-slate-50 px-3 py-2.5">
-                      <span className="h-9 w-9 rounded-xl bg-[rgba(238,107,38,0.07)] text-[var(--color-accent)] flex items-center justify-center flex-shrink-0"><Clock className="h-4.5 w-4.5" /></span>
+                      <span className="h-9 w-9 rounded-xl bg-[rgba(30,151,178,0.07)] text-[var(--color-accent)] flex items-center justify-center flex-shrink-0"><Clock className="h-4.5 w-4.5" /></span>
                       <div className="flex-1 min-w-0"><p className="text-[13.5px] font-semibold text-slate-900 truncate">{pt?.name ?? a.patientName ?? a.patientId}</p><p className="text-[11.5px] text-slate-500 truncate">{a.doctorName} · {a.specialty}</p></div>
                       <span className="text-[12px] font-bold text-slate-700 flex-shrink-0">{a.time}</span>
                     </div>

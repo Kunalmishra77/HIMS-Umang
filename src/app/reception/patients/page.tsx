@@ -30,7 +30,7 @@ const STATUS_KEY: Record<QueueStatus, string> = {
   waiting: 'statusWaiting', vitals: 'statusVitals', consulting: 'statusConsulting', billing: 'statusBilling', done: 'statusCompleted',
 }
 const STATUS_TINT: Record<QueueStatus, string> = {
-  waiting: 'bg-amber-50 text-amber-700', vitals: 'bg-surface-sunken text-accent', consulting: 'bg-[rgba(238,107,38,0.07)] text-[var(--color-accent)]',
+  waiting: 'bg-amber-50 text-amber-700', vitals: 'bg-surface-sunken text-accent', consulting: 'bg-[rgba(30,151,178,0.07)] text-[var(--color-accent)]',
   billing: 'bg-primary-soft text-accent', done: 'bg-green-50 text-green-700',
 }
 const TRIAGE_TINT: Record<TriageLevel, string> = {
@@ -168,7 +168,7 @@ export default function ReceptionPatients() {
         {TABS.map(tb => (
           <button key={tb} onClick={() => setTab(tb)}
             className={cn("flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-[13px] font-semibold transition", tab === tb ? "bg-white text-slate-900 shadow-sm" : "text-slate-500 hover:text-slate-700")}>
-            {t(`patients.${TAB_KEY[tb]}`)} <span className={cn("text-[11px] font-bold px-1.5 rounded-full", tab === tb ? "bg-[rgba(238,107,38,0.12)] text-[var(--color-accent)]" : "bg-slate-200 text-slate-500")}>{counts[tb]}</span>
+            {t(`patients.${TAB_KEY[tb]}`)} <span className={cn("text-[11px] font-bold px-1.5 rounded-full", tab === tb ? "bg-[rgba(30,151,178,0.12)] text-[var(--color-accent)]" : "bg-slate-200 text-slate-500")}>{counts[tb]}</span>
           </button>
         ))}
       </div>
@@ -289,7 +289,7 @@ function PatientDrawer({ patient: p, visits, appointments, onClose, onAnnounce, 
 
         {/* Symptoms + history */}
         <Section title={t('patients.sectionChiefComplaint')}>
-          {p.symptoms.length ? <div className="flex flex-wrap gap-1.5">{p.symptoms.map(s => <span key={s} className="text-[12px] font-medium bg-[rgba(238,107,38,0.07)] text-[var(--color-accent)] px-2.5 py-1 rounded-full">{s}</span>)}</div> : <p className="text-[12.5px] text-slate-400">{t('patients.noneRecorded')}</p>}
+          {p.symptoms.length ? <div className="flex flex-wrap gap-1.5">{p.symptoms.map(s => <span key={s} className="text-[12px] font-medium bg-[rgba(30,151,178,0.07)] text-[var(--color-accent)] px-2.5 py-1 rounded-full">{s}</span>)}</div> : <p className="text-[12.5px] text-slate-400">{t('patients.noneRecorded')}</p>}
         </Section>
         {p.history.length > 0 && (
           <Section title={t('patients.sectionMedicalHistory')}>
@@ -305,7 +305,7 @@ function PatientDrawer({ patient: p, visits, appointments, onClose, onAnnounce, 
                 <div key={a.id} className="flex items-center gap-2.5 rounded-xl bg-slate-50 p-2.5">
                   <Calendar className="h-4 w-4 text-[var(--color-accent)] flex-shrink-0" />
                   <div className="flex-1 min-w-0"><p className="text-[12.5px] font-semibold text-slate-800 truncate">{a.doctorName} · {a.specialty}</p><p className="text-[11px] text-slate-500">{new Date(a.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })} · {a.time}</p></div>
-                  <span className={cn("text-[10px] font-bold px-2 py-0.5 rounded-full capitalize", a.status === 'cancelled' ? 'bg-red-50 text-red-600' : a.status === 'confirmed' ? 'bg-green-50 text-green-700' : 'bg-[rgba(238,107,38,0.07)] text-[var(--color-accent)]')}>{a.status}</span>
+                  <span className={cn("text-[10px] font-bold px-2 py-0.5 rounded-full capitalize", a.status === 'cancelled' ? 'bg-red-50 text-red-600' : a.status === 'confirmed' ? 'bg-green-50 text-green-700' : 'bg-[rgba(30,151,178,0.07)] text-[var(--color-accent)]')}>{a.status}</span>
                 </div>
               ))}
             </div>

@@ -47,7 +47,7 @@ export default function HealthStoryPage() {
 
       {/* AI summary + health score */}
       <div className="grid md:grid-cols-3 gap-5">
-        <div className="md:col-span-2 rounded-3xl bg-surface-sunken border border-[rgba(238,107,38,0.15)] p-5">
+        <div className="md:col-span-2 rounded-3xl bg-surface-sunken border border-[rgba(30,151,178,0.15)] p-5">
           <div className="flex items-center gap-2 mb-2"><Sparkles className="h-4.5 w-4.5 text-[var(--color-accent)]" /><span className="text-[13px] font-bold text-slate-900">AI summary of your health</span></div>
           <p className="text-[14px] text-slate-700 leading-relaxed">
             Over the last 6 months your <b>blood pressure has steadily improved</b> (from 142/92 to 130/85) — your medication and lifestyle changes are working. Your <b>diabetes is borderline</b> and due for a 3-month check. Today&apos;s visit is for new chest symptoms, being treated as high priority. Keep up the BP routine and book your diabetes follow-up.

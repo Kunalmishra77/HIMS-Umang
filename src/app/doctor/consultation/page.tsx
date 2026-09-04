@@ -108,7 +108,7 @@ export default function DoctorConsultation() {
         <Stethoscope className="h-10 w-10 text-slate-300 mx-auto mb-3" />
         <p className="text-[15px] font-semibold text-slate-700">No active patient.</p>
         <p className="text-[12.5px] text-slate-500 mt-1">Pick a patient from the queue to start a consultation.</p>
-        <button onClick={() => router.push('/doctor/dashboard')} className="mt-4 inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#C2481A] hover:bg-[#9A3A14] text-white text-[12.5px] font-semibold cursor-pointer">
+        <button onClick={() => router.push('/doctor/dashboard')} className="mt-4 inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#196b7e] hover:bg-[#9A3A14] text-white text-[12.5px] font-semibold cursor-pointer">
           <ArrowLeft className="h-3.5 w-3.5" /> Back to dashboard
         </button>
       </div>
@@ -370,7 +370,7 @@ export default function DoctorConsultation() {
         <button onClick={() => router.push('/doctor/dashboard')} aria-label="Back" className="h-8 w-8 rounded-lg bg-slate-100 hover:bg-slate-200 flex items-center justify-center cursor-pointer">
           <ArrowLeft className="h-4 w-4 text-slate-500" />
         </button>
-        <span className="h-11 w-11 rounded-2xl bg-gradient-to-br from-[#C2481A] to-[#EE6B26] flex items-center justify-center text-white text-[15px] font-bold">
+        <span className="h-11 w-11 rounded-2xl bg-gradient-to-br from-[#196b7e] to-[#1E97B2] flex items-center justify-center text-white text-[15px] font-bold">
           {active.name.split(' ').map(w => w[0]).join('').slice(0, 2)}
         </span>
         <div className="flex-1 min-w-0">
@@ -378,7 +378,7 @@ export default function DoctorConsultation() {
           <p className="text-[12px] text-slate-500">{active.id} · {active.age}y · {active.gender} · {active.department}</p>
           {active.symptoms?.length ? <p className="text-[11.5px] text-slate-600 mt-0.5">Chief complaint: <b>{active.symptoms.join(', ')}</b></p> : null}
         </div>
-        <span className="text-[10.5px] font-semibold text-[#B84A16] bg-[rgba(238,107,38,0.07)] border border-[rgba(238,107,38,0.15)] rounded-full px-2 py-0.5 inline-flex items-center gap-1">
+        <span className="text-[10.5px] font-semibold text-[#955408] bg-[rgba(30,151,178,0.07)] border border-[rgba(30,151,178,0.15)] rounded-full px-2 py-0.5 inline-flex items-center gap-1">
           <Sparkles className="h-3 w-3" /> AI scribe ready
         </span>
       </div>
@@ -387,7 +387,7 @@ export default function DoctorConsultation() {
       <div className="rounded-2xl bg-white shadow-[0_1px_4px_rgba(15,23,42,0.06)] p-4">
         <div className="flex items-center justify-between gap-2 flex-wrap mb-3">
           <div className="flex items-center gap-2">
-            <Activity className="h-4 w-4 text-[#B84A16]" />
+            <Activity className="h-4 w-4 text-[#955408]" />
             <h3 className="text-[14px] font-semibold text-slate-900">Patient Vitals</h3>
             {opdV?.at && (
               <span className="text-[10.5px] text-slate-400">
@@ -487,7 +487,7 @@ export default function DoctorConsultation() {
         {/* SOAP note */}
         <div className="lg:col-span-2 rounded-2xl bg-white shadow-[0_1px_4px_rgba(15,23,42,0.06)] p-4 space-y-2.5">
           <div className="flex items-center gap-2">
-            <FileText className="h-4 w-4 text-[#B84A16]" />
+            <FileText className="h-4 w-4 text-[#955408]" />
             <h3 className="text-[14px] font-semibold text-slate-900">SOAP note</h3>
             <span className="ml-auto text-[10.5px] text-slate-400">auto-saves as you type</span>
           </div>
@@ -497,10 +497,10 @@ export default function DoctorConsultation() {
               <textarea value={soap[k]} onChange={(e) => persist({ ...soap, [k]: e.target.value })}
                 rows={k === 'plan' ? 3 : 2}
                 placeholder={k === 'subjective' ? 'Patient reports…' : k === 'objective' ? 'On examination…' : k === 'assessment' ? 'Most likely…' : 'Plan: Rx, labs, follow-up, red-flag advice…'}
-                className="w-full px-3 py-2 rounded-lg ring-1 ring-slate-200 bg-white text-[13px] focus:outline-none focus:ring-[#EE6B26] resize-none" />
+                className="w-full px-3 py-2 rounded-lg ring-1 ring-slate-200 bg-white text-[13px] focus:outline-none focus:ring-[#1E97B2] resize-none" />
             </div>
           ))}
-          <button onClick={signNote} className="w-full mt-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#C2481A] hover:bg-[#9A3A14] text-white text-[13.5px] font-semibold cursor-pointer">
+          <button onClick={signNote} className="w-full mt-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#196b7e] hover:bg-[#9A3A14] text-white text-[13.5px] font-semibold cursor-pointer">
             <Save className="h-4 w-4" /> Sign &amp; save SOAP
           </button>
         </div>
@@ -508,7 +508,7 @@ export default function DoctorConsultation() {
         {/* Quick-orders rail */}
         <div className="rounded-2xl bg-white shadow-[0_1px_4px_rgba(15,23,42,0.06)] p-4 space-y-2">
           <h3 className="text-[14px] font-semibold text-slate-900 flex items-center gap-2">
-            <Sparkles className="h-4 w-4 text-[#B84A16]" /> Quick orders
+            <Sparkles className="h-4 w-4 text-[#955408]" /> Quick orders
           </h3>
           <div className="rounded-lg bg-rose-50 p-2.5 space-y-2">
             <div className="flex items-center gap-1.5 text-[12.5px] font-semibold text-rose-800">
@@ -538,30 +538,30 @@ export default function DoctorConsultation() {
             </button>
           </div>
           {/* Order imaging */}
-          <div className="rounded-lg bg-[rgba(238,107,38,0.06)] p-2.5 space-y-2">
-            <div className="flex items-center gap-1.5 text-[12.5px] font-semibold text-[#B84A16]">
+          <div className="rounded-lg bg-[rgba(30,151,178,0.06)] p-2.5 space-y-2">
+            <div className="flex items-center gap-1.5 text-[12.5px] font-semibold text-[#955408]">
               <ScanLine className="h-4 w-4" /> Order imaging
             </div>
             <div className="flex gap-1.5">
-              <Select value={imagingPick} onChange={e => setImagingPick(e.target.value)} className="flex-1 h-8 rounded-lg border border-[rgba(238,107,38,0.25)] bg-white text-[12px] px-2 text-slate-700">
+              <Select value={imagingPick} onChange={e => setImagingPick(e.target.value)} className="flex-1 h-8 rounded-lg border border-[rgba(30,151,178,0.25)] bg-white text-[12px] px-2 text-slate-700">
                 <option value="">Select study…</option>
                 {IMAGING_OPTIONS.map(o => <option key={o.code} value={o.code}>{o.name}</option>)}
               </Select>
-              <button onClick={addImagingStudy} aria-label="Add study" className="h-8 w-8 flex-shrink-0 rounded-lg bg-[rgba(238,107,38,0.14)] hover:bg-[rgba(238,107,38,0.22)] text-[#B84A16] flex items-center justify-center cursor-pointer">
+              <button onClick={addImagingStudy} aria-label="Add study" className="h-8 w-8 flex-shrink-0 rounded-lg bg-[rgba(30,151,178,0.14)] hover:bg-[rgba(30,151,178,0.22)] text-[#955408] flex items-center justify-center cursor-pointer">
                 <Plus className="h-4 w-4" />
               </button>
             </div>
             {imagingStudies.length > 0 && (
               <div className="flex flex-wrap gap-1.5">
                 {imagingStudies.map(code => (
-                  <span key={code} className="inline-flex items-center gap-1 text-[11px] font-medium text-[#B84A16] bg-white border border-[rgba(238,107,38,0.25)] rounded-full pl-2.5 pr-1.5 py-0.5">
+                  <span key={code} className="inline-flex items-center gap-1 text-[11px] font-medium text-[#955408] bg-white border border-[rgba(30,151,178,0.25)] rounded-full pl-2.5 pr-1.5 py-0.5">
                     {RADIOLOGY_CATALOG[code]?.name ?? code}
                     <button onClick={() => removeImagingStudy(code)} aria-label={`Remove ${code}`} className="hover:text-[#9A3A14] cursor-pointer"><X className="h-3 w-3" /></button>
                   </span>
                 ))}
               </div>
             )}
-            <button onClick={orderImaging} disabled={imagingStudies.length === 0} className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-[#C2481A] hover:bg-[#9A3A14] disabled:opacity-50 text-white text-[12.5px] font-semibold cursor-pointer">
+            <button onClick={orderImaging} disabled={imagingStudies.length === 0} className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-[#196b7e] hover:bg-[#9A3A14] disabled:opacity-50 text-white text-[12.5px] font-semibold cursor-pointer">
               <Send className="h-3.5 w-3.5" /> Send {imagingStudies.length > 0 ? `${imagingStudies.length} ` : ''}to Radiology
             </button>
           </div>
@@ -607,7 +607,7 @@ export default function DoctorConsultation() {
       {/* Prescription — medicines + diet/follow-up/imaging, with print + dispatch. */}
       <div className="rounded-2xl bg-white shadow-[0_1px_4px_rgba(15,23,42,0.06)] p-4 space-y-3">
         <div className="flex items-center gap-2">
-          <Pill className="h-4 w-4 text-[#B84A16]" />
+          <Pill className="h-4 w-4 text-[#955408]" />
           <h3 className="text-[14px] font-semibold text-slate-900">Prescription</h3>
           <span className="ml-auto text-[10.5px] text-slate-400">{meds.length} medicine{meds.length === 1 ? '' : 's'}</span>
         </div>
@@ -619,7 +619,7 @@ export default function DoctorConsultation() {
           <Input value={medDraft.frequency} onChange={e => setMedDraft(d => ({ ...d, frequency: e.target.value }))} onKeyDown={e => { if (e.key === 'Enter') addMed() }} placeholder="Frequency" className="col-span-2 h-9 rounded-lg text-[12.5px]" />
           <Input value={medDraft.duration} onChange={e => setMedDraft(d => ({ ...d, duration: e.target.value }))} onKeyDown={e => { if (e.key === 'Enter') addMed() }} placeholder="Duration" className="col-span-2 h-9 rounded-lg text-[12.5px]" />
           <Input value={medDraft.quantity} onChange={e => setMedDraft(d => ({ ...d, quantity: e.target.value }))} onKeyDown={e => { if (e.key === 'Enter') addMed() }} placeholder="Qty" inputMode="numeric" className="col-span-1 h-9 rounded-lg text-[12.5px]" />
-          <button onClick={addMed} aria-label="Add medicine" className="col-span-1 h-9 rounded-lg bg-[#C2481A] hover:bg-[#9A3A14] text-white flex items-center justify-center cursor-pointer"><Plus className="h-4 w-4" /></button>
+          <button onClick={addMed} aria-label="Add medicine" className="col-span-1 h-9 rounded-lg bg-[#196b7e] hover:bg-[#9A3A14] text-white flex items-center justify-center cursor-pointer"><Plus className="h-4 w-4" /></button>
         </div>
 
         {meds.length > 0 && (
@@ -638,11 +638,11 @@ export default function DoctorConsultation() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div>
             <label className="flex items-center gap-1 text-[10.5px] font-semibold uppercase tracking-wide text-slate-500 mb-1"><Utensils className="h-3 w-3" /> Food / diet advice</label>
-            <textarea value={diet} onChange={e => setDiet(e.target.value)} rows={2} placeholder="e.g. Low salt, avoid oily food, plenty of fluids" className="w-full px-3 py-2 rounded-lg ring-1 ring-slate-200 bg-white text-[12.5px] focus:outline-none focus:ring-[#EE6B26] resize-none" />
+            <textarea value={diet} onChange={e => setDiet(e.target.value)} rows={2} placeholder="e.g. Low salt, avoid oily food, plenty of fluids" className="w-full px-3 py-2 rounded-lg ring-1 ring-slate-200 bg-white text-[12.5px] focus:outline-none focus:ring-[#1E97B2] resize-none" />
           </div>
           <div>
             <label className="flex items-center gap-1 text-[10.5px] font-semibold uppercase tracking-wide text-slate-500 mb-1"><ScanLine className="h-3 w-3" /> Radiology / imaging advice</label>
-            <textarea value={imagingAdvice} onChange={e => setImagingAdvice(e.target.value)} rows={2} placeholder="e.g. CT Brain plain, USG whole abdomen" className="w-full px-3 py-2 rounded-lg ring-1 ring-slate-200 bg-white text-[12.5px] focus:outline-none focus:ring-[#EE6B26] resize-none" />
+            <textarea value={imagingAdvice} onChange={e => setImagingAdvice(e.target.value)} rows={2} placeholder="e.g. CT Brain plain, USG whole abdomen" className="w-full px-3 py-2 rounded-lg ring-1 ring-slate-200 bg-white text-[12.5px] focus:outline-none focus:ring-[#1E97B2] resize-none" />
           </div>
           <div>
             <label className="flex items-center gap-1 text-[10.5px] font-semibold uppercase tracking-wide text-slate-500 mb-1"><CalendarClock className="h-3 w-3" /> Follow-up</label>
@@ -651,7 +651,7 @@ export default function DoctorConsultation() {
         </div>
 
         <div className="flex gap-2 pt-1">
-          <button onClick={orderRx} className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#C2481A] hover:bg-[#9A3A14] text-white text-[13px] font-semibold cursor-pointer">
+          <button onClick={orderRx} className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#196b7e] hover:bg-[#9A3A14] text-white text-[13px] font-semibold cursor-pointer">
             <Send className="h-4 w-4" /> Send Rx to pharmacy
           </button>
           <button onClick={printRx} className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-[13px] font-semibold cursor-pointer">

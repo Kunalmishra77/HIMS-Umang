@@ -178,12 +178,12 @@ export function AadhaarAbhaFlow({ onComplete, patientName, className }: Props) {
             <p className="text-[12.5px] text-slate-500">Verify the patient&apos;s identity using their Aadhaar. Scan the secure QR, upload the card, or enter the number manually.</p>
             <div className="grid grid-cols-2 gap-2.5">
               <button type="button" onClick={captureViaScan} disabled={busy}
-                className="flex flex-col items-center justify-center gap-1.5 h-24 rounded-xl border-2 border-[rgba(238,107,38,0.20)] bg-[rgba(238,107,38,0.05)] hover:bg-[rgba(238,107,38,0.10)] transition disabled:opacity-50">
+                className="flex flex-col items-center justify-center gap-1.5 h-24 rounded-xl border-2 border-[rgba(30,151,178,0.20)] bg-[rgba(30,151,178,0.05)] hover:bg-[rgba(30,151,178,0.10)] transition disabled:opacity-50">
                 {busy ? <Loader2 className="h-5 w-5 text-[var(--color-accent)] animate-spin" /> : <ScanLine className="h-5 w-5 text-[var(--color-accent)]" />}
                 <span className="text-[12px] font-bold text-[var(--color-primary-dark)]">Scan Barcode / QR</span>
               </button>
               <button type="button" onClick={captureViaUpload} disabled={busy}
-                className="flex flex-col items-center justify-center gap-1.5 h-24 rounded-xl border-2 border-[rgba(238,107,38,0.20)] bg-[rgba(238,107,38,0.05)] hover:bg-[rgba(238,107,38,0.10)] transition disabled:opacity-50">
+                className="flex flex-col items-center justify-center gap-1.5 h-24 rounded-xl border-2 border-[rgba(30,151,178,0.20)] bg-[rgba(30,151,178,0.05)] hover:bg-[rgba(30,151,178,0.10)] transition disabled:opacity-50">
                 {busy ? <Loader2 className="h-5 w-5 text-[var(--color-accent)] animate-spin" /> : <Upload className="h-5 w-5 text-[var(--color-accent)]" />}
                 <span className="text-[12px] font-bold text-[var(--color-primary-dark)]">Upload Aadhaar</span>
               </button>
@@ -206,7 +206,7 @@ export function AadhaarAbhaFlow({ onComplete, patientName, className }: Props) {
         {/* Stage 2 — OTP */}
         {stage === "otp" && (
           <>
-            <div className="flex items-center gap-2 rounded-xl bg-[rgba(238,107,38,0.05)] px-3 py-2">
+            <div className="flex items-center gap-2 rounded-xl bg-[rgba(30,151,178,0.05)] px-3 py-2">
               <IdCard className="h-4 w-4 text-[var(--color-accent)]" />
               <p className="text-[12px] text-slate-700">Aadhaar <b>{aadhaar}</b> · OTP sent to linked mobile <b>{maskedMobile}</b></p>
             </div>
@@ -246,7 +246,7 @@ export function AadhaarAbhaFlow({ onComplete, patientName, className }: Props) {
             </div>
 
             {abhaExisting ? (
-              <div className="rounded-xl border border-[rgba(238,107,38,0.20)] bg-[rgba(238,107,38,0.05)] px-3 py-2.5 space-y-2">
+              <div className="rounded-xl border border-[rgba(30,151,178,0.20)] bg-[rgba(30,151,178,0.05)] px-3 py-2.5 space-y-2">
                 <p className="text-[12px] text-slate-700">Existing ABHA found and retrieved:</p>
                 <p className="font-mono text-[14px] font-bold text-[var(--color-primary-dark)]">{abhaId}</p>
                 <Button onClick={handleUseExistingAbha} disabled={busy} className="w-full h-10 rounded-xl gap-1.5">

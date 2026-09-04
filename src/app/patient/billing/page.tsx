@@ -97,7 +97,7 @@ export default function PatientBilling() {
           return (
             <BillCard
               key={bill.id}
-              icon={<ClipboardList className="h-5 w-5 text-[var(--color-accent)]" />} tint="bg-[rgba(238,107,38,0.07)]"
+              icon={<ClipboardList className="h-5 w-5 text-[var(--color-accent)]" />} tint="bg-[rgba(30,151,178,0.07)]"
               id={bill.id} date={new Date(bill.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
               title={bill.payerName ? `Invoice · ${bill.payerName}` : `Invoice · ${bill.payerType}`}
               status={status}

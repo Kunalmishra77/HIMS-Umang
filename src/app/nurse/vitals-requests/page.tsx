@@ -188,7 +188,7 @@ export default function VitalsRequestsPage() {
             className={cn("flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-[13px] font-semibold transition cursor-pointer",
               tab === t.id ? "bg-white text-slate-900 shadow-sm" : "text-slate-500 hover:text-slate-700")}>
             {t.label}
-            <span className={cn("text-[11px] font-bold px-1.5 rounded-full", tab === t.id ? "bg-[rgba(238,107,38,0.12)] text-[var(--color-accent)]" : "bg-slate-200 text-slate-500")}>{t.count}</span>
+            <span className={cn("text-[11px] font-bold px-1.5 rounded-full", tab === t.id ? "bg-[rgba(30,151,178,0.12)] text-[var(--color-accent)]" : "bg-slate-200 text-slate-500")}>{t.count}</span>
           </button>
         ))}
       </div>

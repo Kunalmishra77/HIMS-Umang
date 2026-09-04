@@ -116,7 +116,7 @@ export default function PatientSettings() {
           <div className="space-y-1.5">
             {LOCALES.map((l) => (
               <button key={l.value} onClick={() => update('locale', l.value)}
-                className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg ring-1 text-left transition cursor-pointer ${prefs.locale === l.value ? 'ring-primary/25 bg-[rgba(238,107,38,0.07)] text-[var(--color-primary-dark)]' : 'ring-slate-200 bg-white text-slate-700 hover:bg-slate-50'}`}>
+                className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg ring-1 text-left transition cursor-pointer ${prefs.locale === l.value ? 'ring-primary/25 bg-[rgba(30,151,178,0.07)] text-[var(--color-primary-dark)]' : 'ring-slate-200 bg-white text-slate-700 hover:bg-slate-50'}`}>
                 <span className="flex-1 text-[13px] font-semibold">{l.label}</span>
                 {prefs.locale === l.value ? <span className="h-2 w-2 rounded-full bg-[var(--color-primary)]" /> : null}
               </button>
@@ -131,7 +131,7 @@ export default function PatientSettings() {
           <div className="grid grid-cols-2 gap-1.5">
             {[1, 4, 12, 24].map((hrs) => (
               <button key={hrs} onClick={() => update('reminderBeforeHrs', hrs as ReminderHrs)}
-                className={`px-3 py-2 rounded-lg ring-1 text-[12.5px] font-semibold transition cursor-pointer ${prefs.reminderBeforeHrs === hrs ? 'ring-primary/25 bg-[rgba(238,107,38,0.07)] text-[var(--color-primary-dark)]' : 'ring-slate-200 bg-white text-slate-700 hover:bg-slate-50'}`}>
+                className={`px-3 py-2 rounded-lg ring-1 text-[12.5px] font-semibold transition cursor-pointer ${prefs.reminderBeforeHrs === hrs ? 'ring-primary/25 bg-[rgba(30,151,178,0.07)] text-[var(--color-primary-dark)]' : 'ring-slate-200 bg-white text-slate-700 hover:bg-slate-50'}`}>
                 {hrs}h before
               </button>
             ))}

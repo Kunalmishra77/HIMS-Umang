@@ -22,15 +22,15 @@ export function SlotStep({ form, update }: { form: IntakeForm; update: Update })
             const sel = form.slotDoctor === d.name
             return (
               <button key={d.id} onClick={() => update({ slotDoctor: d.name })} aria-pressed={sel}
-                className={cn("w-full flex items-center gap-3 px-3.5 py-3 rounded-2xl border text-left transition-all active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#EE6B26]",
-                  sel ? "bg-[rgba(238,107,38,0.07)] border-[#F58C4E] ring-1 ring-primary/25" : "bg-white border-slate-200")}>
-                <span className="h-10 w-10 rounded-full bg-[rgba(238,107,38,0.12)] flex items-center justify-center flex-shrink-0"><Stethoscope className="h-5 w-5 text-[#B84A16]" /></span>
+                className={cn("w-full flex items-center gap-3 px-3.5 py-3 rounded-2xl border text-left transition-all active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1E97B2]",
+                  sel ? "bg-[rgba(30,151,178,0.07)] border-[#6acdd9] ring-1 ring-primary/25" : "bg-white border-slate-200")}>
+                <span className="h-10 w-10 rounded-full bg-[rgba(30,151,178,0.12)] flex items-center justify-center flex-shrink-0"><Stethoscope className="h-5 w-5 text-[#955408]" /></span>
                 <span className="flex-1 min-w-0">
                   <span className="block text-[14px] font-semibold text-slate-900">{d.name}</span>
                   <span className="block text-[12.5px] text-slate-500">{d.specialty}</span>
                 </span>
                 <span className="text-[13px] font-bold text-slate-700">₹{d.fee}</span>
-                {sel && <CheckCircle className="h-5 w-5 text-[#B84A16] flex-shrink-0" />}
+                {sel && <CheckCircle className="h-5 w-5 text-[#955408] flex-shrink-0" />}
               </button>
             )
           })}
@@ -44,8 +44,8 @@ export function SlotStep({ form, update }: { form: IntakeForm; update: Update })
             <div className="flex overflow-x-auto gap-2.5 pb-2 -mx-2 px-2 snap-x scrollbar-hide">
               {days.map(d => (
                 <button key={d.value} onClick={() => update({ slotDate: d.value })} aria-pressed={form.slotDate === d.value}
-                  className={cn("snap-start flex-shrink-0 px-5 py-3 rounded-[16px] text-[15px] font-semibold border transition-all active:scale-[0.97] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#EE6B26]",
-                    form.slotDate === d.value ? "bg-[#EE6B26] border-[#EE6B26] text-[#0D2032] shadow-[0_4px_12px_rgba(238,107,38,0.25)]" : "bg-white border-slate-200 text-slate-700 hover:bg-slate-50")}>{d.label}</button>
+                  className={cn("snap-start flex-shrink-0 px-5 py-3 rounded-[16px] text-[15px] font-semibold border transition-all active:scale-[0.97] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1E97B2]",
+                    form.slotDate === d.value ? "bg-[#1E97B2] border-[#1E97B2] text-[#0D2032] shadow-[0_4px_12px_rgba(30,151,178,0.25)]" : "bg-white border-slate-200 text-slate-700 hover:bg-slate-50")}>{d.label}</button>
               ))}
             </div>
           </div>
@@ -54,8 +54,8 @@ export function SlotStep({ form, update }: { form: IntakeForm; update: Update })
             <div className="flex overflow-x-auto gap-2.5 pb-2 -mx-2 px-2 snap-x scrollbar-hide">
               {SLOT_TIMES.map(t => (
                 <button key={t} onClick={() => update({ slotTime: t })} aria-pressed={form.slotTime === t}
-                  className={cn("snap-start flex-shrink-0 px-5 py-3 rounded-[16px] text-[15px] font-semibold border transition-all active:scale-[0.97] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#EE6B26]",
-                    form.slotTime === t ? "bg-[#EE6B26] border-[#EE6B26] text-[#0D2032] shadow-[0_4px_12px_rgba(238,107,38,0.25)]" : "bg-white border-slate-200 text-slate-700 hover:bg-slate-50")}>{t}</button>
+                  className={cn("snap-start flex-shrink-0 px-5 py-3 rounded-[16px] text-[15px] font-semibold border transition-all active:scale-[0.97] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1E97B2]",
+                    form.slotTime === t ? "bg-[#1E97B2] border-[#1E97B2] text-[#0D2032] shadow-[0_4px_12px_rgba(30,151,178,0.25)]" : "bg-white border-slate-200 text-slate-700 hover:bg-slate-50")}>{t}</button>
               ))}
             </div>
           </div>
@@ -116,7 +116,7 @@ export function PaymentStep({ form, update }: { form: IntakeForm; update: Update
   return (
     <div className="h-full overflow-y-auto pr-1 pt-1 space-y-4">
       {/* Fee card - Wallet Style */}
-      <div className="relative rounded-[24px] bg-gradient-to-br from-[#EE6B26] to-[#C2481A] p-6 flex items-center justify-between shadow-[0_12px_30px_rgba(238,107,38,0.3)] overflow-hidden mb-2">
+      <div className="relative rounded-[24px] bg-gradient-to-br from-[#1E97B2] to-[#196b7e] p-6 flex items-center justify-between shadow-[0_12px_30px_rgba(30,151,178,0.3)] overflow-hidden mb-2">
         <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full blur-2xl -mr-12 -mt-12 pointer-events-none" />
         <div className="absolute bottom-0 left-0 w-32 h-32 bg-primary/10 rounded-full blur-2xl -ml-10 -mb-10 pointer-events-none" />
         <div className="relative z-10">
@@ -155,13 +155,13 @@ export function PaymentStep({ form, update }: { form: IntakeForm; update: Update
                 }}
                 aria-pressed={sel}
                 className={cn(
-                  "flex flex-col items-center gap-1.5 py-3 rounded-2xl border transition-all active:scale-[0.97] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#EE6B26]",
+                  "flex flex-col items-center gap-1.5 py-3 rounded-2xl border transition-all active:scale-[0.97] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1E97B2]",
                   sel
-                    ? isGovt ? "bg-green-600 border-green-600 text-white" : "bg-[#EE6B26] border-[#EE6B26] text-[#0D2032]"
+                    ? isGovt ? "bg-green-600 border-green-600 text-white" : "bg-[#1E97B2] border-[#1E97B2] text-[#0D2032]"
                     : "bg-white border-slate-200 text-slate-700",
                 )}
               >
-                <Icon className={cn("h-5 w-5", sel ? "text-white" : isGovt ? "text-green-600" : "text-[#B84A16]")} />
+                <Icon className={cn("h-5 w-5", sel ? "text-white" : isGovt ? "text-green-600" : "text-[#955408]")} />
                 <span className="text-[12px] font-semibold text-center leading-tight">{label}</span>
               </button>
             )
@@ -180,7 +180,7 @@ export function PaymentStep({ form, update }: { form: IntakeForm; update: Update
               return (
                 <button key={m.value} onClick={() => update({ payMethod: m.value })} aria-pressed={sel}
                   className={cn("flex items-center gap-2 px-4 py-2.5 rounded-xl text-[14px] font-medium border transition-all active:scale-95",
-                    sel ? "bg-[#EE6B26] border-[#EE6B26] text-[#0D2032]" : "bg-white border-slate-200 text-slate-700")}>
+                    sel ? "bg-[#1E97B2] border-[#1E97B2] text-[#0D2032]" : "bg-white border-slate-200 text-slate-700")}>
                   <Icon className="h-4 w-4" /> {m.label}
                 </button>
               )
@@ -204,7 +204,7 @@ export function PaymentStep({ form, update }: { form: IntakeForm; update: Update
             <User className="h-5 w-5 text-slate-400 flex-shrink-0" aria-hidden="true" />
             <input className={fieldInput} placeholder="Policyholder name" aria-label="Policyholder name" value={form.policyHolder} onChange={e => update({ policyHolder: e.target.value, insuranceVerified: false })} />
             {form.name && form.policyHolder !== form.name && (
-              <button onClick={() => update({ policyHolder: form.name, insuranceVerified: false })} className="text-[11px] font-semibold text-[#B84A16] whitespace-nowrap flex-shrink-0">Same as me</button>
+              <button onClick={() => update({ policyHolder: form.name, insuranceVerified: false })} className="text-[11px] font-semibold text-[#955408] whitespace-nowrap flex-shrink-0">Same as me</button>
             )}
           </div>
 
@@ -220,7 +220,7 @@ export function PaymentStep({ form, update }: { form: IntakeForm; update: Update
             <>
               <button onClick={verify} disabled={!canVerify || checking}
                 className={cn("w-full h-12 rounded-2xl font-semibold text-[15px] flex items-center justify-center gap-2 transition-all active:scale-[0.98]",
-                  (!canVerify || checking) ? "bg-slate-200 text-slate-400" : "bg-[#EE6B26] text-[#0D2032]")}>
+                  (!canVerify || checking) ? "bg-slate-200 text-slate-400" : "bg-[#1E97B2] text-[#0D2032]")}>
                 {checking ? <><Loader2 className="h-5 w-5 animate-spin" /> Checking with {form.insurer || 'insurer'}…</> : <><ShieldCheck className="h-5 w-5" /> Verify policy</>}
               </button>
               <p className="text-[12px] text-slate-400 ml-1">We confirm your policy is active &amp; cashless-eligible before you continue.</p>
@@ -351,7 +351,7 @@ export function PaymentStep({ form, update }: { form: IntakeForm; update: Update
               <div className="flex gap-2 flex-wrap">
                 <button
                   onClick={() => setShowAadhaarFallback(true)}
-                  className="text-[12px] font-semibold text-[#B84A16] underline underline-offset-2"
+                  className="text-[12px] font-semibold text-[#955408] underline underline-offset-2"
                 >
                   Try Aadhaar-linked search
                 </button>

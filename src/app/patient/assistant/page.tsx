@@ -80,7 +80,7 @@ export default function AssistantPage() {
               const label = t(s.key)
               return (
                 <button key={s.key} onClick={() => send(label)}
-                  className="flex items-center gap-1.5 text-[12.5px] font-medium px-3 py-1.5 rounded-full border border-slate-200 text-slate-600 hover:border-[rgba(238,107,38,0.30)] hover:text-[var(--color-accent)] transition-colors active:scale-95">
+                  className="flex items-center gap-1.5 text-[12.5px] font-medium px-3 py-1.5 rounded-full border border-slate-200 text-slate-600 hover:border-[rgba(30,151,178,0.30)] hover:text-[var(--color-accent)] transition-colors active:scale-95">
                   <Icon className="h-3.5 w-3.5" /> {label}
                 </button>
               )
@@ -90,7 +90,7 @@ export default function AssistantPage() {
             <input value={text} onChange={e => setText(e.target.value)} onKeyDown={e => { if (e.key === 'Enter') send(text) }}
               placeholder={t('assistant.inputPlaceholder')} aria-label={t('assistant.inputAria')}
               className="intake-input flex-1 bg-transparent border-none text-[15px] text-slate-900 placeholder:text-slate-400" />
-            <button aria-label={t('aiCare.speak')} className="h-8 w-8 rounded-full flex items-center justify-center text-slate-400 hover:text-[var(--color-accent)] hover:bg-[rgba(238,107,38,0.10)] transition-colors"><Mic className="h-4.5 w-4.5" /></button>
+            <button aria-label={t('aiCare.speak')} className="h-8 w-8 rounded-full flex items-center justify-center text-slate-400 hover:text-[var(--color-accent)] hover:bg-[rgba(30,151,178,0.10)] transition-colors"><Mic className="h-4.5 w-4.5" /></button>
             <button aria-label={t('aiCare.send')} onClick={() => send(text)} className="h-8 w-8 rounded-full bg-[var(--color-primary)] text-white flex items-center justify-center active:scale-95 transition-transform"><ArrowUp className="h-4.5 w-4.5" /></button>
           </div>
         </div>

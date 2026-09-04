@@ -5,9 +5,9 @@ import { useState } from "react"
 import { cn } from "@/lib/utils"
 
 const CONTACTS = [
-  { icon: Phone, label: 'Hospital reception', value: '+91 80 1234 5678', tint: 'bg-[rgba(238,107,38,0.07)] text-[var(--color-accent)]' },
+  { icon: Phone, label: 'Hospital reception', value: '+91 80 1234 5678', tint: 'bg-[rgba(30,151,178,0.07)] text-[var(--color-accent)]' },
   { icon: MessageSquareText, label: 'WhatsApp help desk', value: '+91 98765 00000', tint: 'bg-green-50 text-green-600' },
-  { icon: MapPin, label: 'Directions', value: 'Umang Hospital, MG Road', tint: 'bg-[rgba(238,107,38,0.07)] text-[var(--color-accent)]' },
+  { icon: MapPin, label: 'Directions', value: 'Umang Hospital, MG Road', tint: 'bg-[rgba(30,151,178,0.07)] text-[var(--color-accent)]' },
 ]
 
 const FAQ = [
