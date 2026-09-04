@@ -8,30 +8,15 @@
  * is ever swapped. */
 
 export const PHOTOS = {
-  // Reception desk — the first thing a patient meets (check-in).
-  doctorPatient: {
+  // The reception desk — the first thing a patient meets (check-in).
+  reception: {
     src: "/umang/reception.webp",
     alt: "The reception desk at Umang Hospital",
   },
-  // Consultant at work — collaborative, calm.
-  consult: {
-    src: "/umang/consultant.webp",
-    alt: "A consultant at Umang Hospital reviewing a patient's case",
-  },
-  // Approachable clinician portrait.
-  clinician: {
-    src: "/umang/consultant.webp",
-    alt: "A consultant at Umang Hospital",
-  },
   // Modular operating theatre — capability/expertise (landing CTA).
-  careTeam: {
+  operatingTheatre: {
     src: "/umang/modular-ot.webp",
     alt: "Umang Hospital's modular operating theatre",
-  },
-  // Calm, modern inpatient room.
-  ward: {
-    src: "/umang/deluxe-room.webp",
-    alt: "A patient room at Umang Hospital",
   },
 } as const
 

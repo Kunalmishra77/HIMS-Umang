@@ -27,7 +27,7 @@ export default function CheckinPage() {
           controls live here, so contrast risk is contained and the
           right column owns the single task. */}
       <aside className="relative hidden lg:block overflow-hidden">
-        <Image src={PHOTOS.doctorPatient.src} alt={PHOTOS.doctorPatient.alt} fill sizes="50vw" className="object-cover" priority />
+        <Image src={PHOTOS.reception.src} alt={PHOTOS.reception.alt} fill sizes="50vw" className="object-cover" priority />
         <div
           className="absolute inset-0"
           style={{ background: "linear-gradient(185deg, rgba(11,18,32,0.28) 0%, rgba(11,18,32,0.22) 32%, rgba(11,18,32,0.78) 100%)" }}

@@ -19,8 +19,8 @@ export function FinalCta() {
           <div className="relative overflow-hidden rounded-[2rem] px-8 lg:px-16 py-14 lg:py-20 text-center">
             {/* Human-centred photography, tinted by a deep teal overlay for AA-contrast text. */}
             <Image
-              src={PHOTOS.careTeam.src}
-              alt={PHOTOS.careTeam.alt}
+              src={PHOTOS.operatingTheatre.src}
+              alt={PHOTOS.operatingTheatre.alt}
               fill
               sizes="100vw"
               className="object-cover"
