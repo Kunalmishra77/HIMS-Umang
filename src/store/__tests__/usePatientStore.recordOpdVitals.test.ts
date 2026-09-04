@@ -3,6 +3,7 @@ import { createClient } from '@supabase/supabase-js'
 import { usePatientStore } from '@/store/usePatientStore'
 import { Visits, VitalsReadings } from '@/lib/api'
 import { getSupabaseClient } from '@/lib/supabase/client'
+import { attachServerSession, detachServerSession } from '@/lib/testing/serverSession'
 
 // recordOpdVitals's real-backend write checks the LIVE Supabase session
 // directly (supabase.auth.getSession()) — the same corrected pattern used by
@@ -49,10 +50,12 @@ beforeAll(async () => {
   })
   if (visitError) throw new Error(`visit fixture insert failed: ${visitError.message}`)
 
-  const { error: signInError } = await getSupabaseClient().auth.signInWithPassword({
+  const { data: signInData, error: signInError } = await getSupabaseClient().auth.signInWithPassword({
     email: staffEmail, password: staffPassword,
   })
   if (signInError) throw new Error(`signIn failed: ${signInError.message}`)
+  if (!signInData.session) throw new Error('signIn returned no session')
+  await attachServerSession(signInData.session)
 })
 
 afterAll(async () => {
@@ -79,10 +82,11 @@ function seedQueuedPatient() {
 }
 
 async function reSignInAsStaff() {
-  const { error } = await getSupabaseClient().auth.signInWithPassword({
+  const { data, error } = await getSupabaseClient().auth.signInWithPassword({
     email: staffEmail, password: staffPassword,
   })
-  if (error) throw new Error(`re-signIn failed: ${error.message}`)
+  if (error || !data.session) throw new Error(`re-signIn failed: ${error?.message}`)
+  await attachServerSession(data.session)
 }
 
 describe('usePatientStore.recordOpdVitals — real backend write', () => {
@@ -109,6 +113,7 @@ describe('usePatientStore.recordOpdVitals — real backend write', () => {
     const createSpy = vi.spyOn(VitalsReadings, 'create')
     const advanceSpy = vi.spyOn(Visits, 'advance')
     await getSupabaseClient().auth.signOut()
+    detachServerSession()
     // Reset the fixture visit back to 'vitals' via the service-role client —
     // the app's own client has no session at this point, so it cannot do this.
     await admin.from('visits').update({ status: 'vitals' }).eq('id', testVisitId)

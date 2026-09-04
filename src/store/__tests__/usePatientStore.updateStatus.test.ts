@@ -3,6 +3,7 @@ import { createClient } from '@supabase/supabase-js'
 import { usePatientStore } from '@/store/usePatientStore'
 import { Visits } from '@/lib/api'
 import { getSupabaseClient } from '@/lib/supabase/client'
+import { attachServerSession, detachServerSession } from '@/lib/testing/serverSession'
 
 // Whole-phase review finding (critical-in-effect): Task 8's addPatient
 // creates the real backend `visits` row at status 'waiting'. Reception's
@@ -60,6 +61,7 @@ afterAll(async () => {
   await admin.auth.admin.deleteUser(receptionUserId)
   await admin.auth.admin.deleteUser(nurseUserId)
   await getSupabaseClient().auth.signOut()
+  detachServerSession()
 })
 
 afterEach(async () => {
@@ -75,13 +77,15 @@ afterEach(async () => {
 })
 
 async function signInAsReception() {
-  const { error } = await getSupabaseClient().auth.signInWithPassword({ email: receptionEmail, password })
-  if (error) throw new Error(`reception signIn failed: ${error.message}`)
+  const { data, error } = await getSupabaseClient().auth.signInWithPassword({ email: receptionEmail, password })
+  if (error || !data.session) throw new Error(`reception signIn failed: ${error?.message}`)
+  await attachServerSession(data.session)
 }
 
 async function signInAsNurse() {
-  const { error } = await getSupabaseClient().auth.signInWithPassword({ email: nurseEmail, password })
-  if (error) throw new Error(`nurse signIn failed: ${error.message}`)
+  const { data, error } = await getSupabaseClient().auth.signInWithPassword({ email: nurseEmail, password })
+  if (error || !data.session) throw new Error(`nurse signIn failed: ${error?.message}`)
+  await attachServerSession(data.session)
 }
 
 describe('usePatientStore.updateStatus — reception→vitals real backend bridge', () => {
@@ -124,6 +128,7 @@ describe('usePatientStore.updateStatus — reception→vitals real backend bridg
 
     const advanceSpy = vi.spyOn(Visits, 'advance')
     await getSupabaseClient().auth.signOut()
+    detachServerSession()
 
     await usePatientStore.getState().updateStatus(created.id, 'vitals')
 

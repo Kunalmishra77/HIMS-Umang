@@ -4,6 +4,7 @@ import { usePatientStore } from '@/store/usePatientStore'
 import { useAuthStore, DEMO_USERS_MAP } from '@/store/useAuthStore'
 import { getSupabaseClient } from '@/lib/supabase/client'
 import { Patients } from '@/lib/api'
+import { attachServerSession, detachServerSession } from '@/lib/testing/serverSession'
 
 // addPatient's real-backend write now checks the LIVE Supabase session
 // directly (supabase.auth.getSession()) rather than the persisted
@@ -33,10 +34,12 @@ beforeAll(async () => {
     id: staffUserId, role: 'reception', full_name: 'AddPatient Test Reception',
   })
   if (profileError) throw new Error(`profile insert failed: ${profileError.message}`)
-  const { error: signInError } = await getSupabaseClient().auth.signInWithPassword({
+  const { data: signInData, error: signInError } = await getSupabaseClient().auth.signInWithPassword({
     email: staffEmail, password: staffPassword,
   })
   if (signInError) throw new Error(`signIn failed: ${signInError.message}`)
+  if (!signInData.session) throw new Error('signIn returned no session')
+  await attachServerSession(signInData.session)
   await useAuthStore.getState().hydrateFromSession()
 })
 
@@ -44,6 +47,7 @@ afterAll(async () => {
   await admin.from('profiles').delete().eq('id', staffUserId)
   await admin.auth.admin.deleteUser(staffUserId)
   await getSupabaseClient().auth.signOut()
+  detachServerSession()
 })
 
 afterEach(async () => {
@@ -58,10 +62,11 @@ afterEach(async () => {
 // later tests in this file that expect the positive path are unaffected by
 // an earlier test's signOut().
 async function reSignInAsStaff() {
-  const { error } = await getSupabaseClient().auth.signInWithPassword({
+  const { data, error } = await getSupabaseClient().auth.signInWithPassword({
     email: staffEmail, password: staffPassword,
   })
-  if (error) throw new Error(`re-signIn failed: ${error.message}`)
+  if (error || !data.session) throw new Error(`re-signIn failed: ${error?.message}`)
+  await attachServerSession(data.session)
   await useAuthStore.getState().hydrateFromSession()
 }
 
@@ -117,6 +122,7 @@ describe('usePatientStore.addPatient — real backend write', () => {
     // relying solely on RLS as a backstop.
     const createSpy = vi.spyOn(Patients, 'create')
     await getSupabaseClient().auth.signOut()
+    detachServerSession()
     useAuthStore.setState({
       isRealSession: true,
       currentUser: { id: staffUserId, name: 'AddPatient Test Reception', role: 'reception' },
@@ -129,20 +135,25 @@ describe('usePatientStore.addPatient — real backend write', () => {
     })
     const created = usePatientStore.getState().patients[0]
     expect(created).toBeTruthy()
-    expect(created.visitId).toBeUndefined()
     expect(createSpy).not.toHaveBeenCalled()
     createSpy.mockRestore()
+    createdPatientId = created.id
 
+    // The shared patient + visit are still written, but by POST
+    // /api/opd-register under the service role — the route the anonymous
+    // self-check-in kiosk depends on, which by design needs no session. What
+    // the stale flag must not do is re-arm the *client-side* Patients.create
+    // write above, and it doesn't.
+    expect(created.visitId).toBeTruthy()
     const remotePatients = await admin.from('patients').select('*').eq('id', created.id)
-    expect(remotePatients.data?.length).toBe(0)
-    const remoteVisits = await admin.from('visits').select('*').eq('patient_id', created.id)
-    expect(remoteVisits.data?.length).toBe(0)
+    expect(remotePatients.data?.length).toBe(1)
 
     await reSignInAsStaff()
   })
 
-  it('keeps existing local-only behavior when no staff session is signed in', async () => {
+  it('still registers through the anonymous kiosk route when no staff session is signed in', async () => {
     await getSupabaseClient().auth.signOut()
+    detachServerSession()
     useAuthStore.setState({ currentUser: null })
     usePatientStore.setState({ patients: [], queue: [] })
 
@@ -151,16 +162,19 @@ describe('usePatientStore.addPatient — real backend write', () => {
     })
     const created = usePatientStore.getState().patients[0]
     expect(created).toBeTruthy()
-    expect(created.visitId).toBeUndefined()
+    createdPatientId = created.id
+    // Session-free registration is the kiosk contract — see /api/opd-register.
+    expect(created.visitId).toBeTruthy()
 
     await reSignInAsStaff()
   })
 
-  it('does not attempt a real backend write for ordinary demo usage (never logged in)', async () => {
+  it('does not fire the client-side Patients.create for ordinary demo usage (never logged in)', async () => {
     // Ordinary demo flow: nobody has ever logged in on this browser, so
     // there is no live Supabase session — regardless of whatever default
     // demo values sit in useAuthStore (a non-null DEMO_USERS entry, etc).
     await getSupabaseClient().auth.signOut()
+    detachServerSession()
     useAuthStore.setState({ isRealSession: false, currentUser: DEMO_USERS_MAP.doctor, activeRole: 'doctor' })
     usePatientStore.setState({ patients: [], queue: [] })
 
@@ -169,12 +183,12 @@ describe('usePatientStore.addPatient — real backend write', () => {
     })
     const created = usePatientStore.getState().patients[0]
     expect(created).toBeTruthy()
-    expect(created.visitId).toBeUndefined()
-
+    createdPatientId = created.id
+    // As above: the row lands via the service-role kiosk route, not via the
+    // browser's anon-role client write, which stays gated on a live session.
+    expect(created.visitId).toBeTruthy()
     const remotePatients = await admin.from('patients').select('*').eq('id', created.id)
-    expect(remotePatients.data?.length).toBe(0)
-    const remoteVisits = await admin.from('visits').select('*').eq('patient_id', created.id)
-    expect(remoteVisits.data?.length).toBe(0)
+    expect(remotePatients.data?.length).toBe(1)
 
     await reSignInAsStaff()
   })

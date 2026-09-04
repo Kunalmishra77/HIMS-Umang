@@ -9,6 +9,7 @@ import { useJourneyStore, type JourneyState } from '@/store/useJourneyStore'
 import type { VitalsRecord } from '@/store/useInpatientStore'
 import { DEMO_PATIENTS } from '@/lib/demo-patients'
 import { getSupabaseClient } from '@/lib/supabase/client'
+import { apiUrl } from '@/lib/apiUrl'
 
 export type QueueStatus = 'waiting' | 'vitals' | 'consulting' | 'billing' | 'done'
 export type TriageLevel = 'Low' | 'Medium' | 'High' | 'Critical'
@@ -568,7 +569,7 @@ export const usePatientStore = create<PatientState>()(persist((set, get) => ({
     // change reaches every device regardless of the acting staff role — see
     // /api/opd-advance for why this bypasses per-role visits UPDATE RLS.
     try {
-      await fetch('/api/opd-advance', {
+      await fetch(apiUrl('/api/opd-advance'), {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ visitId: p.visitId, status: backendStatus }),
       })
@@ -585,7 +586,7 @@ export const usePatientStore = create<PatientState>()(persist((set, get) => ({
       // authenticated staff session — so a browser read returns nothing for demo
       // staff and the queue never syncs cross-device. The server route bypasses
       // that, so it works for every staff login (demo or real).
-      const res = await fetch('/api/opd-queue', { cache: 'no-store' })
+      const res = await fetch(apiUrl('/api/opd-queue'), { cache: 'no-store' })
       if (!res.ok) return
       const { patients: fromDb } = (await res.json()) as { patients: Patient[] }
       if (!fromDb?.length) return
@@ -608,7 +609,7 @@ export const usePatientStore = create<PatientState>()(persist((set, get) => ({
 
   hydrateMe: async () => {
     try {
-      const res = await fetch('/api/patient/me', { cache: 'no-store' })
+      const res = await fetch(apiUrl('/api/patient/me'), { cache: 'no-store' })
       if (!res.ok) return
       const { patient } = (await res.json()) as { patient: Patient | null }
       if (!patient) return
@@ -762,7 +763,7 @@ export const usePatientStore = create<PatientState>()(persist((set, get) => ({
       // Advance the shared visit to 'consulting' via the server route so the
       // Doctor sees the patient on EVERY device (cross-device, role-agnostic).
       try {
-        await fetch('/api/opd-advance', {
+        await fetch(apiUrl('/api/opd-advance'), {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ visitId, status: 'consulting' }),
         })
@@ -968,7 +969,7 @@ export const usePatientStore = create<PatientState>()(persist((set, get) => ({
       // device. The local record was already created above, so a DB/network
       // failure never breaks the local queue.
       try {
-        const res = await fetch('/api/opd-register', {
+        const res = await fetch(apiUrl('/api/opd-register'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({

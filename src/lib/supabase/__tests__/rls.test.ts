@@ -14,7 +14,20 @@ let doctorClient: SupabaseClient
 const testPatientId = 'PT-RLSTEST-1'
 const testVisitId = 'VIS-RLSTEST-1'
 
+// A run that dies before afterAll leaves its auth users behind, and createUser
+// then fails with "already been registered" on every subsequent run — the suite
+// can never recover on its own. Clearing the fixture first makes each run
+// independent of how the last one ended.
+async function deleteUserByEmail(email: string) {
+  const { data } = await admin.auth.admin.listUsers()
+  const existing = data?.users.find((u) => u.email === email)
+  if (!existing) return
+  await admin.from('profiles').delete().eq('id', existing.id)
+  await admin.auth.admin.deleteUser(existing.id)
+}
+
 async function createStaffUser(email: string, role: 'reception' | 'doctor') {
+  await deleteUserByEmail(email)
   const { data, error } = await admin.auth.admin.createUser({
     email, password: 'Test-Pass-123!', email_confirm: true,
   })
@@ -51,10 +64,13 @@ beforeAll(async () => {
 afterAll(async () => {
   await admin.from('visits').delete().eq('id', testVisitId)
   await admin.from('patients').delete().eq('id', testPatientId)
-  await admin.from('profiles').delete().eq('id', receptionUserId)
-  await admin.from('profiles').delete().eq('id', doctorUserId)
-  await admin.auth.admin.deleteUser(receptionUserId)
-  await admin.auth.admin.deleteUser(doctorUserId)
+  // Guarded: if beforeAll threw partway, these ids are undefined and an
+  // unguarded deleteUser masks the real setup failure with a UUID error.
+  for (const id of [receptionUserId, doctorUserId]) {
+    if (!id) continue
+    await admin.from('profiles').delete().eq('id', id)
+    await admin.auth.admin.deleteUser(id)
+  }
 })
 
 describe('RLS: profiles', () => {

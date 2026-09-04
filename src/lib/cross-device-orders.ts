@@ -10,6 +10,7 @@
 // staff session, so a direct browser call returns nothing for demo staff. The
 // route bypasses that so the board works for every login.
 import type { StoreApi } from 'zustand'
+import { apiUrl } from '@/lib/apiUrl'
 
 export type OrderType = 'lab' | 'radiology' | 'pharmacy'
 type OrderLike = { id: string; patientId?: string; patientName?: string; status?: string }
@@ -22,7 +23,7 @@ const sharedIds = new Set<string>()
 export async function pushOrder(type: OrderType, order: OrderLike): Promise<void> {
   sharedIds.add(order.id)
   try {
-    await fetch('/api/opd-order', {
+    await fetch(apiUrl('/api/opd-order'), {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ type, order }),
@@ -32,7 +33,7 @@ export async function pushOrder(type: OrderType, order: OrderLike): Promise<void
 
 export async function pullOrders<T extends { id: string }>(type: OrderType): Promise<T[]> {
   try {
-    const res = await fetch(`/api/opd-order?type=${type}`, { cache: 'no-store' })
+    const res = await fetch(apiUrl(`/api/opd-order?type=${type}`), { cache: 'no-store' })
     if (!res.ok) return []
     const { orders } = (await res.json()) as { orders: T[] }
     if (!orders?.length) return []
