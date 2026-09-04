@@ -200,24 +200,25 @@
 }
 
 /* ── Intake (Patient Check-in) scoped theme ──────────────────
-   The patient-facing check-in adopts a calm medical teal + health-green
-   palette, distinct from the blue clinician app. Scoped to `.intake-theme`
-   so global tokens (and every other screen) stay blue. Token-driven: the
-   wizard chrome reads these vars, so overriding them re-skins it cleanly. */
+   The patient-facing check-in adopts a calm medical teal palette. This block
+   REDEFINES the brand tokens, so it does not inherit `:root` — it must be
+   repointed alongside the root palette or the wizard drifts out of brand.
+   Token-driven: the wizard chrome reads these vars, so overriding them
+   re-skins it cleanly. */
 .intake-theme {
-  --color-primary: #EE6B26;          /* logo orange — primary action */
-  --color-primary-light: #F58C4E;
-  --color-primary-dark: #C2481A;     /* hover / active */
-  --color-primary-soft: rgba(238, 107, 38, 0.07);
-  --color-accent: #B84A16;
-  --color-accent-soft: rgba(238, 107, 38, 0.10);
+  --color-primary: #1E97B2;          /* brand teal — primary action */
+  --color-primary-light: #6acdd9;
+  --color-primary-dark: #196b7e;     /* hover / active, white text safe */
+  --color-primary-soft: rgba(30, 151, 178, 0.07);
+  --color-accent: #955408;
+  --color-accent-soft: rgba(255, 166, 0, 0.10);
   --color-secondary: #0D2032;
-  --color-border-focus: #EE6B26;
-  --color-background: #FBF7F4;        /* warm, clean medical surface */
-  --gradient-primary: linear-gradient(135deg, #C2481A 0%, #EE6B26 100%);
-  --shadow-elevated: 0 12px 32px rgba(238, 107, 38, 0.10), 0 1px 3px rgba(0, 0, 0, 0.06);
-  --shadow-glow: 0 0 0 4px rgba(238, 107, 38, 0.18);
-  --shadow-glow-sm: 0 0 0 3px rgba(238, 107, 38, 0.14);
+  --color-border-focus: #1E97B2;
+  --color-background: #F4FAFB;        /* cool, clean medical surface */
+  --gradient-primary: linear-gradient(135deg, #196b7e 0%, #1E97B2 100%);
+  --shadow-elevated: 0 12px 32px rgba(30, 151, 178, 0.10), 0 1px 3px rgba(0, 0, 0, 0.06);
+  --shadow-glow: 0 0 0 4px rgba(30, 151, 178, 0.18);
+  --shadow-glow-sm: 0 0 0 3px rgba(30, 151, 178, 0.14);
 }
 
 /* ── Keyframes ─────────────────────────────────────────── */

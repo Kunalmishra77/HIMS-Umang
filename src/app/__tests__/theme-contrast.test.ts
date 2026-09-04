@@ -50,3 +50,16 @@ describe('brand palette — Umang website teal', () => {
     expect(contrast(token('color-brand-orange'), WHITE)).toBeLessThan(3)
   })
 })
+
+describe('.intake-theme scoped palette', () => {
+  it('tracks the root brand hues instead of keeping the retired orange', () => {
+    expect(token('color-primary', 'intake').toUpperCase()).toBe('#1E97B2')
+    expect(token('color-primary-dark', 'intake').toUpperCase()).toBe('#196B7E')
+    expect(token('color-accent', 'intake').toUpperCase()).toBe('#955408')
+  })
+
+  it('keeps its text pairings at AA', () => {
+    expect(contrast(token('color-primary-dark', 'intake'), WHITE)).toBeGreaterThanOrEqual(4.5)
+    expect(contrast(token('color-accent', 'intake'), WHITE)).toBeGreaterThanOrEqual(4.5)
+  })
+})
