@@ -1,11 +1,14 @@
 @import "tailwindcss";
 
 @theme inline {
-  /* Typography — Umang Hospital, Stripe-inspired (see /DESIGN.md).
-     Inter (weight 300–700, `ss01` enabled globally) is the open-source stand-in
-     for Sohne. Numeric/tabular cells use `tabular-nums` (`.t-numeric`). */
-  --font-body:    "Inter", "SF Pro Display", "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
-  --font-heading: "Inter", "SF Pro Display", "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
+  /* Typography — Umang website two-font system (see /DESIGN.md).
+     Figtree carries the product: body, headings, every clinical surface.
+     Playfair Display is a DISPLAY serif — landing and patient-facing hero
+     headings only. It must never be used in worklists, tables, queues or
+     forms, where a serif costs scanning speed. */
+  --font-body:    "Figtree", "SF Pro Display", "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
+  --font-heading: "Figtree", "SF Pro Display", "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
+  --font-display: "Playfair Display", "Iowan Old Style", Georgia, serif;
 
   /* Brand Colors — Umang Hospital website palette: teal `#1E97B2` (primary)
      + orange `#FFA600` (accent), matching D:\Agentix Project\Umang2.0.

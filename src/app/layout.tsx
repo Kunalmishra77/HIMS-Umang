@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
-// Product typeface: Inter — the open-source stand-in for Stripe's Sohne
-// (see /DESIGN.md). Loaded via Google Fonts below; the family stack lives in
-// globals.css (`--font-body` / `--font-heading`) with `ss01` enabled globally.
+// Typography: Figtree (product) + Playfair Display (display serif) — the Umang
+// website typeface system (see /DESIGN.md). Loaded via Google Fonts below; the
+// family stacks live in globals.css (`--font-body` / `--font-heading` / `--font-display`).
 import "./globals.css"
 import { Toaster } from "sonner"
 import { getLocale } from "next-intl/server"
@@ -28,7 +28,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         {/* Noto Sans Devanagari — for the Hindi locale */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300..900&family=Playfair+Display:wght@400..700&family=Noto+Sans+Devanagari:wght@400;500;600&display=swap" rel="stylesheet" />
       </head>
       <body suppressHydrationWarning className="font-body antialiased text-foreground bg-background">
         <LocaleProvider initialLocale={locale}>
