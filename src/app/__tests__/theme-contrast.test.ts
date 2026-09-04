@@ -44,8 +44,9 @@ describe('brand palette — Umang website teal', () => {
   })
 
   it('never lets brand orange become a text colour', () => {
-    // #FFA600 is ~1.96:1 on white. Present as a fill token, but the low ratio
-    // is the reason no component may use it for text.
-    expect(contrast('#FFA600', WHITE)).toBeLessThan(3)
+    // Read live, not as a literal: this test's job is to notice if the token
+    // is ever changed to a value that would be safe as text, which is what
+    // would let brand colour start being used as ink.
+    expect(contrast(token('color-brand-orange'), WHITE)).toBeLessThan(3)
   })
 })

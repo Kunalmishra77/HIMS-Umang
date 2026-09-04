@@ -12,7 +12,7 @@
      No single teal is AA both as white-on-fill AND as text-on-white, so the
      brand teal is split — the same discipline the retired orange used.
      `--color-primary` is the exact brand teal, used for FILLS, always paired
-     with navy `--color-on-primary` text (5.2:1). `--color-primary-dark` is the
+     with navy `--color-on-primary` text (4.8:1). `--color-primary-dark` is the
      one dark enough for WHITE text (6.1:1) — CTA hover/press and text-bearing
      fills. `--color-accent` is AA-safe on white (5.9:1) for link/emphasis text.
      Ratios asserted in src/app/__tests__/theme-contrast.test.ts. */
@@ -60,7 +60,7 @@
   --color-secondary: #0D2032;
   --color-secondary-light: #1B3A57;
 
-  /* Gradients — restrained: orange for brand fills, navy for hero depth */
+  /* Gradients — restrained: teal for brand fills, navy for hero depth */
   --gradient-primary: linear-gradient(135deg, #196b7e 0%, #1E97B2 100%);
   --gradient-surface: linear-gradient(180deg, #FFFFFF 0%, #F6F9FC 100%);
   --gradient-sidebar: linear-gradient(180deg, #FFFFFF 0%, #FFFFFF 100%);
