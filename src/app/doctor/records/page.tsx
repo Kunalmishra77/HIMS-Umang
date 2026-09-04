@@ -207,7 +207,7 @@ export default function DoctorRecords() {
               </div>
 
               <div className="sticky bottom-0 bg-white border-t border-slate-100 p-4">
-                <button onClick={() => openConsult(selected)} className="w-full h-11 rounded-xl bg-[var(--color-primary)] text-white font-bold text-[13.5px] flex items-center justify-center gap-2 hover:bg-[var(--color-primary-dark)] transition">
+                <button onClick={() => openConsult(selected)} className="w-full h-11 rounded-xl bg-[var(--color-primary-dark)] text-white font-bold text-[13.5px] flex items-center justify-center gap-2 hover:bg-[#1a5667] transition">
                   {selected.mode === 'online' ? <Video className="h-4.5 w-4.5" /> : <Stethoscope className="h-4.5 w-4.5" />} {t('records.openConsultation')} <ArrowRight className="h-4 w-4" />
                 </button>
               </div>

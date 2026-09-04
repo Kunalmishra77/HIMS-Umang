@@ -163,7 +163,7 @@ export function AadhaarAbhaFlow({ onComplete, patientName, className }: Props) {
             const order: Stage[] = ["capture", "otp", "abha", "done"]
             const active = order.indexOf(stage) >= i
             return (
-              <span key={label} className={cn("px-2 py-0.5 rounded-full", active ? "bg-[var(--color-primary)] text-white" : "bg-slate-100 text-slate-400")}>
+              <span key={label} className={cn("px-2 py-0.5 rounded-full", active ? "bg-[var(--color-primary-dark)] text-white" : "bg-slate-100 text-slate-400")}>
                 {label}
               </span>
             )

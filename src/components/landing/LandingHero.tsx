@@ -58,7 +58,7 @@ export function LandingHero() {
 
           <div className="flex flex-wrap items-center gap-3 mt-7">
             <button onClick={() => scrollTo("#launcher")}
-              className="inline-flex items-center gap-2 h-12 px-6 rounded-xl text-[15px] font-semibold text-white bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] transition-colors cursor-pointer shadow-[0_8px_24px_rgba(30,151,178,0.18)]">
+              className="inline-flex items-center gap-2 h-12 px-6 rounded-xl text-[15px] font-semibold text-white bg-[var(--color-primary-dark)] hover:bg-[#1a5667] transition-colors cursor-pointer shadow-[0_8px_24px_rgba(30,151,178,0.18)]">
               {t("cta.launchConsole")} <ArrowRight className="h-4 w-4" />
             </button>
             <button onClick={() => scrollTo("#platform")}

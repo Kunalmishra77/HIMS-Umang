@@ -45,7 +45,7 @@ function ChipList({ values, onChange, disabled, placeholder }: { values: string[
             placeholder={placeholder}
             className="flex-1 h-8 px-2 rounded-md ring-1 ring-slate-200 text-[12.5px] focus:outline-none focus:ring-[var(--color-primary-light)]" />
           <button onClick={() => { if (draft.trim()) { onChange([...values, draft.trim()]); setDraft('') } }}
-            className="h-8 w-8 rounded-md bg-[var(--color-primary)] text-white flex items-center justify-center hover:bg-[var(--color-primary-dark)] cursor-pointer">
+            className="h-8 w-8 rounded-md bg-[var(--color-primary-dark)] text-white flex items-center justify-center hover:bg-[#1a5667] cursor-pointer">
             <Plus className="h-3.5 w-3.5" />
           </button>
         </div>
@@ -120,7 +120,7 @@ export default function ProfilePage() {
           <p className="text-[13px] text-slate-500 mt-1">Your details, medical info, family &amp; data consent</p>
         </div>
         {profile?.completedAt && !editing && (
-          <button onClick={startEdit} className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white text-[12.5px] font-semibold cursor-pointer">
+          <button onClick={startEdit} className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[var(--color-primary-dark)] hover:bg-[#1a5667] text-white text-[12.5px] font-semibold cursor-pointer">
             <Pencil className="h-3.5 w-3.5" /> Edit profile
           </button>
         )}

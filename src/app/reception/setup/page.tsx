@@ -126,7 +126,7 @@ export default function ReceptionSetup() {
           </div>
         </div>
 
-        <button onClick={save} className="w-full h-11 rounded-xl bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white font-bold text-[14px] flex items-center justify-center gap-2 active:scale-[0.99] transition">
+        <button onClick={save} className="w-full h-11 rounded-xl bg-[var(--color-primary-dark)] hover:bg-[#1a5667] text-white font-bold text-[14px] flex items-center justify-center gap-2 active:scale-[0.99] transition">
           <Save className="h-4.5 w-4.5" /> {t('setup.savePreferences')}
         </button>
       </div>

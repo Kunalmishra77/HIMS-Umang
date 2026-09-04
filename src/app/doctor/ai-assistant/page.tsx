@@ -218,7 +218,7 @@ function Bubble({ role, text, draft }: { role: 'user' | 'ai'; text: string; draf
       )}
       <div className={cn("max-w-[80%] space-y-2", isUser && "flex flex-col items-end")}>
         <div className={cn("rounded-2xl px-4 py-2.5 text-[13.5px] leading-relaxed",
-          isUser ? "bg-[var(--color-primary)] text-white rounded-br-md" : "bg-white border border-slate-200 text-slate-700 rounded-bl-md shadow-sm")}>
+          isUser ? "bg-[var(--color-primary-dark)] text-white rounded-br-md" : "bg-white border border-slate-200 text-slate-700 rounded-bl-md shadow-sm")}>
           <Rich text={text} />
         </div>
         {draft && <DraftCard draft={draft} />}

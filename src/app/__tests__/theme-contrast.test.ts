@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs'
+import { readdirSync, readFileSync, statSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { contrast } from '@/lib/testing/contrast'
@@ -61,5 +61,34 @@ describe('.intake-theme scoped palette', () => {
   it('keeps its text pairings at AA', () => {
     expect(contrast(token('color-primary-dark', 'intake'), WHITE)).toBeGreaterThanOrEqual(4.5)
     expect(contrast(token('color-accent', 'intake'), WHITE)).toBeGreaterThanOrEqual(4.5)
+  })
+})
+
+/** Every .ts/.tsx file under src/, recursively. */
+function sourceFiles(dir: string, out: string[] = []): string[] {
+  for (const entry of readdirSync(dir)) {
+    const full = join(dir, entry)
+    if (statSync(full).isDirectory()) sourceFiles(full, out)
+    else if (/\.tsx?$/.test(entry)) out.push(full)
+  }
+  return out
+}
+
+describe('brand fills are used in their AA-safe pairing', () => {
+  it('never puts white text on the brand teal', () => {
+    // #1E97B2 with white is 3.43:1 — below the 4.5 floor for normal text.
+    // A text-bearing fill must use --color-primary-dark (6.1:1 with white),
+    // or keep --color-primary and switch the ink to --color-on-primary
+    // (4.8:1). This guards the pairing; the tests above only guard the values.
+    const offending = sourceFiles(join(import.meta.dirname, '../..'))
+      .flatMap((file) => {
+        const text = readFileSync(file, 'utf8')
+        const hits = text.match(/class(?:Name)?="[^"]*"/g) ?? []
+        return hits
+          .filter((c) => /text-white/.test(c))
+          .filter((c) => /bg-primary|bg-\[var\(--color-primary\)\]/.test(c))
+          .map(() => file.replace(/^.*[\/]src[\/]/, 'src/'))
+      })
+    expect([...new Set(offending)]).toEqual([])
   })
 })

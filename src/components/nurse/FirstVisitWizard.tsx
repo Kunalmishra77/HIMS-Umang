@@ -218,7 +218,7 @@ export function FirstVisitWizard({ title, subtitle, meta, initial, onClose, onCo
             </button>
           )}
           {step < STEP_LABELS.length - 1 ? (
-            <button onClick={() => setStep(s => s + 1)} className="ml-auto flex items-center gap-1.5 h-10 px-5 rounded-xl bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white text-sm font-bold cursor-pointer">
+            <button onClick={() => setStep(s => s + 1)} className="ml-auto flex items-center gap-1.5 h-10 px-5 rounded-xl bg-[var(--color-primary-dark)] hover:bg-[#1a5667] text-white text-sm font-bold cursor-pointer">
               Next <ChevronRight className="h-4 w-4" />
             </button>
           ) : (

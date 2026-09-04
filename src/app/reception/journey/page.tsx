@@ -123,7 +123,7 @@ export default function LiveJourneyBoardPage() {
           {['All', ...DEPT_ORDER.filter(d => d !== 'Done' && (deptCounts[d] ?? 0) > 0)].map(d => (
             <button key={d} onClick={() => setDept(d)}
               className={cn("text-[11.5px] font-bold px-3 py-1.5 rounded-lg transition cursor-pointer",
-                dept === d ? "bg-[var(--color-primary)] text-white shadow-sm" : "bg-white ring-1 ring-slate-200 text-slate-600 hover:bg-slate-50")}>
+                dept === d ? "bg-[var(--color-primary-dark)] text-white shadow-sm" : "bg-white ring-1 ring-slate-200 text-slate-600 hover:bg-slate-50")}>
               {d === 'All' ? t('journey.filterAll') : t(`journey.${DEPT_KEY[d]}`)}{d !== 'All' && deptCounts[d] ? ` · ${deptCounts[d]}` : ''}
             </button>
           ))}

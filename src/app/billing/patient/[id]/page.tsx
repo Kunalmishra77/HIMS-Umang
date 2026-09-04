@@ -238,7 +238,7 @@ export default function PatientBillPage({ params }: { params: Promise<{ id: stri
                   key={mode}
                   onClick={() => setPayMode(mode)}
                   className={cn("flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold border transition-all cursor-pointer",
-                    payMode === mode ? "bg-[var(--color-primary)] text-white border-[var(--color-primary)]" : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50"
+                    payMode === mode ? "bg-[var(--color-primary-dark)] text-white border-[var(--color-primary)]" : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50"
                   )}
                 >
                   {mode === 'Cash' && <Banknote className="h-3.5 w-3.5" />}

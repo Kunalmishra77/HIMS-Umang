@@ -53,7 +53,7 @@ export default function ReceptionDownloads() {
         <div className="mt-4 flex flex-wrap gap-2">
           {FILTERS.map(f => (
             <button key={f} onClick={() => setFilter(f)}
-              className={cn("text-[12.5px] font-semibold px-3.5 py-1.5 rounded-full transition", filter === f ? "bg-[var(--color-primary)] text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200")}>{t(`downloads.${CAT_KEY[f]}`)}</button>
+              className={cn("text-[12.5px] font-semibold px-3.5 py-1.5 rounded-full transition", filter === f ? "bg-[var(--color-primary-dark)] text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200")}>{t(`downloads.${CAT_KEY[f]}`)}</button>
           ))}
         </div>
       </div>
@@ -80,7 +80,7 @@ export default function ReceptionDownloads() {
                     <button onClick={() => printableHtml(d.name, `<div class="info-row"><div class="info-item"><span class="info-label">${t('downloads.slipDocument')}</span><span class="info-value">${d.name}</span></div><div class="info-item"><span class="info-label">${t('downloads.slipType')}</span><span class="info-value">${t(`downloads.${CAT_KEY[d.cat]}`)}</span></div><div class="info-item"><span class="info-label">${t('downloads.slipDate')}</span><span class="info-value">${new Date().toLocaleDateString('en-IN')}</span></div></div><p class="muted">${t('downloads.slipSystemGenerated')}</p>`)}
                       aria-label={t('downloads.print')} className="h-9 w-9 rounded-xl bg-white border border-slate-200 text-slate-500 flex items-center justify-center hover:text-slate-700 active:scale-95 transition cursor-pointer"><Printer className="h-4 w-4" /></button>
                     <button onClick={() => downloadText(`${d.name}.txt`, `Umang Hospital · ${d.name}\nType: ${d.cat}\nGenerated: ${new Date().toLocaleString('en-IN')}\n\nMeta: ${d.meta}\n\n(Demo download · Phase-1 mock)`)}
-                      aria-label={t('downloads.download')} className="h-9 px-3 rounded-xl bg-[var(--color-primary)] text-white text-[13px] font-semibold flex items-center gap-1.5 hover:bg-[var(--color-primary-dark)] active:scale-95 transition cursor-pointer"><Download className="h-4 w-4" /> <span className="hidden sm:inline">{t('downloads.download')}</span></button>
+                      aria-label={t('downloads.download')} className="h-9 px-3 rounded-xl bg-[var(--color-primary-dark)] text-white text-[13px] font-semibold flex items-center gap-1.5 hover:bg-[#1a5667] active:scale-95 transition cursor-pointer"><Download className="h-4 w-4" /> <span className="hidden sm:inline">{t('downloads.download')}</span></button>
                   </div>
                 </div>
               )

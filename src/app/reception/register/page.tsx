@@ -380,7 +380,7 @@ export default function RegisterPatientPage() {
           <li key={label} className="flex items-center gap-2 flex-1 last:flex-none" aria-current={i === macroIdx ? "step" : undefined}>
             <div className={cn(
               "flex items-center gap-2 px-3 py-1.5 rounded-full text-[12px] font-bold transition",
-              i === macroIdx ? "bg-[var(--color-primary)] text-white"
+              i === macroIdx ? "bg-[var(--color-primary-dark)] text-white"
                 : i < macroIdx ? "bg-emerald-50 text-emerald-700" : "bg-slate-100 text-slate-400"
             )}>
               <span className={cn("h-5 w-5 rounded-full flex items-center justify-center text-[11px]", i === macroIdx ? "bg-white/20" : i < macroIdx ? "bg-emerald-200/60" : "bg-white")}>
@@ -597,7 +597,7 @@ export default function RegisterPatientPage() {
               <p className="text-[12px] text-[var(--color-primary-dark)]">{t('register.aiTriageText', { triage: t(`register.${TRIAGE_KEY[suggestion.triage]}`), department: DEPT_KEY[suggestion.department] ? t(`register.${DEPT_KEY[suggestion.department]}`) : suggestion.department, reason: suggestion.reason })}</p>
               {(form.triage !== suggestion.triage || form.department !== suggestion.department) && (
                 <button onClick={() => set({ triage: suggestion.triage, department: suggestion.department, doctor: firstDoctorFor(suggestion.department) })}
-                  className="mt-2 text-[12px] font-bold text-white bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] rounded-lg px-3 py-1.5 transition">{t('register.applySuggestion')}</button>
+                  className="mt-2 text-[12px] font-bold text-white bg-[var(--color-primary-dark)] hover:bg-[#1a5667] rounded-lg px-3 py-1.5 transition">{t('register.applySuggestion')}</button>
               )}
             </div>
           )}
@@ -729,7 +729,7 @@ function MethodCard({ icon: Icon, title, desc, recommended, recommendedLabel, bu
     <button onClick={onClick} disabled={busy}
       className="group text-left rounded-2xl border-2 border-[rgba(30,151,178,0.20)] bg-[rgba(30,151,178,0.04)] hover:bg-[rgba(30,151,178,0.08)] hover:border-[var(--color-primary)] transition p-4 disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]">
       <div className="flex items-center justify-between mb-2">
-        <span className="h-10 w-10 rounded-xl bg-[var(--color-primary)] text-white flex items-center justify-center">
+        <span className="h-10 w-10 rounded-xl bg-[var(--color-primary-dark)] text-white flex items-center justify-center">
           {busy ? <Loader2 className="h-5 w-5 animate-spin" /> : <Icon className="h-5 w-5" />}
         </span>
         {recommended && <span className="text-[10px] font-bold uppercase tracking-wide text-[var(--color-primary-dark)] bg-[rgba(30,151,178,0.12)] px-2 py-0.5 rounded-full">{recommendedLabel}</span>}

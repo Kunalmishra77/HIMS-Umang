@@ -154,7 +154,7 @@ export default function PatientSettings() {
       </div>
 
       <button onClick={save}
-        className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white text-[14px] font-bold cursor-pointer">
+        className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-[var(--color-primary-dark)] hover:bg-[#1a5667] text-white text-[14px] font-bold cursor-pointer">
         <Save className="h-4 w-4" /> Save preferences
       </button>
     </div>

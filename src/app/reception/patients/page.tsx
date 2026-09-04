@@ -187,7 +187,7 @@ export default function ReceptionPatients() {
         onClearFilters={chips.length ? clearAll : undefined}
         bulkActions={(sel) => (
           <button onClick={() => { sel.forEach(announce) }}
-            className="inline-flex items-center gap-1.5 h-8 px-3 rounded-lg bg-[var(--color-primary)] text-white text-[13px] font-semibold hover:bg-[var(--color-primary-dark)] cursor-pointer transition-colors">
+            className="inline-flex items-center gap-1.5 h-8 px-3 rounded-lg bg-[var(--color-primary-dark)] text-white text-[13px] font-semibold hover:bg-[#1a5667] cursor-pointer transition-colors">
             <Volume2 className="h-4 w-4" /> {t('patients.announce')}
           </button>
         )}
@@ -346,7 +346,7 @@ function PatientDrawer({ patient: p, visits, appointments, onClose, onAnnounce, 
       {/* Sticky actions */}
       <div className="sticky bottom-0 bg-white border-t border-slate-100 p-4 flex gap-2">
         <button onClick={onAnnounce} className="flex-1 h-11 rounded-xl bg-slate-100 text-slate-700 font-bold text-[13.5px] flex items-center justify-center gap-2 hover:bg-slate-200 transition"><Volume2 className="h-4.5 w-4.5" /> {t('patients.announceAction')}</button>
-        {next && <button onClick={onAdvance} className="flex-1 h-11 rounded-xl bg-[var(--color-primary)] text-white font-bold text-[13.5px] flex items-center justify-center gap-2 hover:bg-[var(--color-primary-dark)] transition">{t(`patients.${next.labelKey}`)} <ArrowRight className="h-4 w-4" /></button>}
+        {next && <button onClick={onAdvance} className="flex-1 h-11 rounded-xl bg-[var(--color-primary-dark)] text-white font-bold text-[13.5px] flex items-center justify-center gap-2 hover:bg-[#1a5667] transition">{t(`patients.${next.labelKey}`)} <ArrowRight className="h-4 w-4" /></button>}
       </div>
     </div>
   )

@@ -83,7 +83,7 @@ export default function ReceptionDashboard() {
           <p className="text-[12px] font-semibold uppercase tracking-wider text-amber-500">{greeting} · {dateLabel}</p>
           <h1 className="text-[24px] font-bold text-slate-900 tracking-tight">{t('dashboard.headerTitle', { name: first })}</h1>
         </div>
-        <Link href="/reception/opd" className="flex items-center gap-2 h-10 px-4 rounded-xl bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white text-[13.5px] font-bold shadow-sm active:scale-[0.98] transition">
+        <Link href="/reception/opd" className="flex items-center gap-2 h-10 px-4 rounded-xl bg-[var(--color-primary-dark)] hover:bg-[#1a5667] text-white text-[13.5px] font-bold shadow-sm active:scale-[0.98] transition">
           <UserPlus className="h-4 w-4" /> {t('dashboard.registerWalkIn')}
         </Link>
       </div>

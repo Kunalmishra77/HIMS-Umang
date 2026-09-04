@@ -91,7 +91,7 @@ export function PaymentModal({ open, amount, purpose, description, patientId, pa
                 ))}
               </div>
               <button onClick={pay}
-                className="w-full mt-5 flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white text-[14px] font-bold cursor-pointer">
+                className="w-full mt-5 flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-[var(--color-primary-dark)] hover:bg-[#1a5667] text-white text-[14px] font-bold cursor-pointer">
                 <IndianRupee className="h-4 w-4" /> Pay ₹{amount.toLocaleString('en-IN')} via {CHANNEL_LABEL[channel]}
               </button>
               <p className="mt-3 text-[10.5px] text-slate-400 text-center">Secure payment gateway · processing</p>
@@ -112,7 +112,7 @@ export function PaymentModal({ open, amount, purpose, description, patientId, pa
               <div className="mt-4 inline-flex items-center gap-1.5 rounded-lg bg-slate-50 px-3 py-2 text-[12px] text-slate-600">
                 <Wallet className="h-3.5 w-3.5" /> ₹{done.amount.toLocaleString('en-IN')} · {CHANNEL_LABEL[done.channel]}
               </div>
-              <button onClick={onClose} className="w-full mt-5 px-4 py-2.5 rounded-xl bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white text-[13.5px] font-bold cursor-pointer">Done</button>
+              <button onClick={onClose} className="w-full mt-5 px-4 py-2.5 rounded-xl bg-[var(--color-primary-dark)] hover:bg-[#1a5667] text-white text-[13.5px] font-bold cursor-pointer">Done</button>
             </div>
           ) : done?.status === 'pending' ? (
             <div className="py-6 text-center">
@@ -122,7 +122,7 @@ export function PaymentModal({ open, amount, purpose, description, patientId, pa
               <p className="text-[15px] font-bold text-slate-900">Pre-auth pending</p>
               <p className="text-[12px] text-slate-500 mt-1">{done.failureReason ?? 'Insurance is reviewing the claim.'}</p>
               <p className="text-[11.5px] text-slate-400 mt-2">Reference: <span className="font-mono">{done.transactionId}</span></p>
-              <button onClick={onClose} className="w-full mt-5 px-4 py-2.5 rounded-xl bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white text-[13.5px] font-bold cursor-pointer">Got it</button>
+              <button onClick={onClose} className="w-full mt-5 px-4 py-2.5 rounded-xl bg-[var(--color-primary-dark)] hover:bg-[#1a5667] text-white text-[13.5px] font-bold cursor-pointer">Got it</button>
             </div>
           ) : (
             <div className="py-6 text-center">
@@ -133,7 +133,7 @@ export function PaymentModal({ open, amount, purpose, description, patientId, pa
               <p className="text-[12px] text-slate-500 mt-1">{done?.failureReason ?? 'Try a different channel.'}</p>
               <div className="flex gap-2 mt-5">
                 <button onClick={onClose} className="flex-1 px-4 py-2.5 rounded-xl border border-slate-200 text-slate-700 text-[13.5px] font-semibold cursor-pointer">Close</button>
-                <button onClick={reset} className="flex-1 px-4 py-2.5 rounded-xl bg-[var(--color-primary)] text-white text-[13.5px] font-bold cursor-pointer">Try again</button>
+                <button onClick={reset} className="flex-1 px-4 py-2.5 rounded-xl bg-[var(--color-primary-dark)] text-white text-[13.5px] font-bold cursor-pointer">Try again</button>
               </div>
             </div>
           )}

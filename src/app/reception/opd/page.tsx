@@ -234,7 +234,7 @@ export default function OpdQueuePage() {
           <p className="text-[13px] text-slate-500 mt-0.5">{t('opd.pageSubtitle')}</p>
         </div>
         <Button onClick={() => router.push('/reception/register')} size="lg"
-          className="h-10 px-5 gap-2 font-bold shadow-sm hover:shadow-md transition-all rounded-xl bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white cursor-pointer">
+          className="h-10 px-5 gap-2 font-bold shadow-sm hover:shadow-md transition-all rounded-xl bg-[var(--color-primary-dark)] hover:bg-[#1a5667] text-white cursor-pointer">
           <UserPlus className="h-4 w-4" aria-hidden="true" /> {t('opd.registerWalkIn')}
         </Button>
       </div>

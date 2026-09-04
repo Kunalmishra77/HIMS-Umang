@@ -192,7 +192,7 @@ export function CopilotPane({ role, patientId, patientName, wardId }: CopilotPan
                   </div>
                   <button
                     onClick={refresh}
-                    className="flex items-center gap-1.5 px-5 py-2 bg-[var(--color-primary)] text-white text-sm font-semibold rounded-xl hover:bg-[var(--color-primary-dark)] transition-colors"
+                    className="flex items-center gap-1.5 px-5 py-2 bg-[var(--color-primary-dark)] text-white text-sm font-semibold rounded-xl hover:bg-[#1a5667] transition-colors"
                   >
                     <Zap className="h-3.5 w-3.5" /> Get Insights
                   </button>
@@ -236,7 +236,7 @@ export function CopilotPane({ role, patientId, patientName, wardId }: CopilotPan
               <button
                 onClick={refresh}
                 disabled={loading}
-                className="w-full flex items-center justify-center gap-2 py-2 rounded-xl bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white text-sm font-semibold transition-colors disabled:opacity-50"
+                className="w-full flex items-center justify-center gap-2 py-2 rounded-xl bg-[var(--color-primary-dark)] hover:bg-[#1a5667] text-white text-sm font-semibold transition-colors disabled:opacity-50"
               >
                 <RefreshCw className={cn("h-3.5 w-3.5", loading && "animate-spin")} />
                 {loading ? 'Loading insights…' : 'Refresh Insights'}

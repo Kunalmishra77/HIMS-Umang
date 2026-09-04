@@ -71,7 +71,7 @@ export default function DoctorSettings() {
         </div>
       </div>
 
-      <button onClick={() => toast.success(t('settings.savedToast'))} className="w-full h-12 rounded-xl bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white font-bold text-[14px] flex items-center justify-center gap-2 transition">
+      <button onClick={() => toast.success(t('settings.savedToast'))} className="w-full h-12 rounded-xl bg-[var(--color-primary-dark)] hover:bg-[#1a5667] text-white font-bold text-[14px] flex items-center justify-center gap-2 transition">
         <CheckCircle2 className="h-5 w-5" /> {t('settings.saveSettings')}
       </button>
       <p className="text-[11.5px] text-slate-400 text-center">{t('settings.saveHint')}</p>

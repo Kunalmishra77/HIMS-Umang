@@ -158,7 +158,7 @@ export function CareTeamPresenceCard({ ward = "Cardiac Care", department, classN
           {handoverPendingCount > 0 ? <ReasoningChip compact tone="warn" title={`${handoverPendingCount} handover near`} /> : null}
           {pendingIncoming.length > 0 ? <ReasoningChip compact tone="info" title={`${pendingIncoming.length} incoming handover${pendingIncoming.length === 1 ? '' : 's'}`} /> : null}
           <button type="button" onClick={openCompose}
-            className="ml-auto inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11.5px] font-semibold bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white">
+            className="ml-auto inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11.5px] font-semibold bg-[var(--color-primary-dark)] hover:bg-[#1a5667] text-white">
             <Send className="h-3 w-3" /> Compose handover
           </button>
         </div>
@@ -220,7 +220,7 @@ export function CareTeamPresenceCard({ ward = "Cardiac Care", department, classN
               <Wand2 className="h-3 w-3" /> Regenerate
             </button>
             <button type="button" onClick={sign} disabled={sbarText.trim().length < 30}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11.5px] font-semibold bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white disabled:opacity-50">
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11.5px] font-semibold bg-[var(--color-primary-dark)] hover:bg-[#1a5667] text-white disabled:opacity-50">
               <Send className="h-3 w-3" /> Sign & send
             </button>
           </div>

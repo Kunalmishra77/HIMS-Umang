@@ -128,7 +128,7 @@ export function HitlReviewCard<T>({
               <button
                 onClick={handleModify}
                 title={shadowMode ? 'Actions disabled in Shadow Mode' : undefined}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white text-sm font-semibold rounded-lg transition-colors"
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-[var(--color-primary-dark)] hover:bg-[#1a5667] text-white text-sm font-semibold rounded-lg transition-colors"
               >
                 <Edit3 className="h-4 w-4" /> Modify
               </button>

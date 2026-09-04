@@ -1494,7 +1494,7 @@ export default function DoctorDashboard() {
                 }}
                 className={cn(
                   "absolute right-2 top-2 h-7 w-7 rounded-full flex items-center justify-center transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-primary",
-                  refListening ? "bg-primary text-white animate-pulse" : "bg-accent-soft text-accent hover:brightness-95"
+                  refListening ? "bg-primary-dark text-white animate-pulse" : "bg-accent-soft text-accent hover:brightness-95"
                 )}
               >
                 <Mic className="h-3.5 w-3.5" aria-hidden="true" />

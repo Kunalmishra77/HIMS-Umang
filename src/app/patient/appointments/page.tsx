@@ -85,7 +85,7 @@ function MiniCalendar({ selected, onSelect }: { selected: Date; onSelect: (d: Da
               className={cn(
                 "w-8 h-8 mx-auto rounded-full text-xs font-medium transition-all cursor-pointer",
                 isPast ? "text-slate-300 cursor-not-allowed" :
-                isSelected ? "bg-[var(--color-primary)] text-white font-bold" :
+                isSelected ? "bg-[var(--color-primary-dark)] text-white font-bold" :
                 isToday ? "text-[var(--color-accent)] font-bold ring-1 ring-primary/25" :
                 "text-slate-700 hover:bg-slate-100"
               )}
@@ -166,7 +166,7 @@ export default function PatientAppointments() {
               {['doctor', 'date', 'confirm'].map((s, i) => (
                 <div key={s} className="flex items-center gap-2">
                   <div className={cn("h-7 w-7 rounded-full flex items-center justify-center text-xs font-bold",
-                    step === s ? "bg-[var(--color-primary)] text-white" :
+                    step === s ? "bg-[var(--color-primary-dark)] text-white" :
                     ['doctor', 'date', 'confirm'].indexOf(step) > i ? "bg-green-500 text-white" : "bg-slate-200 text-slate-500"
                   )}>
                     {['doctor', 'date', 'confirm'].indexOf(step) > i ? '✓' : i + 1}
@@ -184,7 +184,7 @@ export default function PatientAppointments() {
                   {SPECIALTIES.map(s => (
                     <button key={s} onClick={() => setSpecialty(s)}
                       className={cn("text-sm font-semibold px-3 py-1.5 rounded-lg border transition-all cursor-pointer",
-                        specialty === s ? "bg-[var(--color-primary)] text-white border-[var(--color-primary)]" : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50"
+                        specialty === s ? "bg-[var(--color-primary-dark)] text-white border-[var(--color-primary)]" : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50"
                       )}>
                       {s === 'All' ? t('appointments.specialtyAll') : s}
                     </button>
@@ -245,7 +245,7 @@ export default function PatientAppointments() {
                           key={slot}
                           onClick={() => setSelectedSlot(slot)}
                           className={cn("px-4 py-2 rounded-xl border text-sm font-semibold transition-all cursor-pointer",
-                            selectedSlot === slot ? "bg-[var(--color-primary)] text-white border-[var(--color-primary)]" : "bg-white border-slate-200 text-slate-700 hover:border-[rgba(30,151,178,0.30)]"
+                            selectedSlot === slot ? "bg-[var(--color-primary-dark)] text-white border-[var(--color-primary)]" : "bg-white border-slate-200 text-slate-700 hover:border-[rgba(30,151,178,0.30)]"
                           )}
                         >
                           {slot}

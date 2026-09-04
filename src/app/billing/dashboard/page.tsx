@@ -183,7 +183,7 @@ export default function BillingDashboard() {
                       </button>
                     )}
                     <Link href={`/billing/patient/${bill.patientId}`}>
-                      <button className="px-4 py-2 rounded-xl bg-[var(--color-primary)] text-white text-sm font-bold hover:bg-[var(--color-primary-dark)] transition-colors cursor-pointer">
+                      <button className="px-4 py-2 rounded-xl bg-[var(--color-primary-dark)] text-white text-sm font-bold hover:bg-[#1a5667] transition-colors cursor-pointer">
                         View Bill
                       </button>
                     </Link>

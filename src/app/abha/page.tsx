@@ -449,7 +449,7 @@ export default function AbhaSandboxPage() {
                       <div
                         className={`h-7 w-7 rounded-full flex items-center justify-center font-bold text-xs border transition-all ${
                           isCurrent
-                            ? "bg-primary text-white border-primary shadow"
+                            ? "bg-primary-dark text-white border-primary shadow"
                             : active
                             ? "bg-primary-soft text-accent border-primary/20"
                             : "bg-slate-50 text-slate-400 border-slate-200"

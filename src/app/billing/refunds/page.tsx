@@ -215,10 +215,10 @@ export default function BillingRefunds() {
                   </span>
                   <div className="flex gap-2 flex-wrap justify-end">
                     {r.status === 'pending' && canLeadApprove && (
-                      <button onClick={() => leadApprove(r)} className="px-3 py-1.5 text-xs font-bold bg-[var(--color-primary)] text-white rounded-lg hover:bg-[var(--color-primary-dark)]">Approve 1/2</button>
+                      <button onClick={() => leadApprove(r)} className="px-3 py-1.5 text-xs font-bold bg-[var(--color-primary-dark)] text-white rounded-lg hover:bg-[#1a5667]">Approve 1/2</button>
                     )}
                     {r.status === 'approved_lead' && canFinanceApprove && (
-                      <button onClick={() => financeApprove(r)} className="px-3 py-1.5 text-xs font-bold bg-[var(--color-primary)] text-white rounded-lg hover:bg-[var(--color-primary-dark)]">Authorise 2/2</button>
+                      <button onClick={() => financeApprove(r)} className="px-3 py-1.5 text-xs font-bold bg-[var(--color-primary-dark)] text-white rounded-lg hover:bg-[#1a5667]">Authorise 2/2</button>
                     )}
                     {(r.status === 'pending' || r.status === 'approved_lead') && (canLeadApprove || canFinanceApprove) && (
                       <button onClick={() => reject(r)} className="px-3 py-1.5 text-xs font-bold bg-red-50 text-red-700 rounded-lg hover:bg-red-100">Reject</button>

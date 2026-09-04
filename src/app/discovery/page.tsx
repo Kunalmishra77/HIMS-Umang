@@ -165,7 +165,7 @@ export default function DiscoveryPage() {
               key={tab}
               onClick={() => setActiveTab(tab)}
               className={cn("flex-1 py-2 rounded-lg text-sm font-semibold capitalize transition-all cursor-pointer",
-                activeTab === tab ? "bg-[var(--color-primary)] text-white shadow-sm" : "text-slate-500 hover:text-slate-700"
+                activeTab === tab ? "bg-[var(--color-primary-dark)] text-white shadow-sm" : "text-slate-500 hover:text-slate-700"
               )}
             >
               {t(`tabs.${tab}`)}
@@ -232,7 +232,7 @@ export default function DiscoveryPage() {
                             </span>
                           </div>
                           <Link href="/patient/appointments">
-                            <button className="text-xs font-bold bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white px-4 py-1.5 rounded-xl cursor-pointer transition-colors flex items-center gap-1">
+                            <button className="text-xs font-bold bg-[var(--color-primary-dark)] hover:bg-[#1a5667] text-white px-4 py-1.5 rounded-xl cursor-pointer transition-colors flex items-center gap-1">
                               {t('search.book')} <ChevronRight className="h-3.5 w-3.5" />
                             </button>
                           </Link>
@@ -330,7 +330,7 @@ export default function DiscoveryPage() {
                     key={vt}
                     onClick={() => setSelectedVisitType(vt)}
                     className={cn("text-sm font-semibold px-3 py-3 rounded-xl border cursor-pointer transition-all text-left",
-                      selectedVisitType === vt ? "bg-[var(--color-primary)] text-white border-[var(--color-primary)]" : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50"
+                      selectedVisitType === vt ? "bg-[var(--color-primary-dark)] text-white border-[var(--color-primary)]" : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50"
                     )}
                   >
                     {visitTypeLabel(vt)}

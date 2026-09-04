@@ -152,7 +152,7 @@ function ResultsTab({ results, onAck }: { results: ResultItem[]; onAck: (r: Resu
                 <p className="text-[11px] text-slate-400 mt-1">{r.patient}{r.at ? ` · ${timeOf(r.at)}` : ''}</p>
               </div>
             </div>
-            <button onClick={() => onAck(r)} className="flex-shrink-0 h-9 px-3 rounded-lg bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white text-[12px] font-bold flex items-center gap-1.5"><CheckCircle className="h-3.5 w-3.5" /> {t('inbox.signOff')}</button>
+            <button onClick={() => onAck(r)} className="flex-shrink-0 h-9 px-3 rounded-lg bg-[var(--color-primary-dark)] hover:bg-[#1a5667] text-white text-[12px] font-bold flex items-center gap-1.5"><CheckCircle className="h-3.5 w-3.5" /> {t('inbox.signOff')}</button>
           </div>
         )
       })}

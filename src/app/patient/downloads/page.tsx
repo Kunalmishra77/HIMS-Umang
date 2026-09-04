@@ -103,7 +103,7 @@ export default function DownloadsPage() {
               onClick={() => setFilter(f)}
               className={cn(
                 "text-[12.5px] font-semibold px-3.5 py-1.5 rounded-full transition-colors active:scale-95",
-                filter === f ? "bg-[var(--color-primary)] text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                filter === f ? "bg-[var(--color-primary-dark)] text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"
               )}
             >
               {f}
@@ -157,7 +157,7 @@ export default function DownloadsPage() {
                     <button
                       onClick={() => downloadDoc(d)}
                       aria-label={`Download ${d.name}`}
-                      className="h-9 px-3 rounded-xl bg-[var(--color-primary)] text-white text-[13px] font-semibold flex items-center gap-1.5 hover:bg-[var(--color-primary-dark)] active:scale-95 transition cursor-pointer"
+                      className="h-9 px-3 rounded-xl bg-[var(--color-primary-dark)] text-white text-[13px] font-semibold flex items-center gap-1.5 hover:bg-[#1a5667] active:scale-95 transition cursor-pointer"
                     >
                       <Download className="h-4 w-4" /> <span className="hidden sm:inline">Download</span>
                     </button>

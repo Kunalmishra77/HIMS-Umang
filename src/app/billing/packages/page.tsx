@@ -93,7 +93,7 @@ function PackageFormModal({ initial, onClose, onSave }: { initial: BillingPackag
         </div>
         <div className="flex gap-3 mt-5">
           <button onClick={onClose} className="flex-1 h-10 rounded-xl border border-slate-200 text-sm font-semibold text-slate-700 hover:bg-slate-50 cursor-pointer">Cancel</button>
-          <button onClick={submit} className="flex-1 h-10 rounded-xl bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white text-sm font-bold cursor-pointer inline-flex items-center justify-center gap-1.5">
+          <button onClick={submit} className="flex-1 h-10 rounded-xl bg-[var(--color-primary-dark)] hover:bg-[#1a5667] text-white text-sm font-bold cursor-pointer inline-flex items-center justify-center gap-1.5">
             <Save className="h-3.5 w-3.5" /> Save
           </button>
         </div>
@@ -137,7 +137,7 @@ export default function BillingPackages() {
           <p className="text-slate-500 text-sm mt-1">{packages.length} bundled packages — all-inclusive pricing</p>
         </div>
         <button onClick={() => setCreating(true)}
-          className="px-4 py-2 bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white text-sm font-bold rounded-xl inline-flex items-center gap-1.5 cursor-pointer">
+          className="px-4 py-2 bg-[var(--color-primary-dark)] hover:bg-[#1a5667] text-white text-sm font-bold rounded-xl inline-flex items-center gap-1.5 cursor-pointer">
           <Plus className="h-4 w-4" /> New Package
         </button>
       </div>

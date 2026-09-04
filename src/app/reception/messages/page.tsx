@@ -69,7 +69,7 @@ export default function ReceptionMessages() {
           <h1 className="text-[24px] font-bold text-slate-900 tracking-tight">{t('messages.pageTitle')}</h1>
           <p className="text-[13px] text-slate-500 mt-0.5">{t('messages.pageSubtitle')}</p>
         </div>
-        <button onClick={() => setCompose(true)} className="flex items-center gap-2 h-10 px-4 rounded-xl bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white text-[13.5px] font-bold shadow-sm active:scale-[0.98] transition">
+        <button onClick={() => setCompose(true)} className="flex items-center gap-2 h-10 px-4 rounded-xl bg-[var(--color-primary-dark)] hover:bg-[#1a5667] text-white text-[13.5px] font-bold shadow-sm active:scale-[0.98] transition">
           <Plus className="h-4 w-4" /> {t('messages.newMessage')}
         </button>
       </div>
@@ -133,7 +133,7 @@ export default function ReceptionMessages() {
                     const ai = m.from === 'ai'
                     return (
                       <div key={m.id} className={cn("flex", mine ? "justify-end" : "justify-start")}>
-                        <div className={cn("max-w-[75%] rounded-2xl px-3.5 py-2", mine ? "bg-[var(--color-primary)] text-white" : ai ? "bg-[rgba(30,151,178,0.07)] text-[var(--color-primary-dark)] border border-[rgba(30,151,178,0.15)]" : "bg-white text-slate-800 border border-slate-100")}>
+                        <div className={cn("max-w-[75%] rounded-2xl px-3.5 py-2", mine ? "bg-[var(--color-primary-dark)] text-white" : ai ? "bg-[rgba(30,151,178,0.07)] text-[var(--color-primary-dark)] border border-[rgba(30,151,178,0.15)]" : "bg-white text-slate-800 border border-slate-100")}>
                           {!mine && <p className="text-[10px] font-bold mb-0.5 flex items-center gap-1 opacity-70">{ai ? <><Bot className="h-3 w-3" /> {t('messages.aiAssistant')}</> : <><User className="h-3 w-3" /> {t('messages.patient')}</>}</p>}
                           <p className="text-[13px] leading-snug">{m.text}</p>
                         </div>
@@ -145,7 +145,7 @@ export default function ReceptionMessages() {
                 <div className="p-3 border-t border-slate-100 flex items-center gap-2">
                   <input value={reply} onChange={e => setReply(e.target.value)} onKeyDown={e => { if (e.key === 'Enter') sendReply() }}
                     placeholder={t('messages.replyPlaceholder')} className="flex-1 h-10 px-3.5 rounded-xl bg-slate-50 border border-slate-200 text-[14px] text-slate-800 outline-none focus:border-[rgba(30,151,178,0.30)] focus:ring-2 focus:ring-primary/20" />
-                  <button onClick={sendReply} disabled={!reply.trim()} aria-label={t('messages.send')} className="h-10 w-10 rounded-xl bg-[var(--color-primary)] disabled:bg-slate-200 text-white flex items-center justify-center active:scale-95 transition"><Send className="h-4 w-4" /></button>
+                  <button onClick={sendReply} disabled={!reply.trim()} aria-label={t('messages.send')} className="h-10 w-10 rounded-xl bg-[var(--color-primary-dark)] disabled:bg-slate-200 text-white flex items-center justify-center active:scale-95 transition"><Send className="h-4 w-4" /></button>
                 </div>
               </>
             ) : <div className="flex-1 flex items-center justify-center text-[13px] text-slate-400">{t('messages.selectConversation')}</div>}
@@ -208,7 +208,7 @@ export default function ReceptionMessages() {
               </div>
               <div className="flex gap-3 mt-6">
                 <button onClick={() => setCompose(false)} className="flex-1 h-11 rounded-xl border border-slate-200 text-slate-700 font-bold text-[13.5px] hover:bg-slate-50">{t('common.cancel')}</button>
-                <button onClick={sendInternal} className="flex-1 h-11 rounded-xl bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white font-bold text-[13.5px] flex items-center justify-center gap-2"><Send className="h-4 w-4" /> {t('messages.send')}</button>
+                <button onClick={sendInternal} className="flex-1 h-11 rounded-xl bg-[var(--color-primary-dark)] hover:bg-[#1a5667] text-white font-bold text-[13.5px] flex items-center justify-center gap-2"><Send className="h-4 w-4" /> {t('messages.send')}</button>
               </div>
             </motion.div>
           </motion.div>

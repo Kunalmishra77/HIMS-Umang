@@ -239,7 +239,7 @@ function FeedbackForm({ request, onSubmitted }: { request: FeedbackRequest; onSu
       <button
         type="submit"
         disabled={submitting || !overallRating}
-        className="w-full h-12 rounded-xl bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] active:scale-[0.98] text-white font-bold flex items-center justify-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full h-12 rounded-xl bg-[var(--color-primary-dark)] hover:bg-[#1a5667] active:scale-[0.98] text-white font-bold flex items-center justify-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {submitting ? 'Submitting…' : <><CheckCircle className="h-4 w-4" /> Submit Feedback</>}
       </button>
@@ -297,7 +297,7 @@ export default function PatientFeedbackPage() {
                 </div>
                 <button
                   onClick={() => setActiveFormId(activeFormId === req.id ? null : req.id)}
-                  className="ml-4 h-9 px-4 rounded-xl bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white text-xs font-bold flex items-center gap-1.5 flex-shrink-0 transition-colors cursor-pointer"
+                  className="ml-4 h-9 px-4 rounded-xl bg-[var(--color-primary-dark)] hover:bg-[#1a5667] text-white text-xs font-bold flex items-center gap-1.5 flex-shrink-0 transition-colors cursor-pointer"
                 >
                   {activeFormId === req.id ? <><ChevronUp className="h-3.5 w-3.5" /> Close</> : <><Star className="h-3.5 w-3.5" /> Give Feedback</>}
                 </button>

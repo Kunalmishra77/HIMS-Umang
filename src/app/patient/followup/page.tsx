@@ -104,7 +104,7 @@ export default function FollowUpPage() {
             />
             <button
               onClick={() => { if (!followupDate) { toast.error('Please pick a date'); return } setBooked(true); toast.success('Follow-up booked', { description: `${doctor} on ${new Date(followupDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}` }) }}
-              className="bg-[var(--color-primary)] text-white font-bold text-[14px] rounded-xl px-4 flex items-center gap-2 active:scale-[0.97] transition"
+              className="bg-[var(--color-primary-dark)] text-white font-bold text-[14px] rounded-xl px-4 flex items-center gap-2 active:scale-[0.97] transition"
             >
               <Calendar className="h-4 w-4" /> Book
             </button>

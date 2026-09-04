@@ -193,7 +193,7 @@ export function AiHealthSummaryCard({ className }: { className?: string }) {
               <RefreshCw className="h-3 w-3" /> Try another wording
             </button>
             <button type="button" onClick={accept}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11.5px] font-semibold bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white">
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11.5px] font-semibold bg-[var(--color-primary-dark)] hover:bg-[#1a5667] text-white">
               <Check className="h-3 w-3" /> Looks right
             </button>
           </>

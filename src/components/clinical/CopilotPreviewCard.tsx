@@ -98,7 +98,7 @@ export function CopilotPreviewCard({ intent, onAccept, onReject }: Props) {
           type="button"
           onClick={handleAccept}
           disabled={lowConf && intent.action === "unknown"}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11.5px] font-semibold bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white disabled:opacity-50 disabled:cursor-not-allowed"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11.5px] font-semibold bg-[var(--color-primary-dark)] hover:bg-[#1a5667] text-white disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <Check className="h-3 w-3" /> Run
         </button>

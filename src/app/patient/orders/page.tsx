@@ -255,7 +255,7 @@ export default function DoctorOrdersPage() {
               <p className="text-[22px] font-bold leading-tight tabular-nums">₹{total}</p>
             </div>
             <button onClick={openPay} disabled={total <= 0}
-              className="bg-[var(--color-primary)] disabled:bg-white/10 disabled:text-slate-400 text-white font-bold text-[14.5px] rounded-xl px-5 py-3 flex items-center gap-2 active:scale-[0.97] transition shadow-[0_8px_20px_rgba(30,151,178,0.25)]">
+              className="bg-[var(--color-primary-dark)] disabled:bg-white/10 disabled:text-slate-400 text-white font-bold text-[14.5px] rounded-xl px-5 py-3 flex items-center gap-2 active:scale-[0.97] transition shadow-[0_8px_20px_rgba(30,151,178,0.25)]">
               <CreditCard className="h-4.5 w-4.5" /> Pay ₹{total} <ArrowRight className="h-4 w-4" />
             </button>
           </div>

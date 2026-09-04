@@ -224,10 +224,10 @@ export default function WaitingRoomPage() {
 
       {/* Mode Tab */}
       <div className="flex gap-1 bg-white rounded-xl border border-slate-200 p-1">
-        <button onClick={() => setViewMode('opd')} className={cn("flex-1 py-2 rounded-lg text-sm font-semibold transition-all cursor-pointer", viewMode === 'opd' ? "bg-[var(--color-primary)] text-white shadow-sm" : "text-slate-500 hover:text-slate-700")}>
+        <button onClick={() => setViewMode('opd')} className={cn("flex-1 py-2 rounded-lg text-sm font-semibold transition-all cursor-pointer", viewMode === 'opd' ? "bg-[var(--color-primary-dark)] text-white shadow-sm" : "text-slate-500 hover:text-slate-700")}>
           OPD Queue Status
         </button>
-        <button onClick={() => setViewMode('ipd')} className={cn("flex-1 py-2 rounded-lg text-sm font-semibold transition-all cursor-pointer", viewMode === 'ipd' ? "bg-[var(--color-primary)] text-white shadow-sm" : "text-slate-500 hover:text-slate-700")}>
+        <button onClick={() => setViewMode('ipd')} className={cn("flex-1 py-2 rounded-lg text-sm font-semibold transition-all cursor-pointer", viewMode === 'ipd' ? "bg-[var(--color-primary-dark)] text-white shadow-sm" : "text-slate-500 hover:text-slate-700")}>
           IPD Patient Tracker
         </button>
       </div>

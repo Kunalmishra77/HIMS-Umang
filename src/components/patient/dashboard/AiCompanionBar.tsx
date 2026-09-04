@@ -43,14 +43,14 @@ export function AiCompanionBar() {
           className="intake-input flex-1 bg-transparent border-none text-[15px] text-slate-900 placeholder:text-slate-400"
         />
         <button aria-label="Speak" className="h-8 w-8 rounded-full flex items-center justify-center text-slate-400 hover:text-[var(--color-accent)] hover:bg-[rgba(30,151,178,0.10)] transition-colors"><Mic className="h-4.5 w-4.5" /></button>
-        <button aria-label="Send" className="h-8 w-8 rounded-full bg-[var(--color-primary)] text-white flex items-center justify-center active:scale-95 transition-transform"><ArrowUp className="h-4.5 w-4.5" /></button>
+        <button aria-label="Send" className="h-8 w-8 rounded-full bg-[var(--color-primary-dark)] text-white flex items-center justify-center active:scale-95 transition-transform"><ArrowUp className="h-4.5 w-4.5" /></button>
       </div>
 
       <div className="mt-3 flex flex-wrap gap-2">
         {SUGGESTIONS.map((s, i) => (
           <button key={s.q} onClick={() => setActive(active === i ? null : i)}
             className={cn("text-[13px] font-medium px-3 py-1.5 rounded-full border transition-all active:scale-95",
-              active === i ? "bg-[var(--color-primary)] border-[var(--color-primary)] text-white" : "bg-white border-slate-200 text-slate-600 hover:border-[rgba(30,151,178,0.30)]")}>
+              active === i ? "bg-[var(--color-primary-dark)] border-[var(--color-primary)] text-white" : "bg-white border-slate-200 text-slate-600 hover:border-[rgba(30,151,178,0.30)]")}>
             {s.q}
           </button>
         ))}

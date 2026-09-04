@@ -103,7 +103,7 @@ export function LandingNav() {
           </button>
           <button
             onClick={() => scrollToSection("#launcher")}
-            className="inline-flex items-center h-9 px-4 rounded-full text-[13px] font-semibold text-white bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] transition-colors cursor-pointer"
+            className="inline-flex items-center h-9 px-4 rounded-full text-[13px] font-semibold text-white bg-[var(--color-primary-dark)] hover:bg-[#1a5667] transition-colors cursor-pointer"
           >
             {t("cta.launchConsole")}
           </button>

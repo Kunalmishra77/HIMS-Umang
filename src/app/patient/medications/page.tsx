@@ -73,7 +73,7 @@ export default function MedicationsPage() {
               {m.refillSoon && (
                 <button
                   onClick={() => requestReorder(m.name, m.daysLeft)}
-                  className="text-[13px] font-semibold text-white bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] px-3.5 py-2 rounded-xl flex items-center gap-1.5 active:scale-95 transition-transform cursor-pointer">
+                  className="text-[13px] font-semibold text-white bg-[var(--color-primary-dark)] hover:bg-[#1a5667] px-3.5 py-2 rounded-xl flex items-center gap-1.5 active:scale-95 transition-transform cursor-pointer">
                   <RefreshCw className="h-4 w-4" /> Reorder
                 </button>
               )}

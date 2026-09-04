@@ -168,7 +168,7 @@ function BookingPanel({
         {DAYS.map((d, i) => (
           <button key={d.key} onClick={() => setDayIdx(i)}
             className={cn("px-3 py-2 rounded-xl text-center transition-all active:scale-[0.97]",
-              dayIdx === i ? "bg-[var(--color-primary)] text-white" : "bg-slate-100 text-slate-700")}>
+              dayIdx === i ? "bg-[var(--color-primary-dark)] text-white" : "bg-slate-100 text-slate-700")}>
             <span className="block text-[12.5px] font-bold leading-none">{d.label}</span>
             <span className={cn("block text-[10.5px] mt-0.5", dayIdx === i ? "text-white/80" : "text-slate-400")}>{d.sub}</span>
           </button>
@@ -181,14 +181,14 @@ function BookingPanel({
         {SLOTS.map(s => (
           <button key={s} onClick={() => setSlot(s)}
             className={cn("px-3 py-1.5 rounded-xl text-[12.5px] font-semibold transition-all active:scale-[0.97]",
-              slot === s ? "bg-[var(--color-primary)] text-white" : "bg-slate-100 text-slate-700")}>
+              slot === s ? "bg-[var(--color-primary-dark)] text-white" : "bg-slate-100 text-slate-700")}>
             {s}
           </button>
         ))}
       </div>
 
       <button onClick={confirm}
-        className="w-full text-[14px] font-semibold text-white bg-[var(--color-primary)] px-4 py-3 rounded-xl flex items-center justify-center gap-2 active:scale-[0.97] transition-transform">
+        className="w-full text-[14px] font-semibold text-white bg-[var(--color-primary-dark)] px-4 py-3 rounded-xl flex items-center justify-center gap-2 active:scale-[0.97] transition-transform">
         <CheckCircle className="h-4.5 w-4.5" /> {isReschedule ? "Confirm reschedule" : <>Confirm booking · <IndianRupee className="h-3.5 w-3.5 -ml-1" />{doc.fee}</>}
       </button>
     </div>
@@ -273,7 +273,7 @@ export default function ConsultationsPage() {
         </div>
         <button
           onClick={() => { setRescheduleId(null); setBooking(b => !b) }}
-          className="text-[13px] font-semibold text-white bg-[var(--color-primary)] px-3.5 py-2.5 rounded-xl flex items-center gap-1.5 active:scale-[0.97] transition-transform flex-shrink-0"
+          className="text-[13px] font-semibold text-white bg-[var(--color-primary-dark)] px-3.5 py-2.5 rounded-xl flex items-center gap-1.5 active:scale-[0.97] transition-transform flex-shrink-0"
         >
           <Plus className="h-4 w-4" /> Book new
         </button>
