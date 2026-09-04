@@ -44,7 +44,7 @@ const CAT_LABELS: Record<keyof FeedbackCategoryRatings, { label: string; low: st
 }
 
 const NPS_COLORS = [
-  '#EF4444','#EF4444','#1E97B2','#1E97B2','#1E97B2',
+  '#EF4444','#EF4444','#F97316','#F97316','#F97316',
   '#EAB308','#EAB308','#22C55E','#22C55E','#22C55E','#16A34A',
 ]
 

@@ -76,7 +76,7 @@ export function ReviewStep({ form, onEdit }: { form: IntakeForm; onEdit: (id: St
       </div>
 
       <div className={cn("flex items-center justify-between px-4 py-2.5 rounded-[14px]",
-        triage.variant === 'danger' ? 'bg-red-50' : triage.variant === 'warning' ? 'bg-amber-50' : triage.variant === 'orange' ? 'bg-primary-soft' : 'bg-green-50')}>
+        triage.variant === 'danger' ? 'bg-red-50' : triage.variant === 'warning' ? 'bg-amber-50' : triage.variant === 'orange' ? 'bg-[var(--color-urgent-bg)]' : 'bg-green-50')}>
         <span className="flex items-center gap-2.5">
           <AlertTriangle className={cn("h-5 w-5", triage.color)} aria-hidden="true" />
           <span className="text-[14px] font-bold text-slate-900">AI Priority Match</span>
@@ -100,7 +100,7 @@ export function SuccessStep({ form, token, familyToken, wait, uhid, patientId, a
   const router = useRouter()
   const isVideo = form.consultationType === 'video'
   const triage = effectiveTriage(form)
-  const dotColor = triage.variant === 'danger' ? '#DC2626' : triage.variant === 'warning' ? '#D97706' : triage.variant === 'orange' ? '#196b7e' : '#16A34A'
+  const dotColor = triage.variant === 'danger' ? '#DC2626' : triage.variant === 'warning' ? '#D97706' : triage.variant === 'orange' ? 'var(--color-urgent)' : '#16A34A'
   const paidLabel = form.payer === 'cashless' ? `Cashless · ${form.insurer || 'insurance'}` : `Paid ₹${consultFee(form)}${form.payMethod === 'counter' ? ' · at counter' : ''}`
   const first = form.name ? form.name.split(' ')[0] : ''
   const firstComma = first ? `, ${first}` : ''   // for inline "All set, Name" copy
