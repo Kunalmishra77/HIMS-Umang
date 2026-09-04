@@ -7,25 +7,49 @@
   --font-body:    "Inter", "SF Pro Display", "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
   --font-heading: "Inter", "SF Pro Display", "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
 
-  /* Brand Colors — Umang Hospital orange (logo `#EE6B26`) + navy (`#0D2032`).
-     Unlike the old teal, no single orange is AA both as white-on-fill AND as
-     text-on-white, so brand orange is split: `--color-primary` is the exact
-     logo orange used for FILLS (buttons/active/focus), always paired with navy
-     `--color-on-primary` text (~6:1). `--color-accent` is the AA-safe deep
-     orange (~4.6:1 on white) for LINK/emphasis text and small icons on white.
-     `primary-dark` is the hover/press lift; `primary-light` is a soft tint. */
-  --color-primary: #EE6B26;          /* logo orange — fills / active / focus ring (navy text on it) */
-  --color-primary-light: #F58C4E;    /* light vivid orange — tints / accents */
-  --color-primary-dark: #C2481A;     /* deep orange — CTA hover / active / press */
-  --color-primary-soft: rgba(238, 107, 38, 0.07);
-  --color-on-primary: #0D2032;       /* navy ink for text/icons on orange fills */
-  --color-accent: #B84A16;           /* AA-safe orange — links, emphasis text on white */
-  --color-accent-soft: rgba(238, 107, 38, 0.10);
-  /* Brand amber — warm highlight accent. Energy/highlight only: fills, icons,
-     underlines. NEVER body text on white (amber on white fails AA). */
+  /* Brand Colors — Umang Hospital website palette: teal `#1E97B2` (primary)
+     + orange `#FFA600` (accent), matching D:\Agentix Project\Umang2.0.
+     No single teal is AA both as white-on-fill AND as text-on-white, so the
+     brand teal is split — the same discipline the retired orange used.
+     `--color-primary` is the exact brand teal, used for FILLS, always paired
+     with navy `--color-on-primary` text (5.2:1). `--color-primary-dark` is the
+     one dark enough for WHITE text (6.1:1) — CTA hover/press and text-bearing
+     fills. `--color-accent` is AA-safe on white (5.9:1) for link/emphasis text.
+     Ratios asserted in src/app/__tests__/theme-contrast.test.ts. */
+  --color-primary: #1E97B2;          /* brand teal — fills / active / focus ring (navy text on it) */
+  --color-primary-light: #6acdd9;    /* light teal — tints / accents */
+  --color-primary-dark: #196b7e;     /* deep teal — CTA hover / active / press, white text safe */
+  --color-primary-soft: rgba(30, 151, 178, 0.07);
+  --color-on-primary: #0D2032;       /* navy ink for text/icons on teal fills */
+  --color-accent: #955408;           /* AA-safe deep orange — links, emphasis text on white */
+  --color-accent-soft: rgba(255, 166, 0, 0.10);
+  /* Brand orange — the website's accent. Energy/highlight ONLY: fills, icons,
+     underlines. NEVER body text on white (1.96:1, fails AA). NEVER on a triage
+     chip, NEWS2 score or critical-value banner — brand colour must not read as
+     a clinical severity. */
+  --color-brand-orange: #FFA600;
+  --color-brand-orange-strong: #e09000;
+  --color-brand-orange-soft: rgba(255, 166, 0, 0.12);
+  /* Clinical amber — FROZEN. Severity semantics, deliberately distinct from
+     the brand orange above. */
   --color-brand-amber: #F59E0B;
   --color-brand-amber-strong: #D97706;
   --color-brand-amber-soft: rgba(245, 158, 11, 0.12);
+
+  /* Website ramps (Umang2.0 frontend/tailwind.config.js) — available for new
+     work; existing components use the semantic tokens above. */
+  --color-primary-50: #f0fbfc;   --color-primary-500: #1E97B2;
+  --color-primary-100: #d4f1f5;  --color-primary-600: #1a8299;
+  --color-primary-200: #a8e3ec;  --color-primary-700: #196b7e;
+  --color-primary-300: #6acdd9;  --color-primary-800: #1a5667;
+  --color-primary-400: #35b3c4;  --color-primary-900: #1b4856;
+  --color-primary-950: #0d2f3a;
+  --color-accent-50: #fffbeb;    --color-accent-500: #FFA600;
+  --color-accent-100: #fff3c6;   --color-accent-600: #e09000;
+  --color-accent-200: #ffe588;   --color-accent-700: #b86d02;
+  --color-accent-300: #ffd24a;   --color-accent-800: #955408;
+  --color-accent-400: #ffbf20;   --color-accent-900: #7b440b;
+  --color-accent-950: #472300;
   /* Clinical-green — semantic positive/"stable" accent only (healthy vitals,
      upward deltas). Kept distinct from `--color-success` so they never collide. */
   --color-brand-green: #16A34A;
@@ -37,11 +61,11 @@
   --color-secondary-light: #1B3A57;
 
   /* Gradients — restrained: orange for brand fills, navy for hero depth */
-  --gradient-primary: linear-gradient(135deg, #C2481A 0%, #EE6B26 100%);
+  --gradient-primary: linear-gradient(135deg, #196b7e 0%, #1E97B2 100%);
   --gradient-surface: linear-gradient(180deg, #FFFFFF 0%, #F6F9FC 100%);
   --gradient-sidebar: linear-gradient(180deg, #FFFFFF 0%, #FFFFFF 100%);
   --gradient-hero: linear-gradient(155deg, #0D2032 0%, #16324A 55%, #0D2032 100%);
-  --gradient-card-hover: linear-gradient(135deg, rgba(238,107,38,0.03) 0%, rgba(238,107,38,0.03) 100%);
+  --gradient-card-hover: linear-gradient(135deg, rgba(30,151,178,0.03) 0%, rgba(30,151,178,0.03) 100%);
 
   /* Surfaces — Stripe canvas ramp: crisp white cards on cool off-white */
   --color-background: #F6F9FC;
@@ -78,7 +102,7 @@
   --color-border-light: #EDF2F7;
   --color-border-strong: #D5DCE5;    /* table dividers, active edges */
   --color-border-hover: #A8C3DE;
-  --color-border-focus: #EE6B26;
+  --color-border-focus: #1E97B2;
 
   /* Status — PU semantic colors */
   --color-success: #16A34A;
@@ -113,9 +137,9 @@
   --shadow-2xl:        0 16px 32px rgba(13,37,61,0.08), 0 32px 64px rgba(13,37,61,0.16);
   --shadow-card:       0 1px 2px rgba(13,37,61,0.06), 0 1px 1px rgba(13,37,61,0.04);
   --shadow-card-hover: 0 2px 4px rgba(13,37,61,0.05), 0 4px 12px rgba(13,37,61,0.07);
-  --shadow-elevated:   0 4px 8px rgba(238,107,38,0.06), 0 12px 28px rgba(238,107,38,0.10);
-  --shadow-glow:       0 0 0 4px rgba(238, 107, 38, 0.18);
-  --shadow-glow-sm:    0 0 0 3px rgba(238, 107, 38, 0.14);
+  --shadow-elevated:   0 4px 8px rgba(30,151,178,0.06), 0 12px 28px rgba(30,151,178,0.10);
+  --shadow-glow:       0 0 0 4px rgba(30, 151, 178, 0.18);
+  --shadow-glow-sm:    0 0 0 3px rgba(30, 151, 178, 0.14);
   --shadow-focus:      0 0 0 2px var(--color-surface), 0 0 0 4px var(--color-primary);
   --shadow-sidebar:    1px 0 0 rgba(16,24,40,0.06);
   --shadow-header:     0 1px 0 rgba(16,24,40,0.06);
