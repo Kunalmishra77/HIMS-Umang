@@ -128,7 +128,7 @@ export function IntakeFlow() {
           <div aria-hidden className="pointer-events-none absolute -bottom-16 -left-12 h-80 w-80 rounded-full opacity-50 blur-3xl" style={{ background: 'radial-gradient(circle, rgba(30,151,178,0.12), transparent 70%)' }} />
 
           <div className="relative z-10 flex flex-col items-center justify-center text-center -mt-12">
-            <div className="h-24 w-24 rounded-[32px] flex items-center justify-center shadow-[0_16px_40px_rgba(30,151,178,0.35)]" style={{ background: 'radial-gradient(circle at 32% 28%, #FBD5BC 0%, #F7B98E 40%, #1E97B2 100%)' }}>
+            <div className="h-24 w-24 rounded-[32px] flex items-center justify-center shadow-[0_16px_40px_rgba(30,151,178,0.35)]" style={{ background: 'radial-gradient(circle at 32% 28%, #d4f1f5 0%, #6acdd9 40%, #1E97B2 100%)' }}>
               <HeartPulse className="h-11 w-11 text-white" aria-hidden="true" />
             </div>
             <h1 className="text-[32px] font-bold text-slate-900 tracking-tight leading-tight mt-8 whitespace-pre-line">{t('welcome.title')}</h1>

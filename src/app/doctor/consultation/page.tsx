@@ -108,7 +108,7 @@ export default function DoctorConsultation() {
         <Stethoscope className="h-10 w-10 text-slate-300 mx-auto mb-3" />
         <p className="text-[15px] font-semibold text-slate-700">No active patient.</p>
         <p className="text-[12.5px] text-slate-500 mt-1">Pick a patient from the queue to start a consultation.</p>
-        <button onClick={() => router.push('/doctor/dashboard')} className="mt-4 inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#196b7e] hover:bg-[#9A3A14] text-white text-[12.5px] font-semibold cursor-pointer">
+        <button onClick={() => router.push('/doctor/dashboard')} className="mt-4 inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#196b7e] hover:bg-[#1a5667] text-white text-[12.5px] font-semibold cursor-pointer">
           <ArrowLeft className="h-3.5 w-3.5" /> Back to dashboard
         </button>
       </div>
@@ -400,7 +400,7 @@ export default function DoctorConsultation() {
               <span className={cn(
                 "text-[10.5px] font-bold px-2 py-0.5 rounded-full border",
                 active.triageLevel === 'Critical' ? 'bg-red-50 text-red-700 border-red-200' :
-                active.triageLevel === 'High'     ? 'bg-primary-soft text-accent border-primary/20' :
+                active.triageLevel === 'High'     ? 'bg-urgent-bg text-urgent border-urgent/20' :
                 active.triageLevel === 'Medium'   ? 'bg-amber-50 text-amber-700 border-amber-200' :
                                                     'bg-emerald-50 text-emerald-700 border-emerald-200'
               )}>
@@ -500,7 +500,7 @@ export default function DoctorConsultation() {
                 className="w-full px-3 py-2 rounded-lg ring-1 ring-slate-200 bg-white text-[13px] focus:outline-none focus:ring-[#1E97B2] resize-none" />
             </div>
           ))}
-          <button onClick={signNote} className="w-full mt-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#196b7e] hover:bg-[#9A3A14] text-white text-[13.5px] font-semibold cursor-pointer">
+          <button onClick={signNote} className="w-full mt-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#196b7e] hover:bg-[#1a5667] text-white text-[13.5px] font-semibold cursor-pointer">
             <Save className="h-4 w-4" /> Sign &amp; save SOAP
           </button>
         </div>
@@ -556,12 +556,12 @@ export default function DoctorConsultation() {
                 {imagingStudies.map(code => (
                   <span key={code} className="inline-flex items-center gap-1 text-[11px] font-medium text-[#955408] bg-white border border-[rgba(30,151,178,0.25)] rounded-full pl-2.5 pr-1.5 py-0.5">
                     {RADIOLOGY_CATALOG[code]?.name ?? code}
-                    <button onClick={() => removeImagingStudy(code)} aria-label={`Remove ${code}`} className="hover:text-[#9A3A14] cursor-pointer"><X className="h-3 w-3" /></button>
+                    <button onClick={() => removeImagingStudy(code)} aria-label={`Remove ${code}`} className="hover:text-[#1a5667] cursor-pointer"><X className="h-3 w-3" /></button>
                   </span>
                 ))}
               </div>
             )}
-            <button onClick={orderImaging} disabled={imagingStudies.length === 0} className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-[#196b7e] hover:bg-[#9A3A14] disabled:opacity-50 text-white text-[12.5px] font-semibold cursor-pointer">
+            <button onClick={orderImaging} disabled={imagingStudies.length === 0} className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-[#196b7e] hover:bg-[#1a5667] disabled:opacity-50 text-white text-[12.5px] font-semibold cursor-pointer">
               <Send className="h-3.5 w-3.5" /> Send {imagingStudies.length > 0 ? `${imagingStudies.length} ` : ''}to Radiology
             </button>
           </div>
@@ -619,7 +619,7 @@ export default function DoctorConsultation() {
           <Input value={medDraft.frequency} onChange={e => setMedDraft(d => ({ ...d, frequency: e.target.value }))} onKeyDown={e => { if (e.key === 'Enter') addMed() }} placeholder="Frequency" className="col-span-2 h-9 rounded-lg text-[12.5px]" />
           <Input value={medDraft.duration} onChange={e => setMedDraft(d => ({ ...d, duration: e.target.value }))} onKeyDown={e => { if (e.key === 'Enter') addMed() }} placeholder="Duration" className="col-span-2 h-9 rounded-lg text-[12.5px]" />
           <Input value={medDraft.quantity} onChange={e => setMedDraft(d => ({ ...d, quantity: e.target.value }))} onKeyDown={e => { if (e.key === 'Enter') addMed() }} placeholder="Qty" inputMode="numeric" className="col-span-1 h-9 rounded-lg text-[12.5px]" />
-          <button onClick={addMed} aria-label="Add medicine" className="col-span-1 h-9 rounded-lg bg-[#196b7e] hover:bg-[#9A3A14] text-white flex items-center justify-center cursor-pointer"><Plus className="h-4 w-4" /></button>
+          <button onClick={addMed} aria-label="Add medicine" className="col-span-1 h-9 rounded-lg bg-[#196b7e] hover:bg-[#1a5667] text-white flex items-center justify-center cursor-pointer"><Plus className="h-4 w-4" /></button>
         </div>
 
         {meds.length > 0 && (
@@ -651,7 +651,7 @@ export default function DoctorConsultation() {
         </div>
 
         <div className="flex gap-2 pt-1">
-          <button onClick={orderRx} className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#196b7e] hover:bg-[#9A3A14] text-white text-[13px] font-semibold cursor-pointer">
+          <button onClick={orderRx} className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#196b7e] hover:bg-[#1a5667] text-white text-[13px] font-semibold cursor-pointer">
             <Send className="h-4 w-4" /> Send Rx to pharmacy
           </button>
           <button onClick={printRx} className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-[13px] font-semibold cursor-pointer">

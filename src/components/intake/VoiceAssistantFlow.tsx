@@ -438,7 +438,7 @@ function Orb({ phase, reduce }: { phase: Phase; reduce: boolean }) {
       {listening && !reduce && [0, 1].map(i => (
         <motion.span
           key={i}
-          className="absolute h-[176px] w-[176px] rounded-full border-2 border-[#F7B98E]"
+          className="absolute h-[176px] w-[176px] rounded-full border-2 border-[#a8e3ec]"
           initial={{ scale: 0.85, opacity: 0.5 }}
           animate={{ scale: 1.45, opacity: 0 }}
           transition={{ duration: 2, repeat: Infinity, delay: i * 0.7, ease: 'easeOut' }}
@@ -447,7 +447,7 @@ function Orb({ phase, reduce }: { phase: Phase; reduce: boolean }) {
       <motion.div
         className="h-[176px] w-[176px] rounded-full"
         style={{
-          background: 'radial-gradient(circle at 32% 26%, #FDEADD 0%, #FBD5BC 22%, #F7B98E 46%, #1E97B2 72%, #196b7e 100%)',
+          background: 'radial-gradient(circle at 32% 26%, #f0fbfc 0%, #d4f1f5 22%, #a8e3ec 46%, #1E97B2 72%, #196b7e 100%)',
           boxShadow: '0 24px 60px rgba(30,151,178,0.42), inset 0 -16px 40px rgba(30,151,178,0.45)',
         }}
         animate={reduce ? {} : {
@@ -572,7 +572,7 @@ function VoiceReview({ form, lang, submitting, onUpdate, onEdit, onConfirm, onBa
           </div>
 
           <div className={cn("flex items-center justify-between px-4 py-3 rounded-[16px]",
-            triage.variant === 'danger' ? 'bg-red-50' : triage.variant === 'warning' ? 'bg-amber-50' : triage.variant === 'orange' ? 'bg-[var(--color-urgent-bg)]' : 'bg-green-50')}>
+            triage.variant === 'danger' ? 'bg-red-50' : triage.variant === 'warning' ? 'bg-amber-50' : triage.variant === 'orange' ? 'bg-urgent-bg' : 'bg-green-50')}>
             <span className="flex items-center gap-2.5">
               <AlertTriangle className={cn("h-5 w-5", triage.color)} aria-hidden="true" />
               <span className="text-[14px] font-bold text-slate-900">{t.urgency}</span>

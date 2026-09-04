@@ -23,7 +23,7 @@ const STATUS_TINT: Record<QueueStatus, string> = {
   billing: 'bg-primary-soft text-accent', done: 'bg-green-50 text-green-700',
 }
 const TRIAGE_TINT: Record<string, string> = {
-  Critical: 'bg-red-100 text-red-700', High: 'bg-accent-soft text-accent', Medium: 'bg-amber-100 text-amber-700', Low: 'bg-slate-100 text-slate-500',
+  Critical: 'bg-red-100 text-red-700', High: 'bg-urgent-bg text-urgent', Medium: 'bg-amber-100 text-amber-700', Low: 'bg-slate-100 text-slate-500',
 }
 const initials = (n: string) => n.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase()
 

@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils"
 const TRIAGE_RANK: Record<TriageLevel, number> = { Critical: 0, High: 1, Medium: 2, Low: 3 }
 const TRIAGE_TINT: Record<TriageLevel, string> = {
   Critical: 'bg-red-50 text-red-700',
-  High: 'bg-primary-soft text-accent',
+  High: 'bg-urgent-bg text-urgent',
   Medium: 'bg-amber-50 text-amber-700',
   Low: 'bg-green-50 text-green-700',
 }

@@ -34,7 +34,7 @@ const STATUS_TINT: Record<QueueStatus, string> = {
   billing: 'bg-primary-soft text-accent', done: 'bg-green-50 text-green-700',
 }
 const TRIAGE_TINT: Record<TriageLevel, string> = {
-  Critical: 'bg-red-50 text-red-700', High: 'bg-primary-soft text-accent', Medium: 'bg-amber-50 text-amber-700', Low: 'bg-green-50 text-green-700',
+  Critical: 'bg-red-50 text-red-700', High: 'bg-urgent-bg text-urgent', Medium: 'bg-amber-50 text-amber-700', Low: 'bg-green-50 text-green-700',
 }
 const NEXT_STATUS: Partial<Record<QueueStatus, { next: QueueStatus; labelKey: string }>> = {
   waiting: { next: 'vitals', labelKey: 'nextSendToVitals' }, vitals: { next: 'consulting', labelKey: 'nextSendToDoctor' },

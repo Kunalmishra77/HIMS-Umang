@@ -76,7 +76,7 @@ export function ReviewStep({ form, onEdit }: { form: IntakeForm; onEdit: (id: St
       </div>
 
       <div className={cn("flex items-center justify-between px-4 py-2.5 rounded-[14px]",
-        triage.variant === 'danger' ? 'bg-red-50' : triage.variant === 'warning' ? 'bg-amber-50' : triage.variant === 'orange' ? 'bg-[var(--color-urgent-bg)]' : 'bg-green-50')}>
+        triage.variant === 'danger' ? 'bg-red-50' : triage.variant === 'warning' ? 'bg-amber-50' : triage.variant === 'orange' ? 'bg-urgent-bg' : 'bg-green-50')}>
         <span className="flex items-center gap-2.5">
           <AlertTriangle className={cn("h-5 w-5", triage.color)} aria-hidden="true" />
           <span className="text-[14px] font-bold text-slate-900">AI Priority Match</span>

@@ -44,7 +44,7 @@ export function buildDocHtml(doc: PrintDoc): string {
   .sign .line{font-family:'Segoe Script',cursive;font-size:19px;color:#0f172a}
   .sign .name{font-size:11px;color:#64748b;border-top:1px solid #cbd5e1;display:inline-block;padding-top:4px;margin-top:6px}
   .foot{margin-top:24px;font-size:10px;color:#94a3b8;display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:1px solid #e2e8f0}
-  .foot-badge{font-size:10px;font-weight:700;color:#955408;background:#FFF3EC;border:1px solid #FBD5BC;padding:2px 8px;border-radius:20px}
+  .foot-badge{font-size:10px;font-weight:700;color:#955408;background:#F0FBFC;border:1px solid #A8E3EC;padding:2px 8px;border-radius:20px}
   @media print{body{background:white}.page{max-width:none;box-shadow:none}.doc-hdr{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
 </style></head>
 <body><div class="page">

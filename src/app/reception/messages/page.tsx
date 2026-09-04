@@ -28,7 +28,7 @@ const THREAD_STATUS: Record<string, string> = {
   active: 'bg-[rgba(30,151,178,0.07)] text-[var(--color-accent)]', escalated: 'bg-red-50 text-red-600', resolved: 'bg-green-50 text-green-700',
 }
 const PRIORITY_TINT: Record<string, string> = {
-  critical: 'bg-red-50 text-red-600', high: 'bg-primary-soft text-accent', medium: 'bg-amber-50 text-amber-700', low: 'bg-slate-100 text-slate-500',
+  critical: 'bg-red-50 text-red-600', high: 'bg-urgent-bg text-urgent', medium: 'bg-amber-50 text-amber-700', low: 'bg-slate-100 text-slate-500',
 }
 const RECIPIENTS = ['Doctor', 'Nurse', 'Billing', 'Admin'] as const
 

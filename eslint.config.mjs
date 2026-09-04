@@ -38,7 +38,7 @@ const eslintConfig = defineConfig([
     "build/**",
     "next-env.d.ts",
   ]),
-  // Lock in the Stripe-inspired token migration across app + components.
+  // Lock out both retired palettes across app + components.
   { files: ["src/**/*.{ts,tsx}"], ...noRetiredPalette },
   // A leading underscore is how this codebase marks a binding it must declare
   // but deliberately does not read — a positional store argument, a discarded

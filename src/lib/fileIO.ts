@@ -100,7 +100,7 @@ export function printableHtml(title: string, bodyHtml: string): void {
   thead th[style*="right"]{text-align:right}
   tbody td{padding:9px 10px;border-bottom:1px solid #f1f5f9;color:#1e293b;vertical-align:top;line-height:1.5}
   tbody tr:last-child td{border-bottom:none}
-  .total td,.total-row td{font-weight:700;font-size:14.5px;color:#0f172a;background:#FFF3EC;border-top:2px solid #1E97B2!important;border-bottom:none!important}
+  .total td,.total-row td{font-weight:700;font-size:14.5px;color:#0f172a;background:#F0FBFC;border-top:2px solid #1E97B2!important;border-bottom:none!important}
   td[style*="right"]{text-align:right}
 
   /* Paragraphs */
@@ -118,7 +118,7 @@ export function printableHtml(title: string, bodyHtml: string): void {
   /* ── Footer ── */
   .doc-ftr{margin-top:32px;padding-top:14px;border-top:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center}
   .doc-ftr-left{font-size:10px;color:#94a3b8;line-height:1.5}
-  .doc-ftr-badge{font-size:10px;font-weight:700;color:#955408;background:#FFF3EC;border:1px solid #FBD5BC;padding:3px 10px;border-radius:20px}
+  .doc-ftr-badge{font-size:10px;font-weight:700;color:#955408;background:#F0FBFC;border:1px solid #A8E3EC;padding:3px 10px;border-radius:20px}
 
   @media print{
     body{background:white}
