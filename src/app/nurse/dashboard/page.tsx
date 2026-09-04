@@ -28,6 +28,7 @@ import { SectionHeader } from "@/components/ui/SectionHeader"
 import { news2Token } from "@/lib/statusColors"
 import { cn } from "@/lib/utils"
 import { deriveUhid } from "@/lib/uhid"
+import { daysAgoIso, nowIso } from '@/lib/clock'
 import { motion, AnimatePresence } from "framer-motion"
 import { toast } from "sonner"
 import { useTranslations } from "next-intl"
@@ -111,8 +112,8 @@ export default function NurseDashboard() {
         patientName: patient.name,
         wardBed: patient.bedNumber,
         diagnosis: ip?.diagnosis ?? 'See medical record',
-        admittedOn: ip?.admittedAt ?? new Date(Date.now() - 2 * 24 * 3600000).toISOString(),
-        expectedDischarge: new Date().toISOString(),
+        admittedOn: ip?.admittedAt ?? daysAgoIso(2),
+        expectedDischarge: nowIso(),
         attendingDoctor: ip?.admittingDoctor ?? 'Dr. Priya Nair',
         payerType: 'General',
         condition: patient.condition === 'Discharging' ? 'Stable' : patient.condition === 'Critical' ? 'Critical' : 'Stable',

@@ -16,6 +16,7 @@ import { useAuthStore } from "@/store/useAuthStore"
 import { usePatientProfileStore } from "@/store/usePatientProfileStore"
 import { useAuditStore } from "@/store/useAuditStore"
 import { ReasoningChip } from "@/components/clinical/ReasoningChip"
+import { useNow } from '@/lib/useNow'
 
 const VARIANTS = [
   (sub: SummarySubs) =>
@@ -45,6 +46,8 @@ export function AiHealthSummaryCard({ className }: { className?: string }) {
   const profile     = usePatientProfileStore((s) => (currentUser?.id ? s.getProfile(currentUser.id) : undefined))
   const audit       = useAuditStore((s) => s.log)
   const entries     = useAuditStore((s) => s.entries)
+
+  const now = useNow()
 
   const [variantIdx, setVariantIdx] = useState(0)
   const [hidden, setHidden] = useState(false)
@@ -77,7 +80,7 @@ export function AiHealthSummaryCard({ className }: { className?: string }) {
       : `allergic to ${allergies.join(', ')}`
 
     // Recent activity from audit (last 24h, patient-scoped if we can match the user id).
-    const since = Date.now() - 24 * 3600 * 1000
+    const since = now - 24 * 3600 * 1000
     const myRecent = entries.filter((e) =>
       new Date(e.timestamp).getTime() >= since &&
       (e.userId === currentUser?.id || (e.resourceId ?? '').includes(currentUser?.id ?? '___'))
@@ -94,7 +97,7 @@ export function AiHealthSummaryCard({ className }: { className?: string }) {
       : `In the last 24h: ${parts.join(', ')} — see them under Doctor's orders.`
 
     return { firstName, conditionsLine, medsLine, medsCount: meds.length, allergyLine, allergyShort, recentLine }
-  }, [currentUser, profile, entries])
+  }, [currentUser, profile, entries, now])
 
   const summary = VARIANTS[variantIdx](subs)
 

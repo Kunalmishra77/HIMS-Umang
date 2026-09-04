@@ -382,7 +382,7 @@ export const DEPT_COLOR: Record<Department, string> = {
   Lab:       '#F59E0B',  // amber
   Radiology: '#9333EA',  // purple
   Pharmacy:  '#EC4899',  // pink
-  OT:        '#1976E6',  // blue
+  OT:        '#2563EB',  // blue
   IPD:       '#EE6B26',  // brand orange
   Discharge: '#059669',  // green
   Billing:   '#EAB308',  // yellow

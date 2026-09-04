@@ -35,6 +35,29 @@ const eslintConfig = defineConfig([
   ]),
   // Lock in the Stripe-inspired token migration across app + components.
   { files: ["src/**/*.{ts,tsx}"], ...noLegacyBlue },
+  // A leading underscore is how this codebase marks a binding it must declare
+  // but deliberately does not read — a positional store argument, a discarded
+  // destructured field, an interface-mandated parameter. Treat it as intent,
+  // not as dead code. `ignoreRestSiblings` does the same for `const { a, ...b }`.
+  {
+    files: ["src/**/*.{ts,tsx}"],
+    rules: {
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+          destructuredArrayIgnorePattern: "^_",
+          ignoreRestSiblings: true,
+        },
+      ],
+    },
+  },
+  // `app/layout.tsx` is the App Router's single root layout, so a font <link>
+  // there is loaded once for every route. The rule is about the Pages Router's
+  // per-page `_document`, which this project does not have.
+  { files: ["src/app/layout.tsx"], rules: { "@next/next/no-page-custom-font": "off" } },
 ]);
 
 export default eslintConfig;

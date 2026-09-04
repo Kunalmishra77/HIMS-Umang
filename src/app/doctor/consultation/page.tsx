@@ -9,7 +9,7 @@
  * next role.
  */
 
-import { useEffect, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 import { useRouter } from "next/navigation"
 import { Stethoscope, Pill, FlaskConical, ScanLine, ArrowLeft, Save, Sparkles, FileText, Send, Plus, X, Activity, AlertTriangle, Bed, Printer, Utensils, CalendarClock } from "lucide-react"
 import { useAuthStore } from "@/store/useAuthStore"
@@ -29,6 +29,7 @@ import { notifyAndAudit } from "@/lib/notifyAndAudit"
 import { printableHtml } from "@/lib/fileIO"
 import { news2FromRecord, vitalsAnomalies } from "@/lib/vitals"
 import { cn } from "@/lib/utils"
+import { useNow } from '@/lib/useNow'
 
 interface RxMed { name: string; dosage: string; frequency: string; duration: string; quantity: string }
 const EMPTY_MED: RxMed = { name: '', dosage: '', frequency: '', duration: '', quantity: '' }
@@ -52,6 +53,7 @@ function saveSoap(patientId: string, s: SoapDraft) {
 }
 
 export default function DoctorConsultation() {
+  const now = useNow(60000)
   const router = useRouter()
   const currentUser = useAuthStore(s => s.currentUser)
   const patients = usePatientStore(s => s.patients)
@@ -87,13 +89,18 @@ export default function DoctorConsultation() {
   const [diet, setDiet] = useState("")
   const [followUp, setFollowUp] = useState("")
   const [imagingAdvice, setImagingAdvice] = useState("")
-  // Hydrate the SOAP draft and reset the encounter baskets whenever the patient changes.
-  useEffect(() => {
+  // Hydrate the SOAP draft and reset the encounter baskets whenever the patient
+  // changes. Adjusted during render — React's documented pattern for resetting
+  // state when an input changes — so the new patient's screen is never painted
+  // holding the previous patient's orders, not even for one frame.
+  const [loadedFor, setLoadedFor] = useState<string | undefined>(undefined)
+  if (loadedFor !== active?.id) {
+    setLoadedFor(active?.id)
     if (active) { setSoap(loadSoap(active.id)); setHydrated(true) }
     setLabTests([]); setLabPick("")
     setImagingStudies([]); setImagingPick(""); setReferSpecialty(""); setAdmitWard("General Ward")
     setMeds([]); setMedDraft(EMPTY_MED); setDiet(""); setFollowUp(""); setImagingAdvice("")
-  }, [active?.id])
+  }
 
   if (!active) {
     return (
@@ -337,7 +344,7 @@ export default function DoctorConsultation() {
   const anomalies = opdV ? vitalsAnomalies(opdV) : []
 
   const vitalsTimeAgo = (iso: string) => {
-    const mins = Math.round((Date.now() - new Date(iso).getTime()) / 60000)
+    const mins = Math.round((now - new Date(iso).getTime()) / 60000)
     if (mins < 1) return 'just now'
     if (mins < 60) return `${mins}m ago`
     return `${Math.round(mins / 60)}h ago`

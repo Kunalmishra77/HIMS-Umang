@@ -7,11 +7,12 @@
  * the billing desk + patient (so it surfaces in the bell).
  */
 
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Plus, X, Save, Receipt } from "lucide-react"
 import { toast } from "sonner"
 import { notifyAndAudit } from "@/lib/notifyAndAudit"
+import { useStoredState } from '@/lib/useStoredState'
 
 interface BillingPackage {
   id: string
@@ -102,12 +103,9 @@ function PackageFormModal({ initial, onClose, onSave }: { initial: BillingPackag
 }
 
 export default function BillingPackages() {
-  const [packages, setPackages] = useState<BillingPackage[]>(SEED)
-  const [loaded, setLoaded] = useState(false)
+  const [packages, setPackages, loaded] = useStoredState(loadPackages, SEED)
   const [editing, setEditing] = useState<BillingPackage | null>(null)
   const [creating, setCreating] = useState(false)
-
-  useEffect(() => { setPackages(loadPackages()); setLoaded(true) }, [])
 
   function persist(next: BillingPackage[]) { setPackages(next); savePackages(next) }
   function save(pkg: BillingPackage) {

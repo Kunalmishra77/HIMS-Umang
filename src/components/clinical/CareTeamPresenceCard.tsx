@@ -11,7 +11,7 @@
  */
 
 import { useMemo, useState } from "react"
-import { Sparkles, Check, X, Send, Inbox, Users, Stethoscope, Activity, Wand2 } from "lucide-react"
+import { Sparkles, Check, X, Send, Inbox, Users, Wand2 } from "lucide-react"
 import { useHRStore } from "@/store/useHRStore"
 import { useShiftStore, type HandoverRecord, type ShiftType } from "@/store/useShiftStore"
 import { useAuditStore } from "@/store/useAuditStore"

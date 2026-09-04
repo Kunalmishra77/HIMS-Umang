@@ -2,7 +2,7 @@
 import { useState } from "react"
 import { use } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Receipt, CreditCard, CheckCircle2, AlertCircle, Smartphone, Banknote, ShieldCheck, Sparkles, XCircle, Loader2 } from "lucide-react"
+import { CreditCard, CheckCircle2, AlertCircle, Smartphone, Banknote, ShieldCheck, Sparkles, XCircle, Loader2 } from "lucide-react"
 import { useBillingStore, type ChargeType } from "@/store/useBillingStore"
 import { NeonBadge } from "@/components/ui/neon-badge"
 import { deriveUhid } from "@/lib/uhid"

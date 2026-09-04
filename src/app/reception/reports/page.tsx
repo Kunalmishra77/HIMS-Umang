@@ -1,6 +1,6 @@
 "use client"
 
-import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Cell } from "recharts"
+import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip } from "recharts"
 import { useTranslations } from "next-intl"
 import { usePatientStore, type TriageLevel } from "@/store/usePatientStore"
 import { useBillingStore } from "@/store/useBillingStore"

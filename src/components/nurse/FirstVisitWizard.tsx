@@ -73,11 +73,11 @@ export function FirstVisitWizard({ title, subtitle, meta, initial, onClose, onCo
   const api = useVitalsDraft([])
   const [saving, setSaving] = useState(false)
 
-  const vd: VitalsDraft = {
+  const vd: VitalsDraft = useMemo(() => ({
     hr: api.draft.hr, systolicBP: api.draft.systolicBP, diastolicBP: api.draft.diastolicBP,
     rr: api.draft.rr, spo2: api.draft.spo2, temp: api.draft.temp,
     o2Delivery: api.draft.o2Delivery, consciousness: api.draft.consciousness,
-  }
+  }), [api.draft])
   const missing = useMemo(() => missingMandatory(p, vd), [p, vd])
   const conflicts = useMemo(() => allergyMedConflicts(p), [p])
   const band = bmiBand(p.weightKg, p.heightCm)

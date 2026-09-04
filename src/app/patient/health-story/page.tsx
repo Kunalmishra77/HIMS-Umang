@@ -2,9 +2,6 @@
 
 import { LineChart, Line, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts"
 import { Sparkles, Activity, CheckCircle, UserPlus, Stethoscope, FlaskConical, Pill, CalendarCheck } from "lucide-react"
-import { useAuthStore } from "@/store/useAuthStore"
-import { usePatientStore } from "@/store/usePatientStore"
-import { PatientJourneyFlow } from "@/components/clinical/PatientJourneyFlow"
 import { cn } from "@/lib/utils"
 
 const BP_TREND = [

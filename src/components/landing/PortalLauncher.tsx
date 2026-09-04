@@ -36,8 +36,8 @@ const BRAND_SOFT = "rgba(238,107,38,0.08)"
 export function PortalLauncher() {
   const t = useTranslations("landing.launcher")
   const router = useRouter()
-  const [selectedHref, setSelectedHref] = React.useState<string | null>(null)
-  const [loadingHref, setLoadingHref]   = React.useState<string | null>(null)
+  const [selectedHref] = React.useState<string | null>(null)
+  const [loadingHref]   = React.useState<string | null>(null)
   const [activeTab, setActiveTab] = React.useState("clinical")
 
   const handleLaunch = (role: Role, _href: string) => {

@@ -43,6 +43,8 @@ import { useHRStore } from "@/store/useHRStore"
 import { useDialogs } from "@/components/ui/ConfirmDialog"
 import { getSupabaseClient } from "@/lib/supabase/client"
 import type { Session } from "@supabase/supabase-js"
+import { randomId } from '@/lib/clock'
+import { useIsMounted } from '@/lib/useIsMounted'
 
 const DRUGS = ["Paracetamol 500mg","Amoxicillin 500mg","Azithromycin 500mg","Cetirizine 10mg","Pantoprazole 40mg","Dolo 650mg","Metformin 500mg","Amlodipine 5mg","Atorvastatin 20mg","Omeprazole 20mg","Ibuprofen 400mg","Montelukast 10mg","Metronidazole 400mg","Ondansetron 4mg","Diclofenac 50mg"]
 // Lab tests come straight from the central catalog so every doctor-selected
@@ -278,7 +280,9 @@ export default function DoctorDashboard() {
   const [duration, setDuration] = useState("5 days")
   const [frequency, setFrequency] = useState("TDS")
   const [qty, setQty] = useState("10")
-  const [noteSaved, setNoteSaved] = useState(false)
+  // The badge is on while the last autosave matches what's in the box, so
+  // typing turns it off by derivation instead of a setState in the effect.
+  const [savedNotes, setSavedNotes] = useState<string | null>(null)
   const [labTest, setLabTest] = useState("")
   const [labPriority, setLabPriority] = useState<'Routine' | 'Urgent'>("Routine")
   const [radScanType, setRadScanType] = useState<'X-Ray' | 'MRI' | 'CT Scan' | 'Ultrasound'>("X-Ray")
@@ -303,9 +307,9 @@ export default function DoctorDashboard() {
   const patientVisits = currentPatient ? visits.filter(v => v.patientId === currentPatient.id).sort((a, b) => b.date.localeCompare(a.date)) : []
 
   // Ambient voice scribe.
-  const [speechOk, setSpeechOk] = useState(false)
+  const mounted = useIsMounted()
+  const speechOk = mounted && isSpeechSupported()
   const recognitionRef = useRef<Recognition | null>(null)
-  useEffect(() => { setSpeechOk(isSpeechSupported()) }, [])
   const handleDictate = () => {
     if (isDictating) { recognitionRef.current?.stop(); recognitionRef.current = null; toggleDictation(); return }
     if (!speechOk) { toast.error('Voice input not supported in this browser'); return }
@@ -337,15 +341,15 @@ export default function DoctorDashboard() {
   const wardFree = beds.filter(b => b.ward === admType && b.status === 'Available').length
   const wardTotal = beds.filter(b => b.ward === admType).length
 
+  const noteSaved = savedNotes !== null && savedNotes === notes
   useEffect(() => {
     if (!notes) return
-    setNoteSaved(false)
-    const t = setTimeout(() => setNoteSaved(true), 800)
+    const t = setTimeout(() => setSavedNotes(notes), 800)
     return () => clearTimeout(t)
   }, [notes])
   useEffect(() => {
     if (!noteSaved) return
-    const t = setTimeout(() => setNoteSaved(false), 2500)
+    const t = setTimeout(() => setSavedNotes(null), 2500)
     return () => clearTimeout(t)
   }, [noteSaved])
 
@@ -506,7 +510,7 @@ export default function DoctorDashboard() {
 
   const addMed = (name: string) => {
     if (!name.trim()) return
-    addPrescription({ id: Math.random().toString(36), medicine: name, dosage, duration, instructions: frequency })
+    addPrescription({ id: randomId(), medicine: name, dosage, duration, instructions: frequency })
     setMedSearch("")
     setShowDrugs(false)
   }

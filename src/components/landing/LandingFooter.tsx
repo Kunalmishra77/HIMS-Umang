@@ -1,6 +1,7 @@
 "use client"
 
 import { useTranslations } from "next-intl"
+import Image from "next/image"
 
 const COLUMNS = [
   { titleKey: "colPlatform", linkKeys: ["linkClinical", "linkOperations", "linkFinance", "linkSupport"] },
@@ -14,7 +15,7 @@ export function LandingFooter() {
         <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_1fr] gap-8">
           <div>
             <div className="flex items-center">
-              <img src="/Umang-logo.webp" alt="Umang Hospital" className="h-10 w-auto object-contain" />
+              <Image src="/Umang-logo.webp" alt="Umang Hospital" width={726} height={208} className="h-10 w-auto object-contain" />
             </div>
             <p className="text-[13px] text-[#667085] mt-4 max-w-xs leading-relaxed">
               {t("tagline")}

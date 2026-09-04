@@ -1,7 +1,6 @@
 "use client"
 
 import { useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
 import { useTranslations } from "next-intl"
 import { LocaleToggle } from "@/components/ui/LocaleToggle"
@@ -9,6 +8,7 @@ import { ArrowRight, Clock, ShieldCheck, Sparkles, ScanLine, Camera } from "luci
 import Image from "next/image"
 import { QRCodeSVG } from "qrcode.react"
 import { PHOTOS } from "@/lib/photos"
+import { useIsMounted } from '@/lib/useIsMounted'
 
 const stepKeys = ['stepScan', 'stepDetails', 'stepToken', 'stepTrack'] as const
 const trustKeys = ['trustNabh', 'trustAbdm', 'trustDpdp'] as const
@@ -16,9 +16,8 @@ const trustKeys = ['trustNabh', 'trustAbdm', 'trustDpdp'] as const
 export default function CheckinPage() {
   const router = useRouter()
   const t = useTranslations("checkin")
-  const [checkInUrl, setCheckInUrl] = useState('')
-
-  useEffect(() => { setCheckInUrl(`${window.location.origin}/checkin/intake`) }, [])
+  const mounted = useIsMounted()
+  const checkInUrl = mounted ? `${window.location.origin}/checkin/intake` : ''
 
   return (
     <div className="min-h-[100dvh] w-full bg-white grid grid-cols-1 lg:grid-cols-2">
@@ -33,9 +32,11 @@ export default function CheckinPage() {
           className="absolute inset-0"
           style={{ background: "linear-gradient(185deg, rgba(11,18,32,0.28) 0%, rgba(11,18,32,0.22) 32%, rgba(11,18,32,0.78) 100%)" }}
         />
-        <img
+        <Image
           src="/Umang-logo.webp"
           alt="Umang Hospital"
+          width={726} height={208}
+          priority
           className="absolute top-10 left-10 xl:top-14 xl:left-14 h-11 w-auto object-contain brightness-0 invert"
         />
         <div className="absolute inset-x-0 bottom-0 p-10 xl:p-14">
@@ -63,7 +64,7 @@ export default function CheckinPage() {
         >
           {/* Mobile brand */}
           <div className="flex items-center justify-between mb-8 lg:mb-0">
-            <img src="/Umang-logo.webp" alt="Umang Hospital" className="lg:hidden h-10 w-auto object-contain" />
+            <Image src="/Umang-logo.webp" alt="Umang Hospital" width={726} height={208} priority className="lg:hidden h-10 w-auto object-contain" />
             <div className="ml-auto"><LocaleToggle /></div>
           </div>
 

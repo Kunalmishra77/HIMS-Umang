@@ -2,10 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { toast } from "sonner"
-import {
-  ClipboardList, FlaskConical, ScanLine, Pill, Sparkles, Minus, Plus,
-  Check, X, ShieldCheck, CreditCard, CheckCircle2, Download, Undo2, Bell, ArrowRight,
-} from "lucide-react"
+import { FlaskConical, ScanLine, Pill, Sparkles, Minus, Plus, Check, X, ShieldCheck, CreditCard, CheckCircle2, Download, Undo2, Bell, ArrowRight } from "lucide-react"
 import {
   usePatientOrdersStore, acceptedItems, skippedItems, orderTotal, lineTotal, wasReduced,
   SKIP_REASONS, SKIP_REASON_LABEL, type OrderItem,
@@ -30,7 +27,7 @@ function TestIcon({ item }: { item: OrderItem }) {
 }
 
 export default function DoctorOrdersPage() {
-  const { items, doctor, received, receivedAt, paid, paidAt, receiveOrders, accept, setQty, skip, payNow } = usePatientOrdersStore()
+  const { items, doctor, receivedAt, paid, receiveOrders, accept, setQty, skip, payNow } = usePatientOrdersStore()
   const [reasonFor, setReasonFor] = useState<string | null>(null)
   const [payOpen, setPayOpen] = useState(false)
 

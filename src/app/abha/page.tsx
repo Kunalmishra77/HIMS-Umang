@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button"
 import { NeonBadge } from "@/components/ui/neon-badge"
 import { AbhaCard } from "@/components/abha/AbhaCard"
 import { toast } from "sonner"
+import Image from "next/image"
 import {
   ShieldCheck, CheckCircle2, Lock, AlertCircle, ArrowRight,
   Sparkles, Download, Database, RefreshCw, Heart, Key, Send,
@@ -570,7 +571,7 @@ export default function AbhaSandboxPage() {
               {createStep === "details" && createdCardData && (
                 <div className="space-y-4">
                   <div className="flex gap-4 items-center bg-white p-3 rounded-xl border border-slate-200">
-                    <img src={createdCardData.photo} alt={t("aadhaarPhotoAlt")} className="h-12 w-12 rounded-xl object-cover border border-slate-100" />
+                    <Image src={createdCardData.photo} alt={t("aadhaarPhotoAlt")} width={48} height={48} className="h-12 w-12 rounded-xl object-cover border border-slate-100" />
                     <div>
                       <p className="font-bold text-slate-800 text-sm">{createdCardData.name}</p>
                       <p className="text-xs text-slate-500">{t("genderDobLine", { gender: createdCardData.gender, dob: createdCardData.dob })}</p>
@@ -674,9 +675,11 @@ export default function AbhaSandboxPage() {
                     {/* Main content body */}
                     <div className="flex gap-4">
                       {/* Avatar */}
-                      <img
+                      <Image
                         src={createdCardData?.photo || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&h=150&fit=crop"}
                         alt={t("cardAvatarAlt")}
+                        width={64}
+                        height={64}
                         className="h-16 w-16 rounded-xl object-cover border-2 border-white/20"
                       />
                       <div className="space-y-1">

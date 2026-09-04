@@ -18,6 +18,8 @@ import { useAuthStore } from "@/store/useAuthStore"
 import { useAuditStore } from "@/store/useAuditStore"
 import { usePatientMe } from "@/lib/usePatientMe"
 import { useFamilyTokenStore } from "@/store/useFamilyTokenStore"
+import { nowIso, nowMs } from '@/lib/clock'
+import { useStoredState } from '@/lib/useStoredState'
 
 type InviteStatus = "sent" | "delivered" | "accepted"
 
@@ -54,6 +56,8 @@ function tinyAgo(iso: string): string {
   return `${Math.floor(m / 60)}h ago`
 }
 
+const NO_INVITES: Invite[] = []
+
 export function FamilyInviteCard({ className }: { className?: string }) {
   const currentUser = useAuthStore((s) => s.currentUser)
   const audit         = useAuditStore((s) => s.log)
@@ -74,14 +78,11 @@ export function FamilyInviteCard({ className }: { className?: string }) {
   const issueFamilyTrackToken = useFamilyTokenStore((s) => s.issue)
   const familyTrackRecord     = useFamilyTokenStore((s) => (uhid ? s.records[uhid.toUpperCase()] : undefined))
 
-  const [invites, setInvites] = useState<Invite[]>([])
+  const [invites, setInvites] = useStoredState(loadInvites, NO_INVITES)
   const [showForm, setShowForm] = useState(false)
   const [name,    setName]    = useState("")
   const [phone,   setPhone]   = useState("")
   const [relation, setRelation] = useState<typeof RELATIONS[number]>("Spouse")
-
-  // Hydrate from LS on mount (browser-only).
-  useEffect(() => { setInvites(loadInvites()) }, [])
 
   // Ensure a consented, unexpired tracker token exists for this patient's own
   // share link — only once a real linked patient record is resolved.
@@ -102,10 +103,10 @@ export function FamilyInviteCard({ className }: { className?: string }) {
     if (name.trim().length < 2)  return
     if (digits.length !== 10)    return
 
-    const id = `INV-${Date.now()}`
+    const id = `INV-${nowMs()}`
     const fresh: Invite = {
       id, name: name.trim(), phone: '+91 ' + digits, relation, status: "sent",
-      invitedAt: new Date().toISOString(),
+      invitedAt: nowIso(),
     }
     const next = [fresh, ...invites].slice(0, 6)
     setInvites(next); saveInvites(next)

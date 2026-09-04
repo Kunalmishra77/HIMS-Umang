@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl"
 import { QrCode, LogIn } from "lucide-react"
 import { LocaleToggle } from "@/components/ui/LocaleToggle"
 import { cn } from "@/lib/utils"
+import Image from "next/image"
 
 const NAV_HEIGHT = 64 // h-16
 
@@ -65,7 +66,7 @@ export function LandingNav() {
 
         {/* Logo — click scrolls to top */}
         <button onClick={() => handleNav("#home")} className="flex items-center cursor-pointer">
-          <img src="/Umang-logo.webp" alt="Umang Hospital" className="h-9 w-auto object-contain" />
+          <Image src="/Umang-logo.webp" alt="Umang Hospital" width={726} height={208} priority className="h-9 w-auto object-contain" />
         </button>
 
         {/* Nav links */}

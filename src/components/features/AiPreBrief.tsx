@@ -26,13 +26,13 @@ function deriveBrief(patient: Patient): { flag: string; recommend: string } {
 }
 
 export function AiPreBrief({ patient }: { patient: Patient }) {
-  const [analyzing, setAnalyzing] = useState(true)
+  const [analyzedId, setAnalyzedId] = useState<string | null>(null)
+  const analyzing = analyzedId !== patient.id
   const brief = deriveBrief(patient)
   const hasVitals = !!patient.vitals
 
   useEffect(() => {
-    setAnalyzing(true)
-    const t = setTimeout(() => setAnalyzing(false), 1200)
+    const t = setTimeout(() => setAnalyzedId(patient.id), 1200)
     return () => clearTimeout(t)
   }, [patient.id])
 

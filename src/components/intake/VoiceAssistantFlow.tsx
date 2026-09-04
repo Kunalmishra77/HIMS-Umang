@@ -50,6 +50,7 @@ export function VoiceAssistantFlow({ form, update, onExitToForm }: { form: Intak
   // switches to the patient's spoken language on each subsequent turn.
   const globalLocale = useLocale() as 'en' | 'hi'
   const [lang, setLang] = useState<'en' | 'hi'>(globalLocale)
+  const [prevLocale, setPrevLocale] = useState(globalLocale)
   const [messages, setMessages] = useState<Msg[]>([])
   const [interim, setInterim] = useState('')
   const [phase, setPhase] = useState<Phase>('thinking')
@@ -93,7 +94,12 @@ export function VoiceAssistantFlow({ form, update, onExitToForm }: { form: Intak
   useEffect(() => { langRef.current = lang })
   // Follow the global locale toggle: switching EN⇄हिं updates the assistant's
   // language so the greeting, quick replies and TTS stay in sync with the UI.
-  useEffect(() => { setLang(globalLocale) }, [globalLocale])
+  // Adjusted during render (React's documented pattern for "reset state when a
+  // prop changes") because `lang` is also set from a turn's detected language.
+  if (prevLocale !== globalLocale) {
+    setPrevLocale(globalLocale)
+    setLang(globalLocale)
+  }
   useEffect(() => { phaseRef.current = phase }, [phase])
   useEffect(() => () => { recRef.current?.stop(); cancelSpeech(); silenceTimersRef.current.forEach(clearTimeout) }, [])
 

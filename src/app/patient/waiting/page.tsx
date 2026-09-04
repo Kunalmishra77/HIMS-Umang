@@ -189,7 +189,7 @@ export default function WaitingRoomPage() {
   const waiting = patients.filter(p => ['waiting', 'vitals'].includes(p.queueStatus))
   const myPosition = myPatient ? waiting.findIndex(p => p.id === myPatient.id) + 1 : 4
 
-  const [queuePos, setQueuePos] = useState(myPosition || 4)
+  const [queuePos] = useState(myPosition || 4)
   const [waitMin, setWaitMin] = useState(myPatient?.estimatedWait ?? 18)
   const [currentStep] = useState<string>(myPatient?.queueStatus ?? 'vitals')
   const [aiMsgIdx, setAiMsgIdx] = useState(0)

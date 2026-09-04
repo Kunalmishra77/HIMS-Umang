@@ -22,9 +22,11 @@ import { Avatar } from "@/components/ui/avatar"
 import { LocaleToggle } from "@/components/ui/LocaleToggle"
 import { CommandPalette, CommandPaletteTrigger } from "@/components/layout/CommandPalette"
 import { CriticalValueBanner } from "@/components/clinical/CriticalValueBanner"
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { useTranslations } from "next-intl"
 import { cn } from "@/lib/utils"
+import { useIsMounted } from '@/lib/useIsMounted'
+import Image from "next/image"
 
 type NavItem = { href: string; label: string; icon: React.ElementType }
 
@@ -142,13 +144,15 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const roleLabel = t(ROLE_LABELS[activeRole])
   const [collapsed, setCollapsed] = useState(false)
   const [notifOpen, setNotifOpen] = useState(false)
-  const [mounted, setMounted] = useState(false)
+  const mounted = useIsMounted()
   const [query, setQuery] = useState('')
-  const [mobileOpen, setMobileOpen] = useState(false)
+  // The drawer is remembered as "open on this route" rather than a bare
+  // boolean, so navigating away closes it by derivation instead of via an
+  // effect that would setState during the render after every route change.
+  const [openOnPath, setOpenOnPath] = useState<string | null>(null)
+  const mobileOpen = openOnPath === pathname
+  const setMobileOpen = (open: boolean) => setOpenOnPath(open ? pathname : null)
   const shouldReduceMotion = useReducedMotion()
-
-  // Close the mobile sidebar drawer on navigation.
-  useEffect(() => { setMobileOpen(false) }, [pathname])
 
   // Wired header search + bell (M16).
   const allPatients = usePatientStore(s => s.patients)
@@ -196,11 +200,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     if (activeRole === 'doctor') { router.push('/doctor/records'); return }
     const dest = PATIENTS_ROUTE[activeRole]; if (dest) router.push(dest)
   }
-
-  // Page-enter animation is attached only after mount so the server render and
-  // the first client render emit identical (un-transformed) markup — avoids the
-  // framer-motion `initial` transform causing a hydration attribute mismatch.
-  useEffect(() => { setMounted(true) }, [])
 
   const handleLogout = () => {
     logout()
@@ -263,7 +262,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         {/* Brand Header */}
         <div className="h-[68px] flex items-center px-4 flex-shrink-0 border-b border-border-light">
           <div className="flex items-center overflow-hidden whitespace-nowrap w-full pl-2">
-            <img src="/Umang-logo.webp" alt="Umang Hospital" className={cn("w-auto object-contain", collapsed ? "h-8" : "h-10")} />
+            <Image src="/Umang-logo.webp" alt="Umang Hospital" width={726} height={208} priority className={cn("w-auto object-contain", collapsed ? "h-8" : "h-10")} />
           </div>
         </div>
 

@@ -1,7 +1,7 @@
 "use client"
 
 import { Select } from "@/components/ui/Select"
-import { useMemo, useState } from "react"
+import { useState } from "react"
 import { CheckCircle2, Circle, AlertCircle, Plus, Sparkles, Mic, Wand2, FileText, Trash2 } from "lucide-react"
 import { NeonBadge } from "@/components/ui/neon-badge"
 import { Card } from "@/components/ui/card"

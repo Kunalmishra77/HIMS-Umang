@@ -7,11 +7,7 @@ import { usePatientStore, type TriageLevel } from "@/store/usePatientStore"
 import { useBillingStore } from "@/store/useBillingStore"
 import { useNotificationStore } from "@/store/useNotificationStore"
 import { useWhatsAppStore } from "@/store/useWhatsAppStore"
-import {
-  Users, Activity, Stethoscope, CreditCard, Calendar,
-  UserPlus, ArrowRight, AlertTriangle, MessageSquare, Volume2, Clock, ChevronRight,
-  CheckCircle2, Hourglass,
-} from "lucide-react"
+import { Users, Activity, Stethoscope, CreditCard, Calendar, UserPlus, ArrowRight, AlertTriangle, MessageSquare, Volume2, Clock, ChevronRight, CheckCircle2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 const TRIAGE_RANK: Record<TriageLevel, number> = { Critical: 0, High: 1, Medium: 2, Low: 3 }

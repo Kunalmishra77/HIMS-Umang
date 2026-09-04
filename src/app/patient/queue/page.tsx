@@ -1,10 +1,8 @@
 "use client"
 
-import { motion } from "framer-motion"
 import { usePatientStore } from "@/store/usePatientStore"
 import { StatusStepper } from "@/components/ui/status-stepper"
 import { PatientCard } from "@/components/features/PatientCard"
-import { Avatar } from "@/components/ui/avatar"
 
 export default function PatientQueue() {
   const { patients } = usePatientStore()

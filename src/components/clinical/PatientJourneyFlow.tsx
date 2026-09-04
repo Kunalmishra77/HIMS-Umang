@@ -131,7 +131,7 @@ export function PatientJourneyFlow({ patientId, patientName, className }: Props)
     return (
       <div className={cn("hms-card p-8 text-center", className)}>
         <Flag className="h-7 w-7 text-foreground-placeholder mx-auto mb-3" />
-        <p className="t-title text-foreground">The journey hasn't started yet</p>
+        <p className="t-title text-foreground">The journey hasn&apos;t started yet</p>
         <p className="t-body ink-muted mt-1">Every touchpoint across departments will appear here as care unfolds.</p>
       </div>
     )

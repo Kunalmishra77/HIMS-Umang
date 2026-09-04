@@ -1,6 +1,5 @@
 "use client"
 
-import { useEffect, useState } from "react"
 import { useParams } from "next/navigation"
 import Link from "next/link"
 import { useInpatientStore, latestVitalsRecord } from "@/store/useInpatientStore"
@@ -15,6 +14,8 @@ import { deriveUhid } from "@/lib/uhid"
 import { news2Token, news2ScoreToken } from "@/lib/statusColors"
 import { ArrowLeft, Pill, Droplets, FileText, ClipboardList, HeartPulse } from "lucide-react"
 import { useTranslations } from "next-intl"
+import { useIsMounted } from '@/lib/useIsMounted'
+import { useNow } from '@/lib/useNow'
 
 const fmt = (iso: string) => new Date(iso).toLocaleString("en-IN", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" })
 // MAR slot status → semantic ink (inline, not a raw-palette colour map).
@@ -29,9 +30,9 @@ export default function NursePatientDetail() {
   const id = params?.id
   const inpatients = useInpatientStore(s => s.inpatients)
   const tasks = useNursingStore(s => s.tasks)
-  const [now, setNow] = useState<number | null>(null)
-  useEffect(() => { const d = new Date(); setNow(d.getHours() * 60 + d.getMinutes()) }, [])
-  const nowMin = now ?? -1
+  const mounted = useIsMounted()
+  const now = useNow()
+  const nowMin = mounted ? new Date(now).getHours() * 60 + new Date(now).getMinutes() : -1
 
   const ip = inpatients.find(i => i.patientId === id)
   if (!ip) {

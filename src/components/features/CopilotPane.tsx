@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback, useEffect } from "react"
+import { useState, useCallback } from "react"
 import { createPortal } from "react-dom"
 import { motion, AnimatePresence } from "framer-motion"
 import { Bot, RefreshCw, X, Zap, AlertTriangle, Info, ChevronRight, Lightbulb } from "lucide-react"
@@ -13,6 +13,7 @@ import { useAuditStore } from "@/store/useAuditStore"
 import { FLAGS } from "@/config/feature-flags"
 import { invokeCopilot, type CopilotRole, type CopilotInsight, type CopilotContext } from "@/ai-services/copilot-orchestrator"
 import type { AiEnvelope } from "@/types/ai"
+import { useIsMounted } from '@/lib/useIsMounted'
 
 interface CopilotPaneProps {
   role: CopilotRole
@@ -87,8 +88,7 @@ export function CopilotPane({ role, patientId, patientName, wardId }: CopilotPan
   const [hasLoaded, setHasLoaded] = useState(false)
 
   const shadowMode = FLAGS.shadowMode
-  const [mounted, setMounted] = useState(false)
-  useEffect(() => setMounted(true), [])
+  const mounted = useIsMounted()
 
   const refresh = useCallback(async () => {
     setLoading(true)

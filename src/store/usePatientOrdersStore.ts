@@ -72,7 +72,7 @@ interface OrdersState {
   reset: () => void
 }
 
-export const usePatientOrdersStore = create<OrdersState>()(persist((set, get) => ({
+export const usePatientOrdersStore = create<OrdersState>()(persist((set, _get) => ({
   received: false,
   receivedAt: null,
   doctor: 'Dr. Priya Nair',

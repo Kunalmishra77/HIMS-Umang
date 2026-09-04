@@ -32,17 +32,23 @@ function downloadBillReceipt(
   printableHtml(invoiceNo, html)
 }
 
+const NO_BILLS: Bill[] = []
+
 export default function PatientBilling() {
   const t = useTranslations('patient')
   const currentUser = useAuthStore(s => s.currentUser)
   const { me } = usePatientMe()
-  const [bills, setBills] = useState<Bill[]>([])
+  // Keyed by the patient the rows were fetched for, so switching identity
+  // shows an empty list by derivation rather than via a synchronous
+  // setState([]) inside the effect below.
+  const [fetched, setFetched] = useState<{ forId: string; rows: Bill[] } | null>(null)
+  const bills = fetched && fetched.forId === me?.id ? fetched.rows : NO_BILLS
 
   useEffect(() => {
-    setBills([])
     if (!me) return
     let cancelled = false
-    Bills.byPatient(me.id).then((rows) => { if (!cancelled) setBills(rows) })
+    const forId = me.id
+    Bills.byPatient(forId).then((rows) => { if (!cancelled) setFetched({ forId, rows }) })
     return () => { cancelled = true }
   }, [me])
 

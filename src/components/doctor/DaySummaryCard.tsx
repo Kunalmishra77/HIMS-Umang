@@ -10,7 +10,7 @@
  *   <DaySummaryCard doctorId="DR-1012" doctorName="Dr. Priya Nair" />
  */
 import { useMemo, useState } from "react"
-import { Sparkles, X, Calendar, TrendingUp, Check, ArrowRight, ListChecks } from "lucide-react"
+import { Sparkles, X, Calendar, TrendingUp, Check, ListChecks } from "lucide-react"
 import { useAuditStore } from "@/store/useAuditStore"
 import { useDoctorStatsStore } from "@/store/useDoctorStatsStore"
 import { ReasoningChip } from "@/components/clinical/ReasoningChip"

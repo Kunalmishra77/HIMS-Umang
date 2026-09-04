@@ -2,7 +2,7 @@
 
 import { Select } from "@/components/ui/Select"
 import { useState, useEffect, useRef, useMemo } from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion } from "framer-motion"
 import {
   Sparkles, Plus, Send, Trash2, MessageSquare, Copy, Check,
   ClipboardCheck, FileText, User, BrainCircuit, BedDouble, ShieldAlert, Printer,
@@ -17,6 +17,7 @@ import { executeDraft, EXECUTE_LABEL, DONE_LABEL } from "@/lib/copilotTools"
 import { useDoctorProfileStore } from "@/store/useDoctorProfileStore"
 import { openPrint, pre } from "@/lib/printDoc"
 import { cn } from "@/lib/utils"
+import { useIsMounted } from '@/lib/useIsMounted'
 
 const PRINT_KIND: Partial<Record<AssistantDraft['kind'], 'Prescription' | 'Discharge Summary' | 'Referral Letter'>> = {
   prescription: 'Prescription', discharge_summary: 'Discharge Summary', referral: 'Referral Letter',
@@ -37,13 +38,11 @@ export default function AiAssistantPage() {
   const allInpatients = useInpatientStore(s => s.inpatients)
   const doctorName = useAuthStore(s => s.currentUser?.name ?? "Dr. Priya Nair")
 
-  const [mounted, setMounted] = useState(false)
+  const mounted = useIsMounted()
   const [input, setInput] = useState("")
   const [thinking, setThinking] = useState(false)
   const [focusId, setFocusId] = useState<string | null>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => { setMounted(true) }, [])
 
   // Doctor-scoped data (a doctor only sees their own patients)
   const patients = useMemo(() => allPatients.filter(p => p.doctor === doctorName), [allPatients, doctorName])

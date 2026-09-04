@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { Droplet, AlertTriangle, HeartPulse, Phone, Pill, ShieldCheck, MapPin, Activity, UserCheck, Pencil, X, Plus, Upload, FileText, Check } from "lucide-react"
 import { useAuthStore } from "@/store/useAuthStore"
 import { usePatientMe } from "@/lib/usePatientMe"
@@ -64,9 +64,6 @@ export default function ProfilePage() {
   const [editing, setEditing] = useState(false)
   const [draft, setDraft] = useState<PatientProfile | null>(null)
   const [uploads, setUploads] = useState<UploadResult[]>([])
-
-  // Initialise draft when entering edit mode.
-  useEffect(() => { if (editing && profile && !draft) setDraft({ ...profile, allergies: [...profile.allergies], chronicConditions: [...profile.chronicConditions], currentMedications: [...profile.currentMedications] }) }, [editing, profile, draft])
 
   function startEdit() { if (profile) { setDraft({ ...profile, allergies: [...profile.allergies], chronicConditions: [...profile.chronicConditions], currentMedications: [...profile.currentMedications] }); setEditing(true) } }
   function cancel() { setEditing(false); setDraft(null) }

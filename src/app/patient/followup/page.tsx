@@ -2,10 +2,7 @@
 
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import {
-  HeartPulse, Calendar, CheckCircle, UserCheck, Pill, Clock, AlertTriangle,
-  Utensils, FileText, PhoneCall, Sparkles, Video, Building2, ArrowRight,
-} from "lucide-react"
+import { Calendar, CheckCircle, UserCheck, Pill, Clock, AlertTriangle, Utensils, FileText, PhoneCall, Sparkles, Video, Building2, ArrowRight } from "lucide-react"
 import Link from "next/link"
 import { toast } from "sonner"
 import { useAuthStore } from "@/store/useAuthStore"

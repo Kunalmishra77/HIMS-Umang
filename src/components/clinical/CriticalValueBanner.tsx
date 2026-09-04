@@ -17,10 +17,11 @@
  *   - "Acknowledge" emits lab_critical_acknowledged with the role.
  *   - "Open chart" navigates to the patient's IPD chart.
  */
-import { useEffect, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 import { ShieldAlert, Check } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useAuditStore } from "@/store/useAuditStore"
+import { useIsMounted } from '@/lib/useIsMounted'
 
 interface Props {
   /** Restrict the banner to one role's surfaces (doctor / nurse / both). */
@@ -47,8 +48,7 @@ export function CriticalValueBanner({ role = 'both', className }: Props) {
   // via `Date.now()` at module-eval). Gate any rendered timestamp behind
   // mounted so SSR shows '—' and client hydrates to the real time without
   // a mismatch.
-  const [mounted, setMounted] = useState(false)
-  useEffect(() => { setMounted(true) }, [])
+  const mounted = useIsMounted()
 
   // Find every recent critical-value event that hasn't been acknowledged
   // by this role yet. We treat the 50 most-recent audit rows as the

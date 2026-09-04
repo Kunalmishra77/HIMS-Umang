@@ -13,12 +13,7 @@ import { use, useEffect, useMemo, useState, Suspense } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useTranslations } from "next-intl"
 import { LocaleToggle } from "@/components/ui/LocaleToggle"
-import {
-  Heart, Clock, Phone, Hospital, AlertTriangle, CheckCircle2,
-  ClipboardList, Bed, Stethoscope, FlaskConical, ScanLine,
-  ShieldCheck, LogOut, Building2, Activity, Ambulance, MessageCircle,
-  Lock,
-} from "lucide-react"
+import { Heart, Clock, Phone, Hospital, AlertTriangle, CheckCircle2, ClipboardList, Bed, Stethoscope, FlaskConical, ScanLine, ShieldCheck, LogOut, Building2, Activity, MessageCircle, Lock } from "lucide-react"
 import { usePatientStore } from "@/store/usePatientStore"
 import { useInpatientStore } from "@/store/useInpatientStore"
 import { useERStore } from "@/store/useERStore"
@@ -26,6 +21,7 @@ import { useFamilyTokenStore } from "@/store/useFamilyTokenStore"
 import { validateFamilyToken } from "@/lib/familyToken"
 import { aggregateJourney, DEPT_COLOR, type Department, type JourneyEvent } from "@/lib/journeyAggregator"
 import { cn } from "@/lib/utils"
+import { useNow } from '@/lib/useNow'
 
 const DEPT_ICON: Record<Department, React.ElementType> = {
   Reception: ClipboardList, Emergency: AlertTriangle, Nursing: Activity, Doctor: Stethoscope,
@@ -119,6 +115,7 @@ export default function FamilyTrackPage({ params }: { params: Promise<{ uhid: st
 }
 
 function FamilyTrackInner({ params }: { params: Promise<{ uhid: string }> }) {
+  const now = useNow(60000)
   const t = useTranslations('p')
   const { uhid } = use(params)
   // Up-case so /p/pt-44012 and /p/PT-44012 both work — matches SMS-link behavior.
@@ -176,8 +173,8 @@ function FamilyTrackInner({ params }: { params: Promise<{ uhid: string }> }) {
   }, [t, inpatient, erRecord, patient])
 
   const criticalEvent = useMemo(
-    () => events.find(e => e.severity === 'critical' && Date.now() - new Date(e.at).getTime() < 4 * 3600000),
-    [events],
+    () => events.find(e => e.severity === 'critical' && now - new Date(e.at).getTime() < 4 * 3600000),
+    [events, now],
   )
 
   // ── Access gate ─────────────────────────────────────────────────────────

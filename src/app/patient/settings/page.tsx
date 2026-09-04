@@ -6,9 +6,9 @@
  * Phase-2 swaps for a real user-prefs endpoint.
  */
 
-import { useEffect, useState } from "react"
 import { Bell, MessageCircle, Smartphone, Mail, Globe, Clock, ShieldCheck, Save } from "lucide-react"
 import { toast } from "sonner"
+import { useStoredState } from '@/lib/useStoredState'
 
 type Channel = 'in_app' | 'whatsapp' | 'sms' | 'email'
 type ReminderHrs = 1 | 4 | 12 | 24
@@ -80,9 +80,7 @@ function ChannelToggleRow({ title, sub, channels, onChange }: { title: string; s
 }
 
 export default function PatientSettings() {
-  const [prefs, setPrefs] = useState<PatientPrefs>(DEFAULT_PREFS)
-  const [loaded, setLoaded] = useState(false)
-  useEffect(() => { setPrefs(loadPrefs()); setLoaded(true) }, [])
+  const [prefs, setPrefs, loaded] = useStoredState(loadPrefs, DEFAULT_PREFS)
 
   function update<K extends keyof PatientPrefs>(k: K, v: PatientPrefs[K]) { setPrefs((p) => ({ ...p, [k]: v })) }
   function save() { savePrefs(prefs); toast.success('Preferences saved') }
