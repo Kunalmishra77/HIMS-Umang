@@ -27,7 +27,7 @@ typography:
     use: in-content headings, all surfaces
   font-display:
     fontFamily: "'Playfair Display', 'Iowan Old Style', Georgia, serif"
-    weight: 300 (thin)
+    weight: "700 — the utility itself sets no weight; all three consumers render at 700 (`font-bold` on the two landing headings, `.t-h1`'s font-weight:700 on check-in), and the Google Fonts request only serves wght@400..700, so 300/thin is never fetched or used here"
     use: landing hero `<h1>`/`<h2>` and the check-in `<h1>` only — never clinical worklists
 
 rounded:
@@ -160,7 +160,7 @@ Typography is built around **Sohne** at weight 300 with negative letter-spacing 
 
 ## Colors
 
-> **Scope note:** this section and the `colors:`/`typography:` blocks in the frontmatter above describe Umang HIMS's actual, shipped brand system. Everything from **Overview** through **Responsive Behavior** below retains this document's original Stripi-pattern-language token names (`{colors.primary-press}`, `{colors.brand-dark-900}`, the gradient-mesh, Sohne, etc.) as generic component-pattern reference material inherited at project seed — it does not describe Umang's implementation and its token names do not resolve against the list above. The single source of truth for implemented tokens is `src/app/globals.css`; the narrative equivalent is `docs/DESIGN-LANGUAGE.md`.
+> **Scope note:** this section, the **Typography** section below, and the `colors:`/`typography:` blocks in the frontmatter above describe Umang HIMS's actual, shipped brand system. Everything else from **Overview** through **Responsive Behavior** (i.e. skipping Colors and Typography) retains this document's original Stripi-pattern-language token names (`{colors.primary-press}`, `{colors.brand-dark-900}`, the gradient-mesh, Sohne, etc.) as generic component-pattern reference material inherited at project seed — it does not describe Umang's implementation and its token names do not resolve against the list above. The single source of truth for implemented tokens is `src/app/globals.css`; the narrative equivalent is `docs/DESIGN-LANGUAGE.md`.
 
 > **Source:** the Umang Hospital website, matched in `src/app/globals.css` (`:root` and the scoped `.intake-theme` override used by the check-in wizard).
 
