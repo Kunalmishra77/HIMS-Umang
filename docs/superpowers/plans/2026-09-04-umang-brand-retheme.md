@@ -675,6 +675,102 @@ the two mechanisms that enforce it — the contrast test and the lint rule."
 
 ---
 
+### Task 7: Enforce the AA pairing at the use site
+
+Added during execution. Task 1 asserts the palette's token *values* are AA-capable; nothing asserted that components actually use them in the AA-safe combination. They do not: **83 occurrences across 47 files** place `text-white` on `bg-primary` (`#1E97B2`), which is **3.43:1** and fails AA for normal text — including the landing page's primary "Launch Console" CTA. `text-on-primary`, the token created for this pairing, is used once in the whole codebase.
+
+This is pre-existing (white on the retired orange was also ~3.0:1), but the spec's Global Constraints make ">= 4.5:1 for every text/background pairing" binding, so leaving it makes the retheme's central claim false.
+
+**Files:**
+- Modify: 47 files containing `text-white` alongside `bg-primary` / `bg-[var(--color-primary)]`
+- Modify: `src/app/__tests__/theme-contrast.test.ts`
+
+**Interfaces:**
+- Consumes: the palette tokens from Task 1.
+- Produces: nothing new.
+
+- [ ] **Step 1: Write the failing guard**
+
+Append to `src/app/__tests__/theme-contrast.test.ts`. This guards the *pattern*, which the value-based tests cannot:
+
+```ts
+import { readdirSync, statSync } from 'node:fs'
+
+/** Every .ts/.tsx file under src/, recursively. */
+function sourceFiles(dir: string, out: string[] = []): string[] {
+  for (const entry of readdirSync(dir)) {
+    const full = join(dir, entry)
+    if (statSync(full).isDirectory()) sourceFiles(full, out)
+    else if (/\.tsx?$/.test(entry)) out.push(full)
+  }
+  return out
+}
+
+describe('brand fills are used in their AA-safe pairing', () => {
+  it('never puts white text on the brand teal', () => {
+    // #1E97B2 with white is 3.43:1 — below the 4.5 floor for normal text.
+    // A text-bearing fill must use --color-primary-dark (6.1:1 with white),
+    // or keep --color-primary and switch the ink to --color-on-primary
+    // (4.8:1). This guards the pairing; the tests above only guard the values.
+    const offending = sourceFiles(join(import.meta.dirname, '../..'))
+      .flatMap((file) => {
+        const text = readFileSync(file, 'utf8')
+        const hits = text.match(/class(?:Name)?="[^"]*"/g) ?? []
+        return hits
+          .filter((c) => /text-white/.test(c))
+          .filter((c) => /bg-primary|bg-\[var\(--color-primary\)\]/.test(c))
+          .map(() => file.replace(/^.*[\/]src[\/]/, 'src/'))
+      })
+    expect([...new Set(offending)]).toEqual([])
+  })
+})
+```
+
+- [ ] **Step 2: Run it and watch it fail**
+
+Run: `npx vitest run src/app/__tests__/theme-contrast.test.ts`
+Expected: FAIL, listing ~47 files.
+
+- [ ] **Step 3: Fix the pairings**
+
+In every reported file, change the *fill*, not the ink — the spec's rule is "text-bearing fills use `--color-primary-dark`, never `--color-primary`":
+
+| From | To |
+|---|---|
+| `bg-primary` (with `text-white` in the same class list) | `bg-primary-dark` |
+| `bg-[var(--color-primary)]` (with `text-white`) | `bg-[var(--color-primary-dark)]` |
+| an existing `hover:bg-[var(--color-primary-dark)]` on such an element | `hover:bg-[#1a5667]` so hover still reads as a press-down |
+
+Leave `bg-primary` alone wherever the text on it is NOT white — those are already using their own ink and are out of this task's scope.
+
+- [ ] **Step 4: Watch it pass**
+
+Run: `npx vitest run src/app/__tests__/theme-contrast.test.ts`
+Expected: PASS, 8 tests.
+
+- [ ] **Step 5: Full verification**
+
+Run: `npm run lint && npx tsc --noEmit && npm test && npm run build`
+Expected: 0 lint errors, tsc silent, 134/134 (133 + this guard), build exit 0. The suite needs a dev server on :3000.
+
+- [ ] **Step 6: Commit**
+
+```bash
+git add src/
+git commit -m "fix(theme): use the AA-safe brand fill wherever text sits on it
+
+83 places across 47 files put white text on #1E97B2 (3.43:1), including
+the landing page's primary CTA, while --color-on-primary — the token the
+design system created for that pairing — was used exactly once. The
+palette was AA-capable and used unsafely.
+
+Text-bearing fills now use --color-primary-dark (6.1:1 with white), per
+the spec's rule. The new test guards the pairing rather than the values,
+which is the gap that let this through."
+```
+
+---
+
 ## Self-Review
 
 **Spec coverage** — every section maps to a task:
