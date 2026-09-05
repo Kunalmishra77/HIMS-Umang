@@ -12,7 +12,7 @@ import {
   CreditCard, HeartPulse,
   Heart, AlertTriangle,
   Sparkles, ChevronRight, MessageSquare, MessageSquarePlus, Menu,
-  UserPlus,
+  UserPlus, BookOpen, Pill,
 } from "lucide-react"
 import { useAuthStore, type Role } from "@/store/useAuthStore"
 import { usePatientStore } from "@/store/usePatientStore"
@@ -39,6 +39,7 @@ const PATIENT_SECTIONS: { header: string; items: NavItem[] }[] = [
   { header: 'section.consultations', items: [
     { href: '/patient/consultations', label: 'item.patient_consultations', icon: Calendar },
     { href: '/patient/orders',        label: 'item.patient_orders',        icon: ClipboardList },
+    { href: '/patient/pharmacy',      label: 'item.patient_pharmacy',      icon: Pill },
   ] },
   { header: 'section.records_billing', items: [
     { href: '/patient/downloads', label: 'item.patient_downloads', icon: FileText },
@@ -95,6 +96,21 @@ const DOCTOR_SECTIONS: { header: string; items: NavItem[] }[] = [
   ] },
 ]
 
+const PHARMACY_SECTIONS: { header: string; items: NavItem[] }[] = [
+  { header: 'section.fulfilment', items: [
+    { href: '/pharmacy/dashboard', label: 'item.pharmacy_dashboard', icon: LayoutDashboard },
+    { href: '/pharmacy/queue',     label: 'item.pharmacy_queue',     icon: ClipboardList },
+  ] },
+  { header: 'section.stock_compliance', items: [
+    { href: '/pharmacy/inventory', label: 'item.pharmacy_inventory', icon: Package },
+    { href: '/pharmacy/master',    label: 'item.pharmacy_master',    icon: BookOpen },
+    { href: '/pharmacy/narcotics', label: 'item.pharmacy_narcotics', icon: AlertTriangle },
+  ] },
+  { header: 'section.utilities', items: [
+    { href: '/pharmacy/messages',  label: 'item.pharmacy_messages',  icon: MessageSquare },
+  ] },
+]
+
 const navByRole: Record<Role, NavItem[]> = {
   patient: PATIENT_SECTIONS.flatMap(s => s.items),
   doctor: DOCTOR_SECTIONS.flatMap(s => s.items),
@@ -115,6 +131,7 @@ const navByRole: Record<Role, NavItem[]> = {
   ],
   // `admin` ships no portal — see src/types/roles.ts.
   admin: [],
+  pharmacy: PHARMACY_SECTIONS.flatMap(s => s.items),
 }
 
 // Single disciplined deep-blue identity shared by every portal (uniform per design
@@ -126,6 +143,7 @@ const ROLE_LABELS: Record<Role, string> = {
   nurse:     'role.nurse',
   billing:   'role.billing',
   admin:     'role.admin',
+  pharmacy:  'role.pharmacy',
 }
 
 // Roles whose sidebar is rendered as grouped sections (with headers) instead of a flat list.
@@ -133,6 +151,7 @@ const sectionsByRole: Partial<Record<Role, { header: string; items: NavItem[] }[
   patient: PATIENT_SECTIONS,
   reception: RECEPTION_SECTIONS,
   doctor: DOCTOR_SECTIONS,
+  pharmacy: PHARMACY_SECTIONS,
 }
 
 export function AppShell({ children }: { children: React.ReactNode }) {

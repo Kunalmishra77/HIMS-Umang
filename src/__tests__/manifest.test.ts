@@ -5,7 +5,7 @@ import { ALL_ROLES } from '@/types/roles'
 
 const APP = path.join(process.cwd(), 'src/app')
 
-const EXPECTED_ROLES = ['doctor', 'nurse', 'reception', 'billing', 'admin', 'patient']
+const EXPECTED_ROLES = ['doctor', 'nurse', 'reception', 'billing', 'admin', 'patient', 'pharmacy']
 
 // Every route this project actually ships, as segment arrays. A '[param]'
 // segment matches any single literal segment; '(group)' segments are routing-
@@ -136,12 +136,14 @@ const routeLikeLiterals = (src: string): { value: string; isPrefix: boolean }[] 
 // checks instead, which validate against real shipped routes rather than a
 // keyword list. 'journey' is NOT in this list — Task 4 fix round 2 restored
 // src/app/journey/[patientId] as the reception journey board's per-patient
-// detail view.
+// detail view. 'pharmacy' is NOT in this list either — it was Task 3's one
+// deliberate exception (see README's "Doctor creates orders; only pharmacy
+// fulfils them"), and the pharmacy portal shipped for real in Tasks 3-5.
 const REMOVED_PORTALS = [
   'admin', 'admission', 'ambulance', 'audit', 'bloodbank', 'bmw', 'cmo', 'consent',
   'cssd', 'dietary', 'discharge', 'emergency', 'family-track', 'feedback',
   'housekeeping', 'hr', 'insurance', 'inventory', 'lab', 'mortuary',
-  'ot', 'pharmacy', 'quality', 'radiology', 'secretary', 'vendor-manager',
+  'ot', 'quality', 'radiology', 'secretary', 'vendor-manager',
 ]
 
 // Matches '/<name>' as a genuine path segment, not a substring of a longer
@@ -154,7 +156,7 @@ const removedPortalHit = (src: string, name: string): boolean =>
   new RegExp(`(?<![\\w./-])/${name}(?=[/'"\`?)}]|$)`, 'm').test(src)
 
 describe('role manifest', () => {
-  it('ships exactly the six approved roles', () => {
+  it('ships exactly the seven approved roles', () => {
     expect([...ALL_ROLES].sort()).toEqual([...EXPECTED_ROLES].sort())
   })
 })

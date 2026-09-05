@@ -17,6 +17,7 @@ const ROLE_DASHBOARD: Record<string, string> = {
   reception: "/reception/dashboard",
   billing: "/billing/dashboard",
   patient: "/patient/dashboard",
+  pharmacy: "/pharmacy/dashboard",
 }
 
 export function HeroSignIn() {

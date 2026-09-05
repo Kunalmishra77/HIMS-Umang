@@ -20,6 +20,7 @@ const ROLE_DASHBOARD: Record<string, string> = {
   reception: "/reception/dashboard",
   billing: "/billing/dashboard",
   patient: "/patient/dashboard",
+  pharmacy: "/pharmacy/dashboard",
 }
 
 // Prefill the demo email when arriving from a portal card (`/login?role=lab`),

@@ -1,4 +1,4 @@
-// Umang Hospital HIMS ships five portals. `admin` carries no portal of its own —
+// Umang Hospital HIMS ships six portals. `admin` carries no portal of its own —
 // it is the account type used to run seeds and ops scripts, and it stays in the
 // enum because the shared Supabase project's profiles.role column and RLS
 // policies already recognise it.
@@ -9,6 +9,7 @@ export const ALL_ROLES = [
   'billing',
   'admin',
   'patient',
+  'pharmacy',
 ] as const
 
 export type Role = (typeof ALL_ROLES)[number]

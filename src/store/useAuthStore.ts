@@ -32,6 +32,7 @@ const DEMO_USERS: Record<Role, User> = {
   billing:   { id: 'BL-801',   name: 'Suresh Nair',    role: 'billing',   department: 'Billing Dept' },
   admin:     { id: 'ADM-01',   name: 'Rajesh Kulkarni', role: 'admin' },
   patient:   { id: 'PT-20394', name: 'Kiran Patil',    role: 'patient' },
+  pharmacy:  { id: 'PH-501',   name: 'Meera Iyer',     role: 'pharmacy', department: 'Pharmacy' },
 }
 
 export const DEMO_USERS_MAP = DEMO_USERS

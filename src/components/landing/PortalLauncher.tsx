@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
 import {
   Activity, Stethoscope, Users, QrCode,
-  ArrowRight, LayoutDashboard, CreditCard,
+  ArrowRight, LayoutDashboard, CreditCard, Pill,
 } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { type Role } from "@/store/useAuthStore"
@@ -21,6 +21,7 @@ const allRoleGroups: { id: string; label: string; roles: RoleCard[] }[] = [
   ] },
   { id: "operations", label: "Operations", roles: [
     { role: "reception", label: "Reception", desc: "OPD queue, registration, kiosk", icon: LayoutDashboard, href: "/reception/dashboard" },
+    { role: "pharmacy", label: "Pharmacy", desc: "Prescription queue, dispensing, stock", icon: Pill, href: "/pharmacy/dashboard" },
   ] },
   { id: "finance", label: "Finance", roles: [
     { role: "billing", label: "Billing", desc: "Invoices, packages, refunds, discounts", icon: CreditCard, href: "/billing/dashboard" },

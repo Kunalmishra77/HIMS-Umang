@@ -84,6 +84,7 @@ export function RoleGuard({ allowedRole, children }: Props) {
         nurse:     '/nurse/dashboard',
         billing:   '/billing/dashboard',
         admin:     '/',
+        pharmacy:  '/pharmacy/dashboard',
       }
       router.replace(roleHomeMap[activeRole] ?? '/')
     }

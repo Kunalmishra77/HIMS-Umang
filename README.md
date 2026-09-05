@@ -44,7 +44,7 @@ with no patient screen to join it would have been a broken half-feature.
 
 ## Portals and roles
 
-Five staff-facing portals ship, covering five of the six roles the system
+Six staff-facing portals ship, covering six of the seven roles the system
 recognises:
 
 | Role | Portal | Covers |
@@ -53,6 +53,7 @@ recognises:
 | `nurse` | `/nurse/*` | OPD vitals capture, patient worklist |
 | `doctor` | `/doctor/*` | Consultation, prescriptions, lab/imaging orders |
 | `billing` | `/billing/*` | Full billing: dashboard, patient ledger, packages, discounts, refunds |
+| `pharmacy` | `/pharmacy/*` | Prescription queue, dispensing, inventory, drug master, narcotics log |
 | `patient` | `/patient/*` | Registration status, records, downloads, family tracking |
 | `admin` | *(none)* | Recognised by auth/RLS for seeding and ops scripts only — ships no UI in this build |
 
