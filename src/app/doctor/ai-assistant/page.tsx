@@ -279,7 +279,7 @@ function DraftCard({ draft }: { draft: AssistantDraft }) {
         )}
         {canExecute && (
           <button onClick={run} disabled={done}
-            className={cn("flex items-center gap-1.5 text-[12px] font-semibold text-white rounded-lg px-3 py-1.5 transition disabled:opacity-60", confirming ? "bg-amber-600 hover:bg-amber-700" : "bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)]")}>
+            className={cn("flex items-center gap-1.5 text-[12px] font-semibold text-white rounded-lg px-3 py-1.5 transition disabled:opacity-60", confirming ? "bg-amber-600 hover:bg-amber-700" : "bg-[var(--color-primary-dark)] hover:bg-[#1a5667]")}>
             {done ? <Check className="h-3.5 w-3.5" /> : <ClipboardCheck className="h-3.5 w-3.5" />} {done ? DONE_LABEL[draft.kind] : confirming ? `Confirm — ${EXECUTE_LABEL[draft.kind]}` : EXECUTE_LABEL[draft.kind]}
           </button>
         )}

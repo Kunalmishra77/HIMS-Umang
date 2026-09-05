@@ -80,15 +80,22 @@ describe('brand fills are used in their AA-safe pairing', () => {
     // A text-bearing fill must use --color-primary-dark (6.1:1 with white),
     // or keep --color-primary and switch the ink to --color-on-primary
     // (4.8:1). This guards the pairing; the tests above only guard the values.
+    //
+    // Line-based rather than attribute-based: a class list assembled across
+    // cn() arguments or a template literal never appears as one literal
+    // class="..." attribute, so scanning per-attribute has a blind spot
+    // exactly where dynamic classes live. Scanning per source line has none.
+    const SOLID_FILL = /bg-primary(?![-/\w])|bg-\[var\(--color-primary\)\](?!\/)/
+    const WHITE_INK = /\btext-white\b/
     const offending = sourceFiles(join(import.meta.dirname, '../..'))
       .flatMap((file) => {
-        const text = readFileSync(file, 'utf8')
-        const hits = text.match(/class(?:Name)?="[^"]*"/g) ?? []
-        return hits
-          .filter((c) => /text-white/.test(c))
-          .filter((c) => /bg-primary|bg-\[var\(--color-primary\)\]/.test(c))
-          .map(() => file.replace(/^.*[\/]src[\/]/, 'src/'))
+        const rel = file.replace(/^.*[\\/]src[\\/]/, 'src/').replace(/\\/g, '/')
+        return readFileSync(file, 'utf8')
+          .split('\n')
+          .map((line, i) => ({ line, n: i + 1 }))
+          .filter(({ line }) => WHITE_INK.test(line) && SOLID_FILL.test(line))
+          .map(({ n }) => `${rel}:${n}`)
       })
-    expect([...new Set(offending)]).toEqual([])
+    expect(offending).toEqual([])
   })
 })
