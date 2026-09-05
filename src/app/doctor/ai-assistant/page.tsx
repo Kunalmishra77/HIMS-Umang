@@ -88,7 +88,7 @@ export default function AiAssistantPage() {
       <aside className="hidden md:flex w-60 flex-shrink-0 flex-col rounded-2xl bg-white shadow-[0_1px_4px_rgba(15,23,42,0.06)] overflow-hidden">
         <div className="p-3 border-b border-slate-100">
           <button onClick={() => newThread()}
-            className="w-full h-10 rounded-xl bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary-dark)] text-white font-semibold text-[13.5px] flex items-center justify-center gap-2 hover:opacity-95 transition">
+            className="w-full h-10 rounded-xl bg-gradient-to-r from-[var(--color-primary-900)] to-[var(--color-primary-800)] text-white font-semibold text-[13.5px] flex items-center justify-center gap-2 hover:opacity-95 transition">
             <Plus className="h-4 w-4" /> New chat
           </button>
         </div>
@@ -169,7 +169,7 @@ export default function AiAssistantPage() {
                 />
               </div>
               <button onClick={() => send(input)} disabled={!input.trim() || thinking} aria-label="Send"
-                className="h-11 w-11 flex-shrink-0 rounded-2xl bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-dark)] text-white flex items-center justify-center disabled:opacity-40 hover:opacity-95 transition">
+                className="h-11 w-11 flex-shrink-0 rounded-2xl bg-gradient-to-br from-[var(--color-primary-900)] to-[var(--color-primary-800)] text-white flex items-center justify-center disabled:opacity-40 hover:opacity-95 transition">
                 <Send className="h-4.5 w-4.5" />
               </button>
             </div>

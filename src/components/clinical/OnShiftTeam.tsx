@@ -152,7 +152,7 @@ export function OnShiftTeam({
                 disabled={!onClickMember}
                 className={cn('w-full text-left flex items-center gap-3 px-3 py-2 rounded-lg border border-slate-200 hover:bg-slate-50 cursor-pointer transition',
                   !onClickMember && 'cursor-default')}>
-                <span className="h-8 w-8 rounded-lg bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-light)] text-white flex items-center justify-center text-[11px] font-bold flex-shrink-0">
+                <span className="h-8 w-8 rounded-lg bg-gradient-to-br from-[var(--color-primary-900)] to-[var(--color-primary-800)] text-white flex items-center justify-center text-[11px] font-bold flex-shrink-0">
                   {initials}
                 </span>
                 <div className="flex-1 min-w-0">

@@ -370,7 +370,7 @@ export default function DoctorConsultation() {
         <button onClick={() => router.push('/doctor/dashboard')} aria-label="Back" className="h-8 w-8 rounded-lg bg-slate-100 hover:bg-slate-200 flex items-center justify-center cursor-pointer">
           <ArrowLeft className="h-4 w-4 text-slate-500" />
         </button>
-        <span className="h-11 w-11 rounded-2xl bg-gradient-to-br from-[#196b7e] to-[#1E97B2] flex items-center justify-center text-white text-[15px] font-bold">
+        <span className="h-11 w-11 rounded-2xl bg-gradient-to-br from-[#1b4856] to-[#1a5667] flex items-center justify-center text-white text-[15px] font-bold">
           {active.name.split(' ').map(w => w[0]).join('').slice(0, 2)}
         </span>
         <div className="flex-1 min-w-0">

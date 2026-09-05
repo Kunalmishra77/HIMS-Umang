@@ -138,7 +138,7 @@ export default function ProfilePage() {
 
       {/* Identity */}
       <div className="rounded-3xl bg-white shadow-[0_1px_4px_rgba(15,23,42,0.06)] p-5 flex items-center gap-4">
-        <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-light)] flex items-center justify-center text-white text-[20px] font-bold">{initials}</div>
+        <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-[var(--color-primary-900)] to-[var(--color-primary-800)] flex items-center justify-center text-white text-[20px] font-bold">{initials}</div>
         <div className="flex-1">
           <p className="text-[18px] font-bold text-slate-900">{name}</p>
           <p className="text-[13px] text-slate-500">{line([me.id, `${me.age}y`, me.gender, profile?.abhaId ? `ABHA: ${profile.abhaId}` : undefined])}</p>

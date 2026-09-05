@@ -48,7 +48,7 @@ export default function AssistantPage() {
     <div className="max-w-3xl mx-auto h-full flex flex-col">
       <div className="mb-3">
         <h1 className="text-[24px] font-bold text-slate-900 tracking-tight flex items-center gap-2">
-          <span className="h-8 w-8 rounded-xl bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-light)] flex items-center justify-center"><Sparkles className="h-4.5 w-4.5 text-white" /></span>
+          <span className="h-8 w-8 rounded-xl bg-gradient-to-br from-[var(--color-primary-900)] to-[var(--color-primary-800)] flex items-center justify-center"><Sparkles className="h-4.5 w-4.5 text-white" /></span>
           {t('assistant.title')}
         </h1>
         <p className="text-[13px] text-slate-500 mt-1">{t('assistant.subtitle')}</p>

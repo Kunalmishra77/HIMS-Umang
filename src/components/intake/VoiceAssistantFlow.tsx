@@ -483,7 +483,7 @@ function TranscriptSheet({ messages, interim, onClose }: { messages: Msg[]; inte
               <div className={cn("max-w-[82%] px-3.5 py-2.5 rounded-2xl text-[14px] leading-snug", m.role === 'patient' ? "bg-[#1E97B2] text-[#0D2032] rounded-br-md" : "bg-slate-100 text-slate-800 rounded-bl-md")}>{m.text}</div>
             </div>
           ))}
-          {interim && <div className="flex justify-end"><div className="max-w-[82%] px-3.5 py-2.5 rounded-2xl rounded-br-md bg-[#1E97B2]/40 text-white text-[14px] italic">{interim}</div></div>}
+          {interim && <div className="flex justify-end"><div className="max-w-[82%] px-3.5 py-2.5 rounded-2xl rounded-br-md bg-[#1E97B2]/40 text-[#0D2032] text-[14px] italic">{interim}</div></div>}
         </div>
       </motion.div>
     </motion.div>

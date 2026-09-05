@@ -67,7 +67,7 @@ export default function FollowUpPage() {
       </div>
 
       {/* Patient + visit header */}
-      <div className="rounded-3xl bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-dark)] text-white p-5 shadow-[0_10px_30px_rgba(30,151,178,0.25)]">
+      <div className="rounded-3xl bg-gradient-to-br from-[var(--color-primary-900)] to-[var(--color-primary-800)] text-white p-5 shadow-[0_10px_30px_rgba(30,151,178,0.25)]">
         <div className="flex items-center gap-2 text-[12px] font-semibold text-white/80 mb-1">
           {mode === 'video' ? <Video className="h-4 w-4" /> : <Building2 className="h-4 w-4" />}
           {mode === 'video' ? 'Video consultation' : 'In-person OPD visit'} · today

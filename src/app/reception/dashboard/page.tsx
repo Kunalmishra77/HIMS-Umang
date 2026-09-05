@@ -180,7 +180,7 @@ export default function ReceptionDashboard() {
             </div>
 
             {/* Now serving */}
-            <div className="rounded-2xl p-4 mb-3 bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-dark)] text-white">
+            <div className="rounded-2xl p-4 mb-3 bg-gradient-to-br from-[var(--color-primary-900)] to-[var(--color-primary-800)] text-white">
               <div className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-white/70 mb-1"><Volume2 className="h-3.5 w-3.5" /> {t('dashboard.nowServing')}</div>
               {nowServing ? (
                 <div className="flex items-center justify-between">
@@ -212,7 +212,7 @@ export default function ReceptionDashboard() {
             <div className="grid grid-cols-2 gap-2.5">
               {[
                 { label: t('dashboard.qaRegisterWalkIn'), icon: UserPlus, href: '/reception/opd', tint: 'from-[var(--color-primary)] to-[var(--color-primary-dark)]' },
-                { label: t('dashboard.qaNewAppointment'), icon: Calendar, href: '/reception/appointments', tint: 'from-[var(--color-primary)] to-[var(--color-primary-light)]' },
+                { label: t('dashboard.qaNewAppointment'), icon: Calendar, href: '/reception/appointments', tint: 'from-[var(--color-primary)] to-[var(--color-primary-dark)]' },
                 { label: t('dashboard.qaOpdDisplay'), icon: Volume2, href: '/reception/queue', tint: 'from-amber-500 to-primary' },
               ].map(a => (
                 <Link key={a.label} href={a.href} className="flex flex-col items-center gap-2 p-3 rounded-2xl bg-slate-50 hover:bg-slate-100 transition active:scale-[0.97]">

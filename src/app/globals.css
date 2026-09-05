@@ -63,8 +63,11 @@
   --color-secondary: #0D2032;
   --color-secondary-light: #1B3A57;
 
-  /* Gradients — restrained: teal for brand fills, navy for hero depth */
-  --gradient-primary: linear-gradient(135deg, #196b7e 0%, #1E97B2 100%);
+  /* Gradients — restrained: teal for brand fills, navy for hero depth.
+     --gradient-primary is used with white text (.gradient-primary), so both
+     stops stay at --color-primary-900/-800 — darker than --color-primary-dark
+     itself, never as light as --color-primary (3.43:1 with white, fails). */
+  --gradient-primary: linear-gradient(135deg, #1b4856 0%, #1a5667 100%);
   --gradient-surface: linear-gradient(180deg, #FFFFFF 0%, #F6F9FC 100%);
   --gradient-sidebar: linear-gradient(180deg, #FFFFFF 0%, #FFFFFF 100%);
   --gradient-hero: linear-gradient(155deg, #0D2032 0%, #16324A 55%, #0D2032 100%);
@@ -218,7 +221,7 @@
   --color-secondary: #0D2032;
   --color-border-focus: #1E97B2;
   --color-background: #F4FAFB;        /* cool, clean medical surface */
-  --gradient-primary: linear-gradient(135deg, #196b7e 0%, #1E97B2 100%);
+  --gradient-primary: linear-gradient(135deg, #1b4856 0%, #1a5667 100%);
   --shadow-elevated: 0 12px 32px rgba(30, 151, 178, 0.10), 0 1px 3px rgba(0, 0, 0, 0.06);
   --shadow-glow: 0 0 0 4px rgba(30, 151, 178, 0.18);
   --shadow-glow-sm: 0 0 0 3px rgba(30, 151, 178, 0.14);
@@ -521,8 +524,12 @@
   box-shadow: var(--shadow-card);
 }
 .ai-badge {
-  background: linear-gradient(135deg, #196b7e, #1E97B2);
-  color: #0D2032;
+  /* Solid brand teal, not a gradient: navy ink is only AA-safe (4.82:1) on
+     the exact --color-primary teal, and fails (2.71:1) on --color-primary-dark
+     — the gradient this used to be regressed silently once #196b7e became
+     one of its stops. */
+  background: var(--color-primary);
+  color: var(--color-on-primary);
   font-size: 0.65rem;
   font-weight: 700;
   letter-spacing: 0.05em;

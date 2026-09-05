@@ -120,7 +120,7 @@ export default function DiscoveryPage() {
   return (
     <div className="min-h-screen bg-slate-50">
       {/* Hero */}
-      <div className="bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-dark)] text-white py-10 px-6">
+      <div className="bg-gradient-to-br from-[var(--color-primary-900)] to-[var(--color-primary-800)] text-white py-10 px-6">
         <div className="max-w-3xl mx-auto">
           <div className="flex items-start justify-between gap-4 mb-1">
             <p className="text-[#6acdd9] text-sm font-semibold">{t('brand')}</p>

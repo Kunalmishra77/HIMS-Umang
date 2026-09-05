@@ -59,7 +59,7 @@ export function StaffMessages({ meId }: { meId: string }) {
           return (
             <button key={c.id} onClick={() => setSelectedId(c.id)}
               className={cn("w-full text-left p-3.5 border-b border-slate-50 transition flex gap-3", selectedId === c.id ? "bg-[rgba(30,151,178,0.07)]/50" : "hover:bg-slate-50")}>
-              <span className="h-10 w-10 rounded-full bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-light)] text-white flex items-center justify-center font-bold text-[13px] flex-shrink-0">{initials(other.name)}</span>
+              <span className="h-10 w-10 rounded-full bg-gradient-to-br from-[var(--color-primary-900)] to-[var(--color-primary-800)] text-white flex items-center justify-center font-bold text-[13px] flex-shrink-0">{initials(other.name)}</span>
               <span className="flex-1 min-w-0">
                 <span className="flex items-center justify-between gap-2">
                   <span className="text-[13.5px] font-bold text-slate-900 truncate">{other.name}</span>
@@ -83,7 +83,7 @@ export function StaffMessages({ meId }: { meId: string }) {
           return (
             <>
               <div className="px-5 py-3 border-b border-slate-100 flex items-center gap-3">
-                <span className="h-10 w-10 rounded-full bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-light)] text-white flex items-center justify-center font-bold text-[13px]">{initials(other.name)}</span>
+                <span className="h-10 w-10 rounded-full bg-gradient-to-br from-[var(--color-primary-900)] to-[var(--color-primary-800)] text-white flex items-center justify-center font-bold text-[13px]">{initials(other.name)}</span>
                 <div><p className="text-[14.5px] font-bold text-slate-900 leading-tight">{other.name}</p><p className="text-[11.5px] text-slate-400">{ROLE_LABEL[other.role]} · {other.department}</p></div>
               </div>
               <div ref={scrollRef} className="flex-1 overflow-y-auto p-5 space-y-2.5 bg-slate-50/40">
@@ -147,7 +147,7 @@ function ComposeModal({ meId, onClose, onSend }: { meId: string; onClose: () => 
           {list.map(c => (
             <button key={c.id} onClick={() => setToId(c.id)}
               className={cn("w-full text-left flex items-center gap-3 p-2.5 rounded-xl transition", toId === c.id ? "bg-[rgba(30,151,178,0.07)] ring-1 ring-primary/25" : "hover:bg-slate-50")}>
-              <span className="h-9 w-9 rounded-full bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-light)] text-white flex items-center justify-center font-bold text-[12px]">{initials(c.name)}</span>
+              <span className="h-9 w-9 rounded-full bg-gradient-to-br from-[var(--color-primary-900)] to-[var(--color-primary-800)] text-white flex items-center justify-center font-bold text-[12px]">{initials(c.name)}</span>
               <span className="flex-1 min-w-0"><span className="block text-[13.5px] font-semibold text-slate-900 truncate">{c.name}</span><span className="block text-[11.5px] text-slate-400">{ROLE_LABEL[c.role]} · {c.department}</span></span>
             </button>
           ))}

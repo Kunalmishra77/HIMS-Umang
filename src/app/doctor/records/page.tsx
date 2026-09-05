@@ -119,7 +119,7 @@ export default function DoctorRecords() {
                     className="border-b border-slate-50 last:border-0 hover:bg-[rgba(30,151,178,0.10)]/40 cursor-pointer transition">
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
-                        <span className={cn("h-9 w-9 rounded-xl text-white flex items-center justify-center font-bold text-[12.5px] flex-shrink-0", r.mode === 'online' ? "bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-light)]" : "bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-light)]")}>{initials(r.name)}</span>
+                        <span className={cn("h-9 w-9 rounded-xl text-white flex items-center justify-center font-bold text-[12.5px] flex-shrink-0", r.mode === 'online' ? "bg-gradient-to-br from-[var(--color-primary-900)] to-[var(--color-primary-800)]" : "bg-gradient-to-br from-[var(--color-primary-900)] to-[var(--color-primary-800)]")}>{initials(r.name)}</span>
                         <div className="min-w-0">
                           <p className="text-[13.5px] font-bold text-slate-900 truncate flex items-center gap-1.5">
                             {r.name}
@@ -155,7 +155,7 @@ export default function DoctorRecords() {
               className="fixed top-0 right-0 bottom-0 w-full max-w-md bg-white z-50 shadow-2xl overflow-y-auto" role="dialog" aria-modal="true" aria-label={t('records.patientRecord')}>
               <div className="sticky top-0 bg-white border-b border-slate-100 px-5 py-4 flex items-start justify-between gap-3 z-10">
                 <div className="flex items-center gap-3">
-                  <span className={cn("h-12 w-12 rounded-2xl text-white flex items-center justify-center font-bold text-[16px]", selected.mode === 'online' ? "bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-light)]" : "bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-light)]")}>{initials(selected.name)}</span>
+                  <span className={cn("h-12 w-12 rounded-2xl text-white flex items-center justify-center font-bold text-[16px]", selected.mode === 'online' ? "bg-gradient-to-br from-[var(--color-primary-900)] to-[var(--color-primary-800)]" : "bg-gradient-to-br from-[var(--color-primary-900)] to-[var(--color-primary-800)]")}>{initials(selected.name)}</span>
                   <div>
                     <p className="text-[17px] font-bold text-slate-900 leading-tight">{selected.name}</p>
                     <p className="text-[12.5px] text-slate-500">{selected.id} · {selected.age}y · {selected.gender} · <span className={cn("font-semibold", selected.mode === 'online' ? "text-[var(--color-accent)]" : "text-[var(--color-accent)]")}>{selected.mode === 'online' ? t('common.onlineLabel') : t('common.inPersonLabel')}</span></p>

@@ -77,15 +77,30 @@ function sourceFiles(dir: string, out: string[] = []): string[] {
 describe('brand fills are used in their AA-safe pairing', () => {
   it('never puts white text on the brand teal', () => {
     // #1E97B2 with white is 3.43:1 — below the 4.5 floor for normal text.
-    // A text-bearing fill must use --color-primary-dark (6.1:1 with white),
-    // or keep --color-primary and switch the ink to --color-on-primary
-    // (4.8:1). This guards the pairing; the tests above only guard the values.
+    // #6acdd9 (--color-primary-light) with white is worse still, 1.85:1.
+    // A text-bearing fill must use --color-primary-dark (6.1:1 with white)
+    // as its lightest point, or keep --color-primary and switch the ink to
+    // --color-on-primary (4.8:1). This guards the pairing; the tests above
+    // only guard the values.
     //
     // Line-based rather than attribute-based: a class list assembled across
     // cn() arguments or a template literal never appears as one literal
     // class="..." attribute, so scanning per-attribute has a blind spot
     // exactly where dynamic classes live. Scanning per source line has none.
-    const SOLID_FILL = /bg-primary(?![-/\w])|bg-\[var\(--color-primary\)\](?!\/)/
+    //
+    // Every spelling of an unsafe teal fill is covered, not just the solid
+    // `bg-*` ones: a gradient stop (`from-`/`via-`/`to-`) naming the unsafe
+    // token or its literal hex, an alpha-modified fill (`bg-[...]/40`, which
+    // an earlier version of this regex deliberately let through), and the
+    // `-500`/`-light` ramp aliases that resolve to the exact same colours as
+    // `--color-primary` / `--color-primary-light`. `bg-primary-dark` and
+    // `bg-primary-soft` stay excluded — they're the safe fills — as does any
+    // line where the fill is paired with navy ink instead of white.
+    const UNSAFE_TEAL = '(?:var\\(--color-primary(?:-light)?\\)|#(?:1e97b2|6acdd9))'
+    const SOLID_FILL = new RegExp(
+      String.raw`bg-primary(?![-/\w])|bg-primary-500\b|bg-\[${UNSAFE_TEAL}\]|(?:from|via|to)-\[${UNSAFE_TEAL}\]`,
+      'i'
+    )
     const WHITE_INK = /\btext-white\b/
     const offending = sourceFiles(join(import.meta.dirname, '../..'))
       .flatMap((file) => {

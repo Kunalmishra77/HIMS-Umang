@@ -247,7 +247,7 @@ function PatientDrawer({ patient: p, visits, appointments, onClose, onAnnounce, 
           {p.photoUrl
             // eslint-disable-next-line @next/next/no-img-element
             ? <img src={p.photoUrl} alt={p.name} className="h-12 w-12 rounded-2xl object-cover border border-slate-200" />
-            : <span className="h-12 w-12 rounded-2xl bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-dark)] text-white flex items-center justify-center font-bold text-[16px]">{initials(p.name)}</span>}
+            : <span className="h-12 w-12 rounded-2xl bg-gradient-to-br from-[var(--color-primary-900)] to-[var(--color-primary-800)] text-white flex items-center justify-center font-bold text-[16px]">{initials(p.name)}</span>}
           <div>
             <div className="flex items-center gap-2 flex-wrap">
               <p className="text-[17px] font-bold text-slate-900 leading-tight">{p.name}</p>

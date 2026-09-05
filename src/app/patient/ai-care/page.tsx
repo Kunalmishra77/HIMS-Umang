@@ -118,7 +118,7 @@ export default function AiCarePage() {
   return (
     <div className="max-w-3xl mx-auto pb-10">
       <h1 className="text-[24px] font-bold text-slate-900 tracking-tight flex items-center gap-2 mb-3">
-        <span className="h-8 w-8 rounded-xl bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-light)] flex items-center justify-center"><Sparkles className="h-4.5 w-4.5 text-white" /></span>
+        <span className="h-8 w-8 rounded-xl bg-gradient-to-br from-[var(--color-primary-900)] to-[var(--color-primary-800)] flex items-center justify-center"><Sparkles className="h-4.5 w-4.5 text-white" /></span>
         {t('aiCare.title')}
       </h1>
       <div className="inline-flex p-1 rounded-xl bg-slate-100 mb-4">

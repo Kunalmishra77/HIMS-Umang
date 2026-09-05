@@ -42,8 +42,8 @@ const STAGE_META: Record<StageKey, { label: string; icon: React.ElementType; acc
   diagnostics:  { label: 'Tests Ordered', icon: FlaskConical, accent: '#F59E0B' },
   pharmacy:     { label: 'Medication', icon: Pill, accent: '#EC4899' },
   surgery:      { label: 'Surgery / OT', icon: Building2, accent: 'var(--color-primary)' },
-  admission:    { label: 'Admission Required', icon: Bed, accent: '#1E97B2' },
-  billing:      { label: 'Payment Confirmed', icon: Receipt, accent: '#1E97B2' },
+  admission:    { label: 'Admission Required', icon: Bed, accent: 'var(--color-primary)' },
+  billing:      { label: 'Payment Confirmed', icon: Receipt, accent: 'var(--color-primary)' },
   discharge:    { label: "You're Being Discharged", icon: LogOut, accent: '#16A34A' },
 }
 

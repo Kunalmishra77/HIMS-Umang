@@ -116,11 +116,11 @@ export function PaymentStep({ form, update }: { form: IntakeForm; update: Update
   return (
     <div className="h-full overflow-y-auto pr-1 pt-1 space-y-4">
       {/* Fee card - Wallet Style */}
-      <div className="relative rounded-[24px] bg-gradient-to-br from-[#1E97B2] to-[#196b7e] p-6 flex items-center justify-between shadow-[0_12px_30px_rgba(30,151,178,0.3)] overflow-hidden mb-2">
+      <div className="relative rounded-[24px] bg-gradient-to-br from-[#1b4856] to-[#1a5667] p-6 flex items-center justify-between shadow-[0_12px_30px_rgba(30,151,178,0.3)] overflow-hidden mb-2">
         <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full blur-2xl -mr-12 -mt-12 pointer-events-none" />
         <div className="absolute bottom-0 left-0 w-32 h-32 bg-primary/10 rounded-full blur-2xl -ml-10 -mb-10 pointer-events-none" />
         <div className="relative z-10">
-          <p className="text-[13px] uppercase text-primary-light font-bold tracking-wide">Consultation fee</p>
+          <p className="text-[13px] uppercase text-white/90 font-bold tracking-wide">Consultation fee</p>
           <p className="text-[15px] font-medium text-white/90 mt-1">{isVideo ? `${form.slotDoctor || 'Video consult'}` : `${form.departments[0] ?? 'OPD'} · in-person`}</p>
         </div>
         <p className="relative z-10 text-[32px] font-bold text-white tracking-tight">
@@ -157,11 +157,13 @@ export function PaymentStep({ form, update }: { form: IntakeForm; update: Update
                 className={cn(
                   "flex flex-col items-center gap-1.5 py-3 rounded-2xl border transition-all active:scale-[0.97] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1E97B2]",
                   sel
-                    ? isGovt ? "bg-green-600 border-green-600 text-white" : "bg-[#1E97B2] border-[#1E97B2] text-[#0D2032]"
+                    ? isGovt
+                      ? "bg-green-600 border-green-600 text-white"
+                      : "bg-[#1E97B2] border-[#1E97B2] text-[#0D2032]"
                     : "bg-white border-slate-200 text-slate-700",
                 )}
               >
-                <Icon className={cn("h-5 w-5", sel ? "text-white" : isGovt ? "text-green-600" : "text-[#955408]")} />
+                <Icon className={cn("h-5 w-5", sel ? (isGovt ? "text-white" : "text-[#0D2032]") : isGovt ? "text-green-600" : "text-[#955408]")} />
                 <span className="text-[12px] font-semibold text-center leading-tight">{label}</span>
               </button>
             )
