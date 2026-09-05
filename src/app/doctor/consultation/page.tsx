@@ -328,10 +328,18 @@ export default function DoctorConsultation() {
     toast.success(`Admission requested · ${admitWard}`)
   }
 
+  // A patient with medicines prescribed this encounter goes to Pharmacy first
+  // (they collect their medicines before settling the bill); one with none
+  // goes straight to Billing, same as before pharmacy existed as a stage.
   function completeConsultation() {
     if (!active) return
-    updateStatus(active.id, 'billing')
-    toast.success(`Consultation complete · ${active.name} sent to Billing`)
+    if (meds.length > 0) {
+      updateStatus(active.id, 'pharmacy')
+      toast.success(`Consultation complete · ${active.name} sent to Pharmacy`)
+    } else {
+      updateStatus(active.id, 'billing')
+      toast.success(`Consultation complete · ${active.name} sent to Billing`)
+    }
   }
 
   if (!hydrated) return null
@@ -598,7 +606,7 @@ export default function DoctorConsultation() {
           </div>
 
           <button onClick={completeConsultation} className="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-[13px] font-semibold cursor-pointer mt-1">
-            <Send className="h-4 w-4" /> Complete consultation
+            <Send className="h-4 w-4" /> {meds.length > 0 ? 'Send to pharmacy' : 'Complete consultation'}
           </button>
           <p className="text-[10.5px] text-slate-400 mt-1.5">Each action is audited and routes the patient onward; the right role is notified.</p>
         </div>

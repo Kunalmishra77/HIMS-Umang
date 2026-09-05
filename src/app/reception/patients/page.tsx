@@ -21,24 +21,30 @@ import { StatusPill, type Status } from "@/components/ui/StatusPill"
 import { PatientAvatar } from "@/components/ui/PatientAvatar"
 
 const STATUS_TOKEN: Record<QueueStatus, Status> = {
-  waiting: 'pending', vitals: 'caution', consulting: 'info', billing: 'neutral', done: 'done',
+  waiting: 'pending', vitals: 'caution', consulting: 'info', pharmacy: 'caution', billing: 'neutral', done: 'done',
 }
 const triageToken = (lvl?: TriageLevel): Status =>
   lvl === 'Critical' ? 'critical' : lvl === 'High' ? 'urgent' : lvl === 'Medium' ? 'caution' : 'stable'
 
 const STATUS_KEY: Record<QueueStatus, string> = {
-  waiting: 'statusWaiting', vitals: 'statusVitals', consulting: 'statusConsulting', billing: 'statusBilling', done: 'statusCompleted',
+  waiting: 'statusWaiting', vitals: 'statusVitals', consulting: 'statusConsulting', pharmacy: 'statusPharmacy', billing: 'statusBilling', done: 'statusCompleted',
 }
 const STATUS_TINT: Record<QueueStatus, string> = {
   waiting: 'bg-amber-50 text-amber-700', vitals: 'bg-surface-sunken text-accent', consulting: 'bg-[rgba(30,151,178,0.07)] text-[var(--color-accent)]',
-  billing: 'bg-primary-soft text-accent', done: 'bg-green-50 text-green-700',
+  pharmacy: 'bg-amber-50 text-amber-700', billing: 'bg-primary-soft text-accent', done: 'bg-green-50 text-green-700',
 }
 const TRIAGE_TINT: Record<TriageLevel, string> = {
   Critical: 'bg-red-50 text-red-700', High: 'bg-urgent-bg text-urgent', Medium: 'bg-amber-50 text-amber-700', Low: 'bg-green-50 text-green-700',
 }
+// Reception's manual "advance" override doesn't know whether a patient has a
+// prescription (only the doctor's consultation does — see doctor/consultation/
+// page.tsx's completeConsultation), so it never routes consulting → pharmacy
+// on its own. It does let a patient already sitting at pharmacy (routed there
+// by the doctor, or arriving that way from Gov-HIMS) be pushed on to billing.
 const NEXT_STATUS: Partial<Record<QueueStatus, { next: QueueStatus; labelKey: string }>> = {
   waiting: { next: 'vitals', labelKey: 'nextSendToVitals' }, vitals: { next: 'consulting', labelKey: 'nextSendToDoctor' },
   consulting: { next: 'billing', labelKey: 'nextSendToBilling' },
+  pharmacy: { next: 'billing', labelKey: 'nextSendToBilling' },
   billing: { next: 'done', labelKey: 'nextMarkDone' },
 }
 const DEPARTMENTS = ['All', 'General Medicine', 'Cardiology', 'Orthopaedics', 'Gynaecology', 'ENT', 'Ophthalmology', 'Dermatology', 'Paediatrics']

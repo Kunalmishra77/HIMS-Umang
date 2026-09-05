@@ -361,7 +361,9 @@ export default function DoctorDashboard() {
   // stranded before consultation just because of a name-string mismatch.
   const mine     = patients.filter(p => belongsToDoctorQueue(p.doctor, currentUser?.name, activeDoctorNames))
   const queue    = mine.filter(p => ["waiting","vitals","consulting"].includes(p.queueStatus))
-  const seen     = mine.filter(p => ["billing","done"].includes(p.queueStatus)).length
+  // "Seen" counts everyone past consultation — pharmacy included, since a
+  // patient sent there has already been seen by this doctor today.
+  const seen     = mine.filter(p => ["pharmacy","billing","done"].includes(p.queueStatus)).length
   const filtered = DRUGS.filter(d => d.toLowerCase().includes(medSearch.toLowerCase()) && medSearch.length > 0)
 
   // Open a patient → mark them in consultation (handoff signal to reception/queue).

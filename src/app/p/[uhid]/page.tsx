@@ -50,6 +50,8 @@ const PUBLIC_REWRITE: Array<[RegExp, string]> = [
   [/^Imaging ordered/, "rewrite.imagingOrdered"],
   [/^Study acquired/, "rewrite.studyAcquired"],
   [/^Report verified/, "rewrite.reportVerified"],
+  [/^Sent for medicines/, "rewrite.pharmacySent"],
+  [/^Medicines collected/, "rewrite.medicinesCollected"],
   [/^OT booked/, "rewrite.otBooked"],
   [/^Surgery started/, "rewrite.surgeryStarted"],
   [/^Surgery completed/, "rewrite.surgeryCompleted"],

@@ -10,6 +10,7 @@
 // Called by PatientJourneyTimeline (drawer, /journey/[id] page).
 
 import { usePatientStore } from "@/store/usePatientStore"
+import { usePharmacyStore } from "@/store/usePharmacyStore"
 import { useERStore } from "@/store/useERStore"
 import { useLabOrdersStore } from "@/store/useLabOrdersStore"
 import { useRadiologyStudiesStore } from "@/store/useRadiologyStudiesStore"
@@ -305,6 +306,34 @@ function fromDischarge(patientId: string): JourneyEvent[] {
   return out
 }
 
+// Pharmacy stage — a prescription materializes in usePharmacyStore whenever
+// the doctor sends one (doctor/consultation's completeConsultation, or
+// doctor/dashboard's sendRx), independent of the OPD queue's current
+// queueStatus. That makes it a durable marker of "this patient collected
+// medicines" that survives the visit later advancing past 'pharmacy' to
+// 'billing'/'done' — unlike queueStatus, which only reflects the CURRENT stage.
+function fromPharmacy(patientId: string): JourneyEvent[] {
+  const out: JourneyEvent[] = []
+  for (const rx of usePharmacyStore.getState().prescriptions) {
+    if (rx.patientId !== patientId) continue
+    const itemCount = rx.medicines.length
+    out.push({
+      at: rx.dispatchedAt, dept: 'Pharmacy',
+      title: `Sent for medicines · ${itemCount} item${itemCount !== 1 ? 's' : ''}`,
+      detail: rx.medicines.map(m => m.name).join(' · '),
+      actor: rx.doctorName, severity: 'info', resourceId: rx.id,
+    })
+    if (rx.status === 'collected' && rx.collectedAt) {
+      out.push({
+        at: rx.collectedAt, dept: 'Pharmacy',
+        title: 'Medicines collected',
+        actor: rx.dispensedBy?.name, severity: 'success', resourceId: rx.id,
+      })
+    }
+  }
+  return out
+}
+
 function fromBilling(patientId: string): JourneyEvent[] {
   const out: JourneyEvent[] = []
   const b = useBillingStore.getState().bills.find(x => x.patientId === patientId)
@@ -365,6 +394,7 @@ export function aggregateJourney(patientId: string, patientName: string): Journe
     ...fromRadiology(patientId),
     ...fromIPD(patientId),
     ...fromOT(patientId),
+    ...fromPharmacy(patientId),
     ...fromDischarge(patientId),
     ...fromBilling(patientId),
     ...fromInsurance(patientId),

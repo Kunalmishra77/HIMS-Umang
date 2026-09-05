@@ -20,23 +20,29 @@ import { notifyAndAuditMany } from "@/lib/notifyAndAudit"
 import { AadhaarAbhaFlow, type AadhaarAbhaResult } from "@/components/reception/AadhaarAbhaFlow"
 
 const STATUS_TOKEN: Record<QueueStatus, Status> = {
-  waiting: 'pending', vitals: 'caution', consulting: 'info', billing: 'neutral', done: 'done',
+  waiting: 'pending', vitals: 'caution', consulting: 'info', pharmacy: 'caution', billing: 'neutral', done: 'done',
 }
 const opdTriageToken = (lvl?: TriageLevel): Status =>
   lvl === 'Critical' ? 'critical' : lvl === 'High' ? 'urgent' : lvl === 'Medium' ? 'caution' : 'stable'
 
+// Reception's manual "advance" override doesn't know whether a patient has a
+// prescription (only the doctor's consultation does — see doctor/consultation/
+// page.tsx's completeConsultation), so it never routes consulting → pharmacy
+// on its own. It does let a patient already sitting at pharmacy (routed there
+// by the doctor, or arriving that way from Gov-HIMS) be pushed on to billing.
 const NEXT_STATUS: Partial<Record<QueueStatus, QueueStatus>> = {
-  waiting: 'vitals', vitals: 'consulting', consulting: 'billing', billing: 'done',
+  waiting: 'vitals', vitals: 'consulting', consulting: 'billing', pharmacy: 'billing', billing: 'done',
 }
 const NEXT_KEY: Partial<Record<QueueStatus, string>> = {
   waiting: 'nextSendToVitals', vitals: 'nextSendToDoctor', consulting: 'nextSendToBilling',
-  billing: 'nextMarkDone',
+  pharmacy: 'nextSendToBilling', billing: 'nextMarkDone',
 }
 
 const STATUS_PILL: Record<QueueStatus, { key: string; cls: string }> = {
   waiting:    { key: 'statusWaiting',    cls: 'bg-slate-100 text-slate-600' },
   vitals:     { key: 'statusInVitals',  cls: 'bg-amber-100 text-amber-700' },
   consulting: { key: 'statusConsulting', cls: 'bg-surface-sunken text-accent' },
+  pharmacy:   { key: 'statusPharmacy',  cls: 'bg-amber-100 text-amber-700' },
   billing:    { key: 'statusBilling',   cls: 'bg-amber-100 text-amber-700' },
   done:       { key: 'statusCompleted',  cls: 'bg-green-100 text-green-700' },
 }
@@ -62,7 +68,7 @@ function matchesStatusFilter(status: QueueStatus, hasUhid: boolean, filter: Stat
     case 'Waiting':       return status === 'waiting'
     case 'Needs Aadhaar': return status === 'waiting' && !hasUhid
     case 'In Vitals':     return status === 'vitals'
-    case 'In Care':       return status === 'consulting' || status === 'billing'
+    case 'In Care':       return status === 'consulting' || status === 'pharmacy' || status === 'billing'
     case 'Done':          return status === 'done'
   }
 }

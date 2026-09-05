@@ -21,17 +21,14 @@ import { getSupabaseServerClient } from '@/lib/supabase/server'
 
 export const dynamic = 'force-dynamic'
 
-// The local QueueStatus this feeds (usePatientStore) has no pharmacy stage —
-// the Pharmacy portal doesn't ship in this OPD-only build (see
-// reception/opd/page.tsx) — but the visits table's visit_status_t enum is
-// shared with Gov-HIMS, so a row written there as 'pharmacy' can plausibly
-// show up here. Rather than drop it (and vanish the patient from every
-// staff board), surface it at 'billing': the next real stage in this build,
-// and the one usePatientStore already treats as the terminal pre-completion
-// status for a visit whose consultation is done.
+// The local QueueStatus this feeds (usePatientStore) now has a pharmacy
+// stage, so a visit's backend status maps 1:1 onto the local queue — see
+// QueueStatus/QUEUE_STATUS_TO_VISIT_STATUS in usePatientStore.ts for the
+// (near-)identical set on the write side. Only 'scheduled' has no local
+// counterpart, so it surfaces at 'waiting', the earliest local stage.
 const VISIT_TO_QUEUE: Record<string, string | undefined> = {
   scheduled: 'waiting', waiting: 'waiting', vitals: 'vitals',
-  consulting: 'consulting', pharmacy: 'billing', billing: 'billing',
+  consulting: 'consulting', pharmacy: 'pharmacy', billing: 'billing',
 }
 
 export async function GET() {

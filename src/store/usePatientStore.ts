@@ -11,29 +11,30 @@ import { DEMO_PATIENTS } from '@/lib/demo-patients'
 import { getSupabaseClient } from '@/lib/supabase/client'
 import { apiUrl } from '@/lib/apiUrl'
 
-export type QueueStatus = 'waiting' | 'vitals' | 'consulting' | 'billing' | 'done'
+export type QueueStatus = 'waiting' | 'vitals' | 'consulting' | 'pharmacy' | 'billing' | 'done'
 export type TriageLevel = 'Low' | 'Medium' | 'High' | 'Critical'
 
 // Phase 2 (reception→vitals bridge) — local QueueStatus and the backend
 // visit_status_t enum (supabase/migrations/20260703123305_core_schema.sql)
 // are NOT the same set:
-//   QueueStatus:     waiting | vitals | consulting | billing | done
+//   QueueStatus:     waiting | vitals | consulting | pharmacy | billing | done
 //   visit_status_t:  scheduled | waiting | vitals | consulting | pharmacy | billing | completed | cancelled
-// Four values line up 1:1 (waiting/vitals/consulting/billing). visit_status_t
-// still carries 'pharmacy' and 'scheduled' — the enum lives in an already-
+// Five values line up 1:1 (waiting/vitals/consulting/pharmacy/billing).
+// visit_status_t still carries 'scheduled' — the enum lives in an already-
 // applied migration and is never altered here — but this OPD-only build has
-// no local QueueStatus that ever produces those values, so they're
-// intentionally absent from this table. The remaining local 'done' has no
-// direct backend counterpart either — the backend instead distinguishes
-// 'completed' (visit ran its course) from 'cancelled' (visit was aborted). A
-// queue reaching "done" via updateStatus always means the visit completed
-// normally (cancellation is its own separate action elsewhere in this store,
-// e.g. sendToEmergency, which does not call updateStatus for this reason), so
+// no local QueueStatus that ever produces that value, so it's intentionally
+// absent from this table. The remaining local 'done' has no direct backend
+// counterpart either — the backend instead distinguishes 'completed' (visit
+// ran its course) from 'cancelled' (visit was aborted). A queue reaching
+// "done" via updateStatus always means the visit completed normally
+// (cancellation is its own separate action elsewhere in this store, e.g.
+// sendToEmergency, which does not call updateStatus for this reason), so
 // 'done' maps to 'completed'.
-const QUEUE_STATUS_TO_VISIT_STATUS: Record<QueueStatus, 'waiting' | 'vitals' | 'consulting' | 'billing' | 'completed'> = {
+const QUEUE_STATUS_TO_VISIT_STATUS: Record<QueueStatus, 'waiting' | 'vitals' | 'consulting' | 'pharmacy' | 'billing' | 'completed'> = {
   waiting: 'waiting',
   vitals: 'vitals',
   consulting: 'consulting',
+  pharmacy: 'pharmacy',
   billing: 'billing',
   done: 'completed',
 }
@@ -44,6 +45,7 @@ const QUEUE_STATUS_TO_VISIT_STATUS: Record<QueueStatus, 'waiting' | 'vitals' | '
 const JOURNEY_FOR_QUEUE: Partial<Record<QueueStatus, JourneyState>> = {
   vitals: 'VITALS_IN_PROGRESS',
   consulting: 'IN_CONSULT',
+  pharmacy: 'PHARMACY_QUEUED',
   billing: 'BILLING_PENDING',
   done: 'COMPLETED',
 }
