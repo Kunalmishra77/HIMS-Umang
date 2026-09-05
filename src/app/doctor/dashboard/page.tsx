@@ -501,6 +501,9 @@ export default function DoctorDashboard() {
 
       updateStatus(currentPatient.id, 'done')
       toast.success(`Consultation complete — ${currentPatient.name} → Admission requested (${admissionOrder.admissionType})`)
+    } else if (prescriptions.length > 0) {
+      updateStatus(currentPatient.id, 'pharmacy')
+      toast.success(`Consultation complete — ${currentPatient.name} → Pharmacy`)
     } else {
       updateStatus(currentPatient.id, 'billing')
       toast.success(`Consultation complete — ${currentPatient.name} → Billing`)
