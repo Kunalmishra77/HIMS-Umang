@@ -15,7 +15,7 @@ export const ALL_ROLES = [
 export type Role = (typeof ALL_ROLES)[number]
 
 // The HR directory and internal messaging model the whole hospital's
-// workforce, not just the five portals this build ships — a lab technician
+// workforce, not just the six portals this build ships — a lab technician
 // is a real staff record even though `lab` carries no login/portal in this
 // cut. `StaffRole` is that broader vocabulary; `Role` (above) stays the
 // narrow, exhaustive set used for routing/nav/auth. Limited to roles live

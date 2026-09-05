@@ -2,6 +2,18 @@ import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
 import { getSupabaseClient } from '@/lib/supabase/client'
 
+// Same isBrowser-guarded storage fix as useNarcoticsStore.ts's Phase 6 Task 6
+// fix — bare `createJSONStorage(() => localStorage)` throws uncaught the
+// first time persist calls getItem/setItem in any non-browser environment
+// (SSR, this Node-based vitest suite). Latent here until StoreHydrator
+// actually calls `.persist.rehydrate()` for this store.
+const isBrowser = typeof window !== 'undefined'
+const safeStorage = {
+  getItem: (name: string) => isBrowser ? localStorage.getItem(name) : null,
+  setItem: (name: string, value: string) => { if (isBrowser) localStorage.setItem(name, value) },
+  removeItem: (name: string) => { if (isBrowser) localStorage.removeItem(name) },
+}
+
 export type DrugSchedule = 'OTC' | 'H' | 'H1' | 'X' | 'G'
 export type DrugForm = 'tablet' | 'capsule' | 'syrup' | 'injection' | 'cream' | 'drops' | 'inhaler' | 'patch'
 
@@ -65,7 +77,7 @@ export const useDrugMasterStore = create<DrugMasterState>()(persist((set, get) =
 }),
   {
     name: 'agentix-drugmasterstore', version: 1,
-    storage: createJSONStorage(() => localStorage),
+    storage: createJSONStorage(() => safeStorage),
     skipHydration: true,
   },
 ))

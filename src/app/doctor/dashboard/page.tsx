@@ -502,6 +502,13 @@ export default function DoctorDashboard() {
       updateStatus(currentPatient.id, 'done')
       toast.success(`Consultation complete — ${currentPatient.name} → Admission requested (${admissionOrder.admissionType})`)
     } else if (prescriptions.length > 0) {
+      // The button reads "Complete consultation" once meds are drafted, but
+      // only sendRx() actually puts a prescription on the pharmacy board.
+      // Dispatch it now if the doctor never pressed the separate "Send to
+      // Pharmacy" control — isPharmacySent is the reliable per-encounter flag
+      // (set by sendToPharmacy() inside sendRx(), cleared by resetConsultation
+      // on the next patient), so this can't double-dispatch.
+      if (!isPharmacySent) await sendRx()
       updateStatus(currentPatient.id, 'pharmacy')
       toast.success(`Consultation complete — ${currentPatient.name} → Pharmacy`)
     } else {

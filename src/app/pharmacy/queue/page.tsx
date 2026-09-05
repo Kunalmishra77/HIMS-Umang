@@ -522,7 +522,7 @@ function ActionBtn({ onClick, children, icon: Icon, tone }: { onClick: () => voi
     <button onClick={onClick}
       className={cn("flex items-center gap-1.5 text-xs font-bold px-3 py-2 rounded-xl cursor-pointer transition-all whitespace-nowrap",
         tone === "ghost" && "text-slate-600 bg-slate-100 hover:bg-slate-200")}
-      style={tone === "brand" ? { background: "linear-gradient(135deg,var(--color-primary-dark),var(--color-primary))", color: "#fff", boxShadow: "0 2px 8px rgba(30,151,178,0.25)" } : undefined}>
+      style={tone === "brand" ? { background: "linear-gradient(135deg,var(--color-primary-900),var(--color-primary-dark))", color: "#fff", boxShadow: "0 2px 8px rgba(30,151,178,0.25)" } : undefined}>
       <Icon className="h-3.5 w-3.5" />{children}
     </button>
   )

@@ -6,12 +6,12 @@ const STORES = ['useLabOrdersStore', 'useRadiologyStudiesStore']
 
 // Action-name stems that advance an order past 'ordered'. This build creates
 // lab and radiology orders and never fulfils them — no portal here could act
-// on these. Pharmacy is deliberately exempt: the pharmacy portal being built
-// per docs/superpowers/specs/2026-09-04-pharmacy-portal-design.md gives
+// on these. Pharmacy is deliberately exempt: the pharmacy portal shipped
+// per docs/superpowers/specs/2026-09-04-pharmacy-portal-design.md, giving
 // usePharmacyStore a real dispensing-counter pipeline
 // (queued→preparing→ready→collected) at the store level, with the
-// dispensing-counter UI that drives it arriving in a later task of that
-// build — so usePharmacyStore is no longer covered by this invariant.
+// dispensing-counter UI (`/pharmacy/*`) that drives it shipped alongside it
+// — so usePharmacyStore is no longer covered by this invariant.
 // This is a narrowing of scope, not an abandonment of the rule: lab and
 // radiology still have no fulfilment portal in this build, and this test
 // keeps enforcing that for both of them.

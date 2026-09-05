@@ -7,7 +7,7 @@ import { notifyAndAudit } from "@/lib/notifyAndAudit"
 
 function requestReorder(name: string, daysLeft: number) {
   notifyAndAudit({
-    to: 'admin', type: 'medicines_ready', priority: 'medium',
+    to: 'pharmacy', type: 'medicines_ready', priority: 'medium',
     title: `Refill request · ${name}`,
     body: `Patient (Kiran Patil) requested a refill for ${name}. ~${daysLeft} days remaining. Prep for collection.`,
     patientName: 'Kiran Patil',

@@ -1,7 +1,6 @@
 import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
 import { useAuditStore } from '@/store/useAuditStore'
-import { useNotificationStore } from '@/store/useNotificationStore'
 import { usePharmacyInventoryStore } from '@/store/usePharmacyInventoryStore'
 import { getSupabaseClient } from '@/lib/supabase/client'
 import { pushOrder, pullOrders, mergeById } from '@/lib/cross-device-orders'
@@ -30,12 +29,6 @@ export type PaymentMode = 'Cash' | 'UPI' | 'Card' | 'Insurance' | 'Credit'
 // raises a purchase order to the inventory manager.
 export type MedSupply = 'pharmacy' | 'advised_outside' | 'order_raised'
 export type Pharmacist = { id: string; name: string }
-
-// Sources that should notify the ward (nurse/MAR) rather than the patient.
-const WARD_SOURCES: RxSource[] = ['IPD', 'ICU', 'OT']
-const isWardRx = (p: { wardBed?: string; source?: RxSource; procurementStatus?: ProcurementStatus }) =>
-  !!p.wardBed || (p.source ? WARD_SOURCES.includes(p.source) : false) ||
-  p.procurementStatus === 'deferred_ipd' || p.procurementStatus === 'procurement_requested'
 
 export type PrepStatus = 'queued' | 'preparing' | 'ready' | 'collected'
 export type ProcurementStatus = 'immediate' | 'deferred_ipd' | 'procurement_requested'
@@ -310,25 +303,13 @@ export const usePharmacyStore = create<PharmacyStore>()(persist((set, get) => ({
         return { ...p, status, estimatedReadyIn: status === 'ready' ? 0 : p.estimatedReadyIn }
       }),
     }))
-    // Closing the loop: when meds are ready, alert the right party — the ward
-    // (nurse/MAR) for inpatient scripts, the patient for OPD scripts.
-    if (status === 'ready') {
-      const p = get().prescriptions.find(x => x.id === id)
-      if (p) {
-        const ward = isWardRx(p)
-        useNotificationStore.getState().add({
-          type: 'medicines_ready',
-          priority: p.triageLevel === 'Critical' ? 'high' : 'medium',
-          title: ward ? `Ward meds ready — ${p.patientName}` : `Medicines ready — ${p.patientName}`,
-          body: ward
-            ? `${p.medicines.length} item(s) ready for ${p.patientName} (${p.wardBed ?? 'ward'}) — collect/administer.`
-            : `Your medicines are ready for collection at the pharmacy (token ${p.tokenNumber}).`,
-          targetRole: ward ? 'nurse' : 'patient',
-          patientName: p.patientName,
-          channels: ['in_app'],
-        })
-      }
-    }
+    // Phase 6 post-review fix — the "meds ready" in-app + WhatsApp notification
+    // for this transition is fired by the (sole) caller, pharmacy/queue's
+    // advanceToReady, via notifyAndAudit — which also writes the audit-log
+    // entry this store action has no access to. Firing a second one here
+    // duplicated it (two in-app notifications + two WhatsApp messages per
+    // dispense) for zero extra coverage, since updateStatus(id, 'ready') is
+    // never called from anywhere else. See advanceToReady for the live version.
 
     // Cross-device (T0.4): republish the updated prescription (esp. ready /
     // collected) so other devices reflect it without a refresh. Loop-safe per

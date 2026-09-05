@@ -61,7 +61,7 @@ export default function DoctorOrdersPage() {
     }
     if (medCount > 0) {
       notifyAndAudit({
-        to: 'admin', type: 'system', priority: 'medium',
+        to: 'pharmacy', type: 'system', priority: 'medium',
         title: `New Rx paid · Kiran Patil`,
         body: `${medCount} medicine${medCount === 1 ? '' : 's'} paid by patient. Begin dispense workflow.`,
         patientName: 'Kiran Patil',

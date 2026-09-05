@@ -61,7 +61,7 @@ export default function PharmacyOverview() {
           <p className="text-sm text-[#64748B] mt-1">{t("overview.subtitle")}</p>
         </div>
         <Link href="/pharmacy/queue" className="flex items-center gap-1.5 text-sm font-bold text-white px-4 py-2 rounded-xl"
-          style={{ background: "linear-gradient(135deg,var(--color-primary-dark),var(--color-primary))", boxShadow: "0 2px 8px rgba(30,151,178,0.25)" }}>
+          style={{ background: "linear-gradient(135deg,var(--color-primary-900),var(--color-primary-dark))", boxShadow: "0 2px 8px rgba(30,151,178,0.25)" }}>
           {t("overview.openQueue")} <ArrowRight className="h-4 w-4" />
         </Link>
       </div>

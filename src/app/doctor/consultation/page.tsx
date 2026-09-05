@@ -139,10 +139,12 @@ export default function DoctorConsultation() {
   }
   const removeMed = (i: number) => setMeds(m => m.filter((_, idx) => idx !== i))
 
-  function orderRx() {
+  // Persist a real prescription so it lands in the Pharmacy queue + notify.
+  // Shared by the explicit "Send Rx to pharmacy" button (orderRx) and the
+  // completion button's auto-dispatch fallback (completeConsultation) so the
+  // two paths can never disagree on what a dispatch looks like.
+  function dispatchRx() {
     if (!active) return
-    if (meds.length === 0) { toast.error('Add at least one medicine to the prescription'); return }
-    // Persist a real prescription so it lands in the Pharmacy queue.
     addPrescription({
       id: `RX-${Date.now()}`,
       patientId: active.id,
@@ -161,16 +163,23 @@ export default function DoctorConsultation() {
       })),
       status: 'queued',
       dispatchedAt: new Date().toISOString(),
-      estimatedReadyIn: 15,
+      // Aligned with dashboard/page.tsx's sendRx formula (was hardcoded 15).
+      estimatedReadyIn: meds.length * 3,
       notes: diet.trim() ? `Diet: ${diet.trim()}` : undefined,
     })
     notifyAndAudit({
-      to: 'admin', type: 'medicines_ready', priority: 'high',
+      to: 'pharmacy', type: 'medicines_ready', priority: 'high',
       title: `New Rx · ${active.name}`,
       body: `Doctor prescribed ${meds.length} medicine(s) for ${active.name}: ${meds.map(m => m.name.trim()).join(', ')}. Begin dispense workflow.`,
       patientName: active.name,
       audit: { action: 'prescription_create', resource: 'consultation', resourceId: active.id, detail: `Rx (${meds.length} item(s)) ordered for ${active.name}`, userName: currentUser?.name ?? 'Doctor' },
     })
+  }
+
+  function orderRx() {
+    if (!active) return
+    if (meds.length === 0) { toast.error('Add at least one medicine to the prescription'); return }
+    dispatchRx()
     toast.success(`Rx sent`, { description: `${meds.length} medicine(s)` })
   }
 
@@ -331,9 +340,21 @@ export default function DoctorConsultation() {
   // A patient with medicines prescribed this encounter goes to Pharmacy first
   // (they collect their medicines before settling the bill); one with none
   // goes straight to Billing, same as before pharmacy existed as a stage.
+  //
+  // The button reads "Send to pharmacy" whenever there are draft medicines, so
+  // it must make that true: if the doctor filled the Rx but never pressed the
+  // separate "Send Rx to pharmacy" dispatch control, dispatch it now before
+  // routing onward. Guarded against double-dispatch by checking whether
+  // usePharmacyStore already holds an active (non-collected) prescription for
+  // this patient — collected prescriptions belong to a past encounter and
+  // don't count.
   function completeConsultation() {
     if (!active) return
     if (meds.length > 0) {
+      const alreadyDispatched = usePharmacyStore.getState().prescriptions.some(
+        p => p.patientId === active.id && p.status !== 'collected'
+      )
+      if (!alreadyDispatched) dispatchRx()
       updateStatus(active.id, 'pharmacy')
       toast.success(`Consultation complete · ${active.name} sent to Pharmacy`)
     } else {

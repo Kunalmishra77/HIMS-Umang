@@ -10,7 +10,7 @@ const PASSWORD = process.env.DEMO_PASSWORD || 'Demo@HIMS2026!';
 const OUT = 'd:/tmp/hims-migration/demo-credentials.csv';
 
 // role -> display identity (mirrors DEMO_USERS in src/store/useAuthStore.ts).
-// This build ships exactly the six roles in src/types/roles.ts. The Supabase
+// This build ships exactly the seven roles in src/types/roles.ts. The Supabase
 // project is shared with Gov-HIMS, so provisioning roles beyond that set
 // creates and repeatedly updates accounts belonging to a different product.
 const ROLES = {
@@ -20,6 +20,7 @@ const ROLES = {
   billing: ['Suresh Nair', 'Billing Dept'],
   admin: ['Rajesh Kulkarni', 'Administration'],
   patient: ['Kiran Patil', 'Patient'],
+  pharmacy: ['Ritu Sharma', 'Pharmacy'],
 };
 
 const admin = createClient(process.env.NEW_SUPABASE_URL, process.env.NEW_SERVICE_ROLE_KEY, {

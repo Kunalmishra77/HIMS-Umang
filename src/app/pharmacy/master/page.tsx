@@ -52,7 +52,7 @@ export default function DrugMaster() {
         </div>
         <button onClick={resync} disabled={syncing}
           className="flex items-center gap-1.5 text-xs font-bold text-white px-4 py-2 rounded-xl cursor-pointer disabled:opacity-60"
-          style={{ background: "linear-gradient(135deg,var(--color-primary-dark),var(--color-primary))", boxShadow: "0 2px 8px rgba(30,151,178,0.25)" }}>
+          style={{ background: "linear-gradient(135deg,var(--color-primary-900),var(--color-primary-dark))", boxShadow: "0 2px 8px rgba(30,151,178,0.25)" }}>
           <RefreshCw className={`h-3.5 w-3.5 ${syncing ? "animate-spin" : ""}`} /> {syncing ? t("master.resyncing") : t("master.resync")}
         </button>
       </div>
