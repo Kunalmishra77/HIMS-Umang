@@ -13,8 +13,9 @@ import n10 from './nurse.json'
 import n11 from './orderSets.json'
 import n12 from './p.json'
 import n13 from './patient.json'
-import n14 from './reception.json'
-import n15 from './ui.json'
+import n14 from './pharmacy.json'
+import n15 from './reception.json'
+import n16 from './ui.json'
 
 const messages = {
   "abha": n0,
@@ -31,8 +32,9 @@ const messages = {
   "orderSets": n11,
   "p": n12,
   "patient": n13,
-  "reception": n14,
-  "ui": n15,
+  "pharmacy": n14,
+  "reception": n15,
+  "ui": n16,
 } as const
 
 export default messages
