@@ -159,7 +159,7 @@ export default function PharmacyQueue() {
     if (srcOf(rx) === "Discharge") {
       setClearance(rx.patientId, "pharmacy", "cleared")
       notifyAndAudit({
-        to: 'discharge', type: 'discharge_ready', priority: 'medium',
+        to: 'nurse', type: 'discharge_ready', priority: 'medium',
         title: `TTO meds dispensed — ${rx.patientName}`,
         body: `Take-home medicines dispensed to ${who}; pharmacy clearance done. Discharge desk may proceed.`,
         patientName: rx.patientName,
@@ -167,7 +167,7 @@ export default function PharmacyQueue() {
       })
     } else {
       notifyAndAudit({
-        to: 'discharge', type: 'system', priority: 'low',
+        to: 'doctor', type: 'system', priority: 'low',
         title: `Rx dispensed · ${rx.patientName}`,
         body: `${rx.medicines.length} item${rx.medicines.length !== 1 ? 's' : ''} dispensed to ${who} for ${rx.patientName} (${srcOf(rx)}).`,
         patientName: rx.patientName,
