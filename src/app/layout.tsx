@@ -12,11 +12,6 @@ import { StoreHydrator } from "@/components/StoreHydrator"
 export const metadata: Metadata = {
   title: "Umang Hospital HIMS",
   description: "Hospital information management for the Umang Hospital OPD journey — registration, reception, nursing, consultation and billing.",
-  icons: {
-    icon: [{ url: "/Umang-logo.webp", type: "image/webp" }],
-    shortcut: "/Umang-logo.webp",
-    apple: "/Umang-logo.webp",
-  },
 }
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
