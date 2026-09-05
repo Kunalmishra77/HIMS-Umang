@@ -3,10 +3,12 @@
 A standalone Next.js application that runs the complete OPD (outpatient) patient
 journey for **Umang Hospital**, a single private hospital. It was extracted from
 Agentix HIMS, a 29-portal system built for Uttar Pradesh's government health
-infrastructure — everything outside the OPD journey (IPD, ER, OT, pharmacy/lab/
+infrastructure — everything outside the OPD journey (IPD, ER, OT, lab/
 radiology fulfilment, blood bank, the district/CMO government cockpits, and 24
-of the original 29 role portals) has been removed. What remains is real,
-end-to-end, and backed by a live Postgres database — not a mockup.
+of the original 29 role portals) has been removed. Pharmacy fulfilment is the
+one exception being added back in — see "Doctor creates orders; only pharmacy
+fulfils them" below. What remains is real, end-to-end, and backed by a live
+Postgres database — not a mockup.
 
 > Heads-up — this is a heavily modified Next.js 16. See [`AGENTS.md`](AGENTS.md)
 > for project conventions before writing any Next.js code.
@@ -32,12 +34,13 @@ writes prescriptions and lab/radiology orders as part of the consultation.
 Lab and radiology *fulfilment* portals were out of scope for the original
 extraction and are still gone — those orders are created and visible on the
 patient's record, but nothing downstream runs the test or reads the scan.
-Pharmacy is the exception: a dispensing-counter portal was added afterward
-(see `docs/superpowers/specs/2026-09-04-pharmacy-portal-design.md`) and
-carries prescriptions from queued through preparing, ready and collected.
-Teleconsult is cut on both sides (`/doctor/online` and `/patient/teleconsult`
-were both removed) — a doctor-side video flow with no patient screen to join
-it would have been a broken half-feature.
+Pharmacy is the exception: it is getting a dispensing-counter pipeline (see
+`docs/superpowers/specs/2026-09-04-pharmacy-portal-design.md`) that carries
+prescriptions from queued through preparing, ready and collected. The
+store-level pipeline has landed; the dispensing-counter portal that drives
+it is still being built. Teleconsult is cut on both sides (`/doctor/online`
+and `/patient/teleconsult` were both removed) — a doctor-side video flow
+with no patient screen to join it would have been a broken half-feature.
 
 ## Portals and roles
 
@@ -200,7 +203,8 @@ confidence, e.g. before a demo or a release:
 
 - Lab and radiology order **fulfilment** (running a test, reading a scan)
   doesn't exist in this build — see "Doctor creates orders; only pharmacy
-  fulfils them" above. Pharmacy dispensing now ships.
+  fulfils them" above. Pharmacy's dispensing pipeline has landed at the
+  store level; the dispensing-counter portal is still being built.
 - The voice agent's premium ElevenLabs voice needs a paid ElevenLabs plan; on
   the free tier it returns HTTP 402 and falls back to the browser's built-in
   voice with no code change required.
