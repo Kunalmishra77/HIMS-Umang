@@ -27,14 +27,17 @@ Nurse, is seen by a Doctor who writes prescriptions and lab/imaging orders,
 and the visit is billed. Anyone can follow a visit's live status, without
 logging in, at `/p/[uhid]`.
 
-**Doctor creates orders; nothing fulfils them.** The doctor portal writes
-prescriptions and lab/radiology orders as part of the consultation, but the
-pharmacy, lab and radiology *fulfilment* portals were out of scope for this
-extraction and are gone. Orders are created and visible on the patient's
-record; nothing downstream dispenses or resolves them. Teleconsult is cut on
-both sides (`/doctor/online` and `/patient/teleconsult` were both removed) —
-a doctor-side video flow with no patient screen to join it would have been a
-broken half-feature.
+**Doctor creates orders; only pharmacy fulfils them.** The doctor portal
+writes prescriptions and lab/radiology orders as part of the consultation.
+Lab and radiology *fulfilment* portals were out of scope for the original
+extraction and are still gone — those orders are created and visible on the
+patient's record, but nothing downstream runs the test or reads the scan.
+Pharmacy is the exception: a dispensing-counter portal was added afterward
+(see `docs/superpowers/specs/2026-09-04-pharmacy-portal-design.md`) and
+carries prescriptions from queued through preparing, ready and collected.
+Teleconsult is cut on both sides (`/doctor/online` and `/patient/teleconsult`
+were both removed) — a doctor-side video flow with no patient screen to join
+it would have been a broken half-feature.
 
 ## Portals and roles
 
@@ -195,9 +198,9 @@ confidence, e.g. before a demo or a release:
 
 ## Known-partial
 
-- Order **fulfilment** (dispensing a prescription, running a lab test,
-  reading a scan) doesn't exist in this build — see "Doctor creates orders;
-  nothing fulfils them" above.
+- Lab and radiology order **fulfilment** (running a test, reading a scan)
+  doesn't exist in this build — see "Doctor creates orders; only pharmacy
+  fulfils them" above. Pharmacy dispensing now ships.
 - The voice agent's premium ElevenLabs voice needs a paid ElevenLabs plan; on
   the free tier it returns HTTP 402 and falls back to the browser's built-in
   voice with no code change required.
