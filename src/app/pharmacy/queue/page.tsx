@@ -113,7 +113,14 @@ export default function PharmacyQueue() {
 
   const advanceToReady = (rx: PharmacyPrescription) => {
     updateStatus(rx.id, "ready")
-    const isWard = ["IPD", "ICU", "OT"].includes(srcOf(rx))
+    // Same "ward vs patient" test the removed store-level isWardRx() used to
+    // encode (see usePharmacyStore.ts's updateStatus) — a wardBed or a
+    // deferred/requested procurement also means this is a ward-side script
+    // (e.g. RX-DIS-001, a Discharge script with a wardBed but no IPD/ICU/OT
+    // source), not just an IPD/ICU/OT source.
+    const isWard = ["IPD", "ICU", "OT"].includes(srcOf(rx)) || !!rx.wardBed
+      || rx.procurementStatus === 'deferred_ipd'
+      || rx.procurementStatus === 'procurement_requested'
     notifyAndAudit({
       to: isWard ? 'nurse' : 'patient',
       type: 'medicines_ready', priority: 'medium',

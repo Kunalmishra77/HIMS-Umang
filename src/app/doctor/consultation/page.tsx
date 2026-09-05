@@ -89,6 +89,15 @@ export default function DoctorConsultation() {
   const [diet, setDiet] = useState("")
   const [followUp, setFollowUp] = useState("")
   const [imagingAdvice, setImagingAdvice] = useState("")
+  // Per-encounter dispatch flag — the exact local-state equivalent of
+  // dashboard/page.tsx's useConsultationStore.isPharmacySent. A prior version
+  // of this guard checked usePharmacyStore for an existing non-collected
+  // prescription for this patientId, but prescriptions never expire (they
+  // persist to localStorage / cross-device), so a patient who never collected
+  // a past visit's Rx and returns for a new encounter would have their NEW
+  // prescription silently skipped by that check. This flag only ever reflects
+  // *this* encounter's dispatch state.
+  const [rxDispatched, setRxDispatched] = useState(false)
   // Hydrate the SOAP draft and reset the encounter baskets whenever the patient
   // changes. Adjusted during render — React's documented pattern for resetting
   // state when an input changes — so the new patient's screen is never painted
@@ -100,6 +109,7 @@ export default function DoctorConsultation() {
     setLabTests([]); setLabPick("")
     setImagingStudies([]); setImagingPick(""); setReferSpecialty(""); setAdmitWard("General Ward")
     setMeds([]); setMedDraft(EMPTY_MED); setDiet(""); setFollowUp(""); setImagingAdvice("")
+    setRxDispatched(false)
   }
 
   if (!active) {
@@ -174,6 +184,7 @@ export default function DoctorConsultation() {
       patientName: active.name,
       audit: { action: 'prescription_create', resource: 'consultation', resourceId: active.id, detail: `Rx (${meds.length} item(s)) ordered for ${active.name}`, userName: currentUser?.name ?? 'Doctor' },
     })
+    setRxDispatched(true)
   }
 
   function orderRx() {
@@ -344,17 +355,16 @@ export default function DoctorConsultation() {
   // The button reads "Send to pharmacy" whenever there are draft medicines, so
   // it must make that true: if the doctor filled the Rx but never pressed the
   // separate "Send Rx to pharmacy" dispatch control, dispatch it now before
-  // routing onward. Guarded against double-dispatch by checking whether
-  // usePharmacyStore already holds an active (non-collected) prescription for
-  // this patient — collected prescriptions belong to a past encounter and
-  // don't count.
+  // routing onward. Guarded against double-dispatch by rxDispatched — a
+  // per-encounter local flag (reset with the rest of the draft baskets
+  // whenever `active` changes), not a lookup against usePharmacyStore: that
+  // store's prescriptions never expire, so a returning patient with an old
+  // uncollected Rx from a past visit would have a genuinely new prescription
+  // silently skipped by a patientId-based check.
   function completeConsultation() {
     if (!active) return
     if (meds.length > 0) {
-      const alreadyDispatched = usePharmacyStore.getState().prescriptions.some(
-        p => p.patientId === active.id && p.status !== 'collected'
-      )
-      if (!alreadyDispatched) dispatchRx()
+      if (!rxDispatched) dispatchRx()
       updateStatus(active.id, 'pharmacy')
       toast.success(`Consultation complete · ${active.name} sent to Pharmacy`)
     } else {
