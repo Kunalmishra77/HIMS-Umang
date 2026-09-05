@@ -17,6 +17,8 @@ export { Insurance, InsuranceClaimSchema, ClaimDocumentSchema, ClaimEventSchema 
 export { Inventory, InventoryRowSchema } from './inventory'
 export { HR, HrRowSchema, type HrBundle } from './hr'
 export { Mortuary, MortuaryRowSchema } from './mortuary'
+export { NarcoticsLog, NarcoticEntrySchema } from './narcotics'
+export { DrugMaster, DrugMasterRowSchema } from './drug-master'
 export {
   IpdStays, IpdStaySchema, IpdStage, IpdCondition, IpdDischargePillarKey,
 } from './ipd-stays'
