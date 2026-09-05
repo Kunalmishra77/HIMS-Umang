@@ -92,10 +92,13 @@ describe('brand fills are used in their AA-safe pairing', () => {
     // `bg-*` ones: a gradient stop (`from-`/`via-`/`to-`) naming the unsafe
     // token or its literal hex, an alpha-modified fill (`bg-[...]/40`, which
     // an earlier version of this regex deliberately let through), and the
-    // `-500`/`-light` ramp aliases that resolve to the exact same colours as
-    // `--color-primary` / `--color-primary-light`. `bg-primary-dark` and
-    // `bg-primary-soft` stay excluded — they're the safe fills — as does any
-    // line where the fill is paired with navy ink instead of white.
+    // `-500` ramp alias that resolves to the exact same colour as
+    // `--color-primary`. (The bracketed forms above also catch `bg-[var(
+    // --color-primary-light)]`, but a bare `bg-primary-light` utility is not
+    // matched — there are no live violations of that spelling today.)
+    // `bg-primary-dark` and `bg-primary-soft` stay excluded — they're the
+    // safe fills — as does any line where the fill is paired with navy ink
+    // instead of white.
     const UNSAFE_TEAL = '(?:var\\(--color-primary(?:-light)?\\)|#(?:1e97b2|6acdd9))'
     const SOLID_FILL = new RegExp(
       String.raw`bg-primary(?![-/\w])|bg-primary-500\b|bg-\[${UNSAFE_TEAL}\]|(?:from|via|to)-\[${UNSAFE_TEAL}\]`,
