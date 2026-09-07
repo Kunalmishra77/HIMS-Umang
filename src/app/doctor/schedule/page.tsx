@@ -22,7 +22,10 @@ const SLOT_ROW: Record<Slot, string> = {
   upcoming:      "bg-surface border-border",
 }
 function slotStatus(q: QueueStatus): Slot {
-  if (["billing", "done"].includes(q)) return "done"
+  // "done" here means "already seen by this doctor today" — a patient sent
+  // onward to pharmacy or billing (or fully done) has left the consultation,
+  // so all three read the same from the doctor's schedule.
+  if (["pharmacy", "billing", "done"].includes(q)) return "done"
   if (q === "consulting") return "in-progress"
   return "upcoming"
 }

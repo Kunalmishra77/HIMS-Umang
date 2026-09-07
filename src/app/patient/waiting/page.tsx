@@ -5,12 +5,12 @@ import { motion, AnimatePresence } from "framer-motion"
 import {
   Clock, CheckCircle, Stethoscope, CreditCard,
   Sparkles, Bell, ChevronRight, Activity, Users,
-  BedDouble, Scissors, ShieldCheck,
+  BedDouble, Scissors, ShieldCheck, Hourglass,
 } from "lucide-react"
 import { NeonBadge } from "@/components/ui/neon-badge"
 import { ProgressRing } from "@/components/ui/progress-ring"
 import { usePatientStore } from "@/store/usePatientStore"
-import { useAuthStore } from "@/store/useAuthStore"
+import { usePatientMe } from "@/lib/usePatientMe"
 import { useDischargeStore } from "@/store/useDischargeStore"
 import { cn } from "@/lib/utils"
 
@@ -72,7 +72,7 @@ function IPDFamilyTracker() {
       {/* OT status — shown if in OT */}
       {ipd.inOT && (
         <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
-          className="flex items-center gap-3 p-4 bg-[rgba(238,107,38,0.07)] border border-[rgba(238,107,38,0.20)] rounded-xl"
+          className="flex items-center gap-3 p-4 bg-[rgba(30,151,178,0.07)] border border-[rgba(30,151,178,0.20)] rounded-xl"
         >
           <Scissors className="h-5 w-5 text-[var(--color-accent)] flex-shrink-0 animate-pulse" />
           <div>
@@ -88,7 +88,7 @@ function IPDFamilyTracker() {
         <div className="relative flex items-start justify-between">
           <div className="absolute top-6 left-6 right-6 h-1.5 bg-slate-100 rounded-full overflow-hidden">
             <div
-              className="h-full bg-[rgba(238,107,38,0.07)]0 rounded-full transition-all duration-700"
+              className="h-full bg-[rgba(30,151,178,0.07)]0 rounded-full transition-all duration-700"
               style={{ width: `${(journeyStep / (IPD_JOURNEY.length - 1)) * 100}%` }}
             />
           </div>
@@ -100,7 +100,7 @@ function IPDFamilyTracker() {
                 <div className={cn(
                   "h-12 w-12 rounded-2xl flex items-center justify-center border-2 transition-all",
                   done ? "bg-green-50 border-green-500" :
-                  active ? "bg-[rgba(238,107,38,0.07)] border-[var(--color-primary)] ring-4 ring-primary/20" :
+                  active ? "bg-[rgba(30,151,178,0.07)] border-[var(--color-primary)] ring-4 ring-primary/20" :
                   "bg-white border-slate-200"
                 )}>
                   {done
@@ -155,7 +155,7 @@ function IPDFamilyTracker() {
         </div>
       )}
 
-      <div className="p-4 rounded-xl flex items-start gap-3 bg-[rgba(238,107,38,0.07)] border border-[rgba(238,107,38,0.20)]">
+      <div className="p-4 rounded-xl flex items-start gap-3 bg-[rgba(30,151,178,0.07)] border border-[rgba(30,151,178,0.20)]">
         <ShieldCheck className="h-5 w-5 mt-0.5 flex-shrink-0 text-[var(--color-accent)]" />
         <p className="text-sm font-medium leading-relaxed text-[var(--color-primary-dark)]">
           <strong className="text-[var(--color-primary-dark)]">Privacy note:</strong> Clinical details are not shown here. For medical updates, please speak directly with the treating doctor or nursing team.
@@ -184,21 +184,20 @@ function getFirstName(name: string) { return name.split(' ')[0] }
 
 export default function WaitingRoomPage() {
   const { patients } = usePatientStore()
-  const { currentUser } = useAuthStore()
-  const myPatient = patients.find(p => p.id === (currentUser?.id ?? 'PT-20394'))
+  const { me: myPatient } = usePatientMe()
 
   const waiting = patients.filter(p => ['waiting', 'vitals'].includes(p.queueStatus))
   const myPosition = myPatient ? waiting.findIndex(p => p.id === myPatient.id) + 1 : 4
 
-  const [queuePos, setQueuePos] = useState(myPosition || 4)
+  const [queuePos] = useState(myPosition || 4)
   const [waitMin, setWaitMin] = useState(myPatient?.estimatedWait ?? 18)
   const [currentStep] = useState<string>(myPatient?.queueStatus ?? 'vitals')
   const [aiMsgIdx, setAiMsgIdx] = useState(0)
   const [viewMode, setViewMode] = useState<'opd' | 'ipd'>('opd')
   const [notifications] = useState([
     { id: 1, text: 'Your vitals have been recorded.', time: '2 min ago', icon: Activity, color: 'text-green-500', bg: 'bg-green-50' },
-    { id: 2, text: 'AI brief sent to Dr. Priya Nair.', time: '1 min ago', icon: Sparkles, color: 'text-[var(--color-accent)]', bg: 'bg-[rgba(238,107,38,0.07)]' },
-    { id: 3, text: '3 patients ahead of you.', time: 'Just now', icon: Users, color: 'text-[var(--color-accent)]', bg: 'bg-[rgba(238,107,38,0.07)]' },
+    { id: 2, text: 'AI brief sent to Dr. Priya Nair.', time: '1 min ago', icon: Sparkles, color: 'text-[var(--color-accent)]', bg: 'bg-[rgba(30,151,178,0.07)]' },
+    { id: 3, text: '3 patients ahead of you.', time: 'Just now', icon: Users, color: 'text-[var(--color-accent)]', bg: 'bg-[rgba(30,151,178,0.07)]' },
   ])
 
   /* Simulate queue countdown */
@@ -225,17 +224,24 @@ export default function WaitingRoomPage() {
 
       {/* Mode Tab */}
       <div className="flex gap-1 bg-white rounded-xl border border-slate-200 p-1">
-        <button onClick={() => setViewMode('opd')} className={cn("flex-1 py-2 rounded-lg text-sm font-semibold transition-all cursor-pointer", viewMode === 'opd' ? "bg-[var(--color-primary)] text-white shadow-sm" : "text-slate-500 hover:text-slate-700")}>
+        <button onClick={() => setViewMode('opd')} className={cn("flex-1 py-2 rounded-lg text-sm font-semibold transition-all cursor-pointer", viewMode === 'opd' ? "bg-[var(--color-primary-dark)] text-white shadow-sm" : "text-slate-500 hover:text-slate-700")}>
           OPD Queue Status
         </button>
-        <button onClick={() => setViewMode('ipd')} className={cn("flex-1 py-2 rounded-lg text-sm font-semibold transition-all cursor-pointer", viewMode === 'ipd' ? "bg-[var(--color-primary)] text-white shadow-sm" : "text-slate-500 hover:text-slate-700")}>
+        <button onClick={() => setViewMode('ipd')} className={cn("flex-1 py-2 rounded-lg text-sm font-semibold transition-all cursor-pointer", viewMode === 'ipd' ? "bg-[var(--color-primary-dark)] text-white shadow-sm" : "text-slate-500 hover:text-slate-700")}>
           IPD Patient Tracker
         </button>
       </div>
 
       {viewMode === 'ipd' && <IPDFamilyTracker />}
 
-      {viewMode === 'opd' && <>
+      {viewMode === 'opd' && !myPatient && (
+        <div className="hms-card p-8 text-center text-slate-400">
+          <Hourglass className="h-10 w-10 mx-auto mb-3 opacity-40" />
+          <p className="font-semibold">No active OPD visit linked to this account</p>
+        </div>
+      )}
+
+      {viewMode === 'opd' && myPatient && <>
       {/* Header */}
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex items-center justify-between bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
         <div>
@@ -310,7 +316,7 @@ export default function WaitingRoomPage() {
             {/* Progress line */}
             <div className="absolute top-6 left-6 right-6 h-1.5 bg-slate-100 rounded-full overflow-hidden">
               <motion.div
-                className="h-full bg-[rgba(238,107,38,0.07)]0 rounded-full"
+                className="h-full bg-[rgba(30,151,178,0.07)]0 rounded-full"
                 style={{ width: `${progressPct}%` }}
                 transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
               />
@@ -325,7 +331,7 @@ export default function WaitingRoomPage() {
                   <div
                     className={`h-12 w-12 rounded-2xl flex items-center justify-center transition-all duration-300 border-2 ${
                       done ? 'bg-green-50 border-green-500 shadow-sm' : 
-                      active ? 'bg-[rgba(238,107,38,0.07)] border-[var(--color-primary)] shadow-md ring-4 ring-primary/20' : 
+                      active ? 'bg-[rgba(30,151,178,0.07)] border-[var(--color-primary)] shadow-md ring-4 ring-primary/20' : 
                       'bg-white border-slate-200'
                     }`}
                   >
@@ -347,9 +353,9 @@ export default function WaitingRoomPage() {
 
       {/* AI Brief Status */}
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}>
-        <div className="hms-card p-6 border-[rgba(238,107,38,0.20)] bg-[rgba(238,107,38,0.07)]/30">
+        <div className="hms-card p-6 border-[rgba(30,151,178,0.20)] bg-[rgba(30,151,178,0.07)]/30">
           <div className="flex items-start gap-5">
-            <div className="h-12 w-12 rounded-xl flex items-center justify-center flex-shrink-0 bg-[rgba(238,107,38,0.12)] border border-[rgba(238,107,38,0.20)]">
+            <div className="h-12 w-12 rounded-xl flex items-center justify-center flex-shrink-0 bg-[rgba(30,151,178,0.12)] border border-[rgba(30,151,178,0.20)]">
               <Sparkles className="h-6 w-6 text-[var(--color-accent)]" />
             </div>
             <div className="flex-1 min-w-0">
@@ -369,9 +375,9 @@ export default function WaitingRoomPage() {
                 </motion.p>
               </AnimatePresence>
               {/* Progress bar */}
-              <div className="mt-4 h-1.5 rounded-full bg-[rgba(238,107,38,0.12)]/50 overflow-hidden">
+              <div className="mt-4 h-1.5 rounded-full bg-[rgba(30,151,178,0.12)]/50 overflow-hidden">
                 <motion.div
-                  className="h-full bg-[rgba(238,107,38,0.07)]0 rounded-full"
+                  className="h-full bg-[rgba(30,151,178,0.07)]0 rounded-full"
                   animate={{ width: [`${(aiMsgIdx / AI_MESSAGES.length) * 80}%`, `${((aiMsgIdx + 1) / AI_MESSAGES.length) * 100}%`] }}
                   transition={{ duration: 3.2 }}
                 />

@@ -10,7 +10,7 @@ import { toast } from "sonner"
 import { printableHtml } from "@/lib/fileIO"
 
 const STATUS_TINT: Record<BillStatus, string> = {
-  draft: 'bg-slate-100 text-slate-600', frozen: 'bg-[rgba(238,107,38,0.07)] text-[#B84A16]', settled: 'bg-green-50 text-green-700', dispute: 'bg-red-50 text-red-600',
+  draft: 'bg-slate-100 text-slate-600', frozen: 'bg-[rgba(30,151,178,0.07)] text-[#955408]', settled: 'bg-green-50 text-green-700', dispute: 'bg-red-50 text-red-600',
 }
 const STATUS_KEY: Record<BillStatus, string> = { draft: 'statusDraft', frozen: 'statusFrozen', settled: 'statusSettled', dispute: 'statusDispute' }
 const FILTER_KEY: Record<string, string> = { all: 'filterAll', pending: 'filterPending', settled: 'filterSettled' }
@@ -38,7 +38,7 @@ export default function ReceptionBilling() {
     { label: t('billing.tileOutstanding'), value: `₹${totalOutstanding.toLocaleString('en-IN')}`, icon: Wallet, tint: 'bg-rose-50 text-rose-600' },
     { label: t('billing.tilePendingBills'), value: `${pendingCount}`, icon: AlertTriangle, tint: 'bg-amber-50 text-amber-600' },
     { label: t('billing.tileSettled'), value: `${settledCount}`, icon: CheckCircle2, tint: 'bg-green-50 text-green-600' },
-    { label: t('billing.tileTotalBilled'), value: `₹${totalBilled.toLocaleString('en-IN')}`, icon: CreditCard, tint: 'bg-[rgba(238,107,38,0.07)] text-[#B84A16]' },
+    { label: t('billing.tileTotalBilled'), value: `₹${totalBilled.toLocaleString('en-IN')}`, icon: CreditCard, tint: 'bg-[rgba(30,151,178,0.07)] text-[#955408]' },
   ]
 
   return (
@@ -59,12 +59,12 @@ export default function ReceptionBilling() {
         <div className="relative w-full sm:w-72">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
           <input value={search} onChange={e => setSearch(e.target.value)} placeholder={t('billing.searchPlaceholder')}
-            className="w-full h-10 pl-9 pr-3 rounded-xl bg-white border border-slate-200 text-[14px] text-slate-800 placeholder:text-slate-400 outline-none focus:border-[rgba(238,107,38,0.30)] focus:ring-2 focus:ring-primary/20" />
+            className="w-full h-10 pl-9 pr-3 rounded-xl bg-white border border-slate-200 text-[14px] text-slate-800 placeholder:text-slate-400 outline-none focus:border-[rgba(30,151,178,0.30)] focus:ring-2 focus:ring-primary/20" />
         </div>
         <div className="flex gap-1">
           {(['all', 'pending', 'settled'] as const).map(f => (
             <button key={f} onClick={() => setFilter(f)}
-              className={cn("text-[12px] font-bold px-3 py-1.5 rounded-lg capitalize transition", filter === f ? "bg-[#C2481A] text-white" : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-50")}>{t(`billing.${FILTER_KEY[f]}`)}</button>
+              className={cn("text-[12px] font-bold px-3 py-1.5 rounded-lg capitalize transition", filter === f ? "bg-[#196b7e] text-white" : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-50")}>{t(`billing.${FILTER_KEY[f]}`)}</button>
           ))}
         </div>
       </div>
@@ -87,7 +87,7 @@ export default function ReceptionBilling() {
 
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                 <Amt label={t('billing.amtBillTotal')} value={b.subtotal} />
-                <Amt label={t('billing.amtInsurance')} value={b.insuranceCovered} prefix="−" tint="text-[#B84A16]" icon />
+                <Amt label={t('billing.amtInsurance')} value={b.insuranceCovered} prefix="−" tint="text-[#955408]" icon />
                 <Amt label={t('billing.amtPaid')} value={b.paidAmount} tint="text-green-600" />
                 <Amt label={t('billing.amtOutstanding')} value={due} tint={due > 0 ? "text-rose-600" : "text-slate-900"} bold />
               </div>
@@ -110,7 +110,7 @@ export default function ReceptionBilling() {
                     </tbody></table>`)
                   toast.success(t('billing.printingSlipToast', { name: b.patientName }))
                 }}
-                  className="mt-3 text-[12.5px] font-semibold text-[#B84A16] hover:text-[#B84A16] cursor-pointer">{t('billing.printPaymentSlip')}</button>
+                  className="mt-3 text-[12.5px] font-semibold text-[#955408] hover:text-[#955408] cursor-pointer">{t('billing.printPaymentSlip')}</button>
               )}
               {b.status === 'settled' && b.receiptNumber && (
                 <p className="mt-3 text-[12px] text-green-700 flex items-center gap-1.5"><CheckCircle2 className="h-3.5 w-3.5" /> {t('billing.settledReceipt', { receipt: b.receiptNumber })}</p>

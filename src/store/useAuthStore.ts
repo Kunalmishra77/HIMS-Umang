@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
 import type { Role } from '@/types/roles'
 import { getSupabaseClient } from '@/lib/supabase/client'
+import { apiUrl } from '@/lib/apiUrl'
 
 export type { Role }
 
@@ -31,6 +32,7 @@ const DEMO_USERS: Record<Role, User> = {
   billing:   { id: 'BL-801',   name: 'Suresh Nair',    role: 'billing',   department: 'Billing Dept' },
   admin:     { id: 'ADM-01',   name: 'Rajesh Kulkarni', role: 'admin' },
   patient:   { id: 'PT-20394', name: 'Kiran Patil',    role: 'patient' },
+  pharmacy:  { id: 'PH-301',   name: 'Ritu Sharma',    role: 'pharmacy', department: 'Pharmacy' },
 }
 
 export const DEMO_USERS_MAP = DEMO_USERS
@@ -44,7 +46,7 @@ export const useAuthStore = create<AuthState>()(persist((set) => ({
   logout: () => {
     set({ currentUser: null, isRealSession: false })
     void getSupabaseClient().auth.signOut()
-    void fetch('/api/auth/session', { method: 'DELETE' })
+    void fetch(apiUrl('/api/auth/session'), { method: 'DELETE' })
   },
   hydrateFromSession: async () => {
     const supabase = getSupabaseClient()

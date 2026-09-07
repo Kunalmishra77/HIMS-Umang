@@ -21,24 +21,30 @@ import { StatusPill, type Status } from "@/components/ui/StatusPill"
 import { PatientAvatar } from "@/components/ui/PatientAvatar"
 
 const STATUS_TOKEN: Record<QueueStatus, Status> = {
-  waiting: 'pending', vitals: 'caution', consulting: 'info', billing: 'neutral', done: 'done',
+  waiting: 'pending', vitals: 'caution', consulting: 'info', pharmacy: 'caution', billing: 'neutral', done: 'done',
 }
 const triageToken = (lvl?: TriageLevel): Status =>
   lvl === 'Critical' ? 'critical' : lvl === 'High' ? 'urgent' : lvl === 'Medium' ? 'caution' : 'stable'
 
 const STATUS_KEY: Record<QueueStatus, string> = {
-  waiting: 'statusWaiting', vitals: 'statusVitals', consulting: 'statusConsulting', billing: 'statusBilling', done: 'statusCompleted',
+  waiting: 'statusWaiting', vitals: 'statusVitals', consulting: 'statusConsulting', pharmacy: 'statusPharmacy', billing: 'statusBilling', done: 'statusCompleted',
 }
 const STATUS_TINT: Record<QueueStatus, string> = {
-  waiting: 'bg-amber-50 text-amber-700', vitals: 'bg-surface-sunken text-accent', consulting: 'bg-[rgba(238,107,38,0.07)] text-[var(--color-accent)]',
-  billing: 'bg-primary-soft text-accent', done: 'bg-green-50 text-green-700',
+  waiting: 'bg-amber-50 text-amber-700', vitals: 'bg-surface-sunken text-accent', consulting: 'bg-[rgba(30,151,178,0.07)] text-[var(--color-accent)]',
+  pharmacy: 'bg-amber-50 text-amber-700', billing: 'bg-primary-soft text-accent', done: 'bg-green-50 text-green-700',
 }
 const TRIAGE_TINT: Record<TriageLevel, string> = {
-  Critical: 'bg-red-50 text-red-700', High: 'bg-primary-soft text-accent', Medium: 'bg-amber-50 text-amber-700', Low: 'bg-green-50 text-green-700',
+  Critical: 'bg-red-50 text-red-700', High: 'bg-urgent-bg text-urgent', Medium: 'bg-amber-50 text-amber-700', Low: 'bg-green-50 text-green-700',
 }
+// Reception's manual "advance" override doesn't know whether a patient has a
+// prescription (only the doctor's consultation does — see doctor/consultation/
+// page.tsx's completeConsultation), so it never routes consulting → pharmacy
+// on its own. It does let a patient already sitting at pharmacy (routed there
+// by the doctor, or arriving that way from Gov-HIMS) be pushed on to billing.
 const NEXT_STATUS: Partial<Record<QueueStatus, { next: QueueStatus; labelKey: string }>> = {
   waiting: { next: 'vitals', labelKey: 'nextSendToVitals' }, vitals: { next: 'consulting', labelKey: 'nextSendToDoctor' },
   consulting: { next: 'billing', labelKey: 'nextSendToBilling' },
+  pharmacy: { next: 'billing', labelKey: 'nextSendToBilling' },
   billing: { next: 'done', labelKey: 'nextMarkDone' },
 }
 const DEPARTMENTS = ['All', 'General Medicine', 'Cardiology', 'Orthopaedics', 'Gynaecology', 'ENT', 'Ophthalmology', 'Dermatology', 'Paediatrics']
@@ -168,7 +174,7 @@ export default function ReceptionPatients() {
         {TABS.map(tb => (
           <button key={tb} onClick={() => setTab(tb)}
             className={cn("flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-[13px] font-semibold transition", tab === tb ? "bg-white text-slate-900 shadow-sm" : "text-slate-500 hover:text-slate-700")}>
-            {t(`patients.${TAB_KEY[tb]}`)} <span className={cn("text-[11px] font-bold px-1.5 rounded-full", tab === tb ? "bg-[rgba(238,107,38,0.12)] text-[var(--color-accent)]" : "bg-slate-200 text-slate-500")}>{counts[tb]}</span>
+            {t(`patients.${TAB_KEY[tb]}`)} <span className={cn("text-[11px] font-bold px-1.5 rounded-full", tab === tb ? "bg-[rgba(30,151,178,0.12)] text-[var(--color-accent)]" : "bg-slate-200 text-slate-500")}>{counts[tb]}</span>
           </button>
         ))}
       </div>
@@ -187,7 +193,7 @@ export default function ReceptionPatients() {
         onClearFilters={chips.length ? clearAll : undefined}
         bulkActions={(sel) => (
           <button onClick={() => { sel.forEach(announce) }}
-            className="inline-flex items-center gap-1.5 h-8 px-3 rounded-lg bg-[var(--color-primary)] text-white text-[13px] font-semibold hover:bg-[var(--color-primary-dark)] cursor-pointer transition-colors">
+            className="inline-flex items-center gap-1.5 h-8 px-3 rounded-lg bg-[var(--color-primary-dark)] text-white text-[13px] font-semibold hover:bg-[#1a5667] cursor-pointer transition-colors">
             <Volume2 className="h-4 w-4" /> {t('patients.announce')}
           </button>
         )}
@@ -247,7 +253,7 @@ function PatientDrawer({ patient: p, visits, appointments, onClose, onAnnounce, 
           {p.photoUrl
             // eslint-disable-next-line @next/next/no-img-element
             ? <img src={p.photoUrl} alt={p.name} className="h-12 w-12 rounded-2xl object-cover border border-slate-200" />
-            : <span className="h-12 w-12 rounded-2xl bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-dark)] text-white flex items-center justify-center font-bold text-[16px]">{initials(p.name)}</span>}
+            : <span className="h-12 w-12 rounded-2xl bg-gradient-to-br from-[var(--color-primary-900)] to-[var(--color-primary-800)] text-white flex items-center justify-center font-bold text-[16px]">{initials(p.name)}</span>}
           <div>
             <div className="flex items-center gap-2 flex-wrap">
               <p className="text-[17px] font-bold text-slate-900 leading-tight">{p.name}</p>
@@ -289,7 +295,7 @@ function PatientDrawer({ patient: p, visits, appointments, onClose, onAnnounce, 
 
         {/* Symptoms + history */}
         <Section title={t('patients.sectionChiefComplaint')}>
-          {p.symptoms.length ? <div className="flex flex-wrap gap-1.5">{p.symptoms.map(s => <span key={s} className="text-[12px] font-medium bg-[rgba(238,107,38,0.07)] text-[var(--color-accent)] px-2.5 py-1 rounded-full">{s}</span>)}</div> : <p className="text-[12.5px] text-slate-400">{t('patients.noneRecorded')}</p>}
+          {p.symptoms.length ? <div className="flex flex-wrap gap-1.5">{p.symptoms.map(s => <span key={s} className="text-[12px] font-medium bg-[rgba(30,151,178,0.07)] text-[var(--color-accent)] px-2.5 py-1 rounded-full">{s}</span>)}</div> : <p className="text-[12.5px] text-slate-400">{t('patients.noneRecorded')}</p>}
         </Section>
         {p.history.length > 0 && (
           <Section title={t('patients.sectionMedicalHistory')}>
@@ -305,7 +311,7 @@ function PatientDrawer({ patient: p, visits, appointments, onClose, onAnnounce, 
                 <div key={a.id} className="flex items-center gap-2.5 rounded-xl bg-slate-50 p-2.5">
                   <Calendar className="h-4 w-4 text-[var(--color-accent)] flex-shrink-0" />
                   <div className="flex-1 min-w-0"><p className="text-[12.5px] font-semibold text-slate-800 truncate">{a.doctorName} · {a.specialty}</p><p className="text-[11px] text-slate-500">{new Date(a.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })} · {a.time}</p></div>
-                  <span className={cn("text-[10px] font-bold px-2 py-0.5 rounded-full capitalize", a.status === 'cancelled' ? 'bg-red-50 text-red-600' : a.status === 'confirmed' ? 'bg-green-50 text-green-700' : 'bg-[rgba(238,107,38,0.07)] text-[var(--color-accent)]')}>{a.status}</span>
+                  <span className={cn("text-[10px] font-bold px-2 py-0.5 rounded-full capitalize", a.status === 'cancelled' ? 'bg-red-50 text-red-600' : a.status === 'confirmed' ? 'bg-green-50 text-green-700' : 'bg-[rgba(30,151,178,0.07)] text-[var(--color-accent)]')}>{a.status}</span>
                 </div>
               ))}
             </div>
@@ -346,7 +352,7 @@ function PatientDrawer({ patient: p, visits, appointments, onClose, onAnnounce, 
       {/* Sticky actions */}
       <div className="sticky bottom-0 bg-white border-t border-slate-100 p-4 flex gap-2">
         <button onClick={onAnnounce} className="flex-1 h-11 rounded-xl bg-slate-100 text-slate-700 font-bold text-[13.5px] flex items-center justify-center gap-2 hover:bg-slate-200 transition"><Volume2 className="h-4.5 w-4.5" /> {t('patients.announceAction')}</button>
-        {next && <button onClick={onAdvance} className="flex-1 h-11 rounded-xl bg-[var(--color-primary)] text-white font-bold text-[13.5px] flex items-center justify-center gap-2 hover:bg-[var(--color-primary-dark)] transition">{t(`patients.${next.labelKey}`)} <ArrowRight className="h-4 w-4" /></button>}
+        {next && <button onClick={onAdvance} className="flex-1 h-11 rounded-xl bg-[var(--color-primary-dark)] text-white font-bold text-[13.5px] flex items-center justify-center gap-2 hover:bg-[#1a5667] transition">{t(`patients.${next.labelKey}`)} <ArrowRight className="h-4 w-4" /></button>}
       </div>
     </div>
   )

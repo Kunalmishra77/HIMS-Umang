@@ -242,7 +242,7 @@ export function respond(query: string, ctx: CopilotCtx): CopilotReply {
     return { text: icu.length ? `**${icu.length} in ICU/critical care:**\n${icu.map(i => `• ${i.name} (${i.bed}) — ${i.diagnosis} · ${i.condition}`).join('\n')}` : 'No patients in ICU/CCU currently.' }
   }
   if (has(lq, 'critical', 'sickest', 'most serious', 'unstable')) {
-    const crit = ctx.inpatients.filter(i => i.condition === 'Critical' || i.condition === 'Serious').sort((a, b) => (a.condition === 'Critical' ? -1 : 1))
+    const crit = ctx.inpatients.filter(i => i.condition === 'Critical' || i.condition === 'Serious').sort((a, _b) => (a.condition === 'Critical' ? -1 : 1))
     return { text: crit.length ? `**Most acute patients:**\n${crit.map(i => `• ${i.name} (${i.bed}) — ${i.condition} · ${i.diagnosis}`).join('\n')}` : 'No critical/serious inpatients right now.' }
   }
   if (has(lq, 'discharge ready', 'ready for discharge', 'ready to go home', 'fit for discharge')) {

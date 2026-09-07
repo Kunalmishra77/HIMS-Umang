@@ -2,7 +2,7 @@
 
 import { Select } from "@/components/ui/Select"
 import { useState, useEffect, useRef, useMemo } from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion } from "framer-motion"
 import {
   Sparkles, Plus, Send, Trash2, MessageSquare, Copy, Check,
   ClipboardCheck, FileText, User, BrainCircuit, BedDouble, ShieldAlert, Printer,
@@ -17,6 +17,7 @@ import { executeDraft, EXECUTE_LABEL, DONE_LABEL } from "@/lib/copilotTools"
 import { useDoctorProfileStore } from "@/store/useDoctorProfileStore"
 import { openPrint, pre } from "@/lib/printDoc"
 import { cn } from "@/lib/utils"
+import { useIsMounted } from '@/lib/useIsMounted'
 
 const PRINT_KIND: Partial<Record<AssistantDraft['kind'], 'Prescription' | 'Discharge Summary' | 'Referral Letter'>> = {
   prescription: 'Prescription', discharge_summary: 'Discharge Summary', referral: 'Referral Letter',
@@ -37,13 +38,11 @@ export default function AiAssistantPage() {
   const allInpatients = useInpatientStore(s => s.inpatients)
   const doctorName = useAuthStore(s => s.currentUser?.name ?? "Dr. Priya Nair")
 
-  const [mounted, setMounted] = useState(false)
+  const mounted = useIsMounted()
   const [input, setInput] = useState("")
   const [thinking, setThinking] = useState(false)
   const [focusId, setFocusId] = useState<string | null>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => { setMounted(true) }, [])
 
   // Doctor-scoped data (a doctor only sees their own patients)
   const patients = useMemo(() => allPatients.filter(p => p.doctor === doctorName), [allPatients, doctorName])
@@ -89,7 +88,7 @@ export default function AiAssistantPage() {
       <aside className="hidden md:flex w-60 flex-shrink-0 flex-col rounded-2xl bg-white shadow-[0_1px_4px_rgba(15,23,42,0.06)] overflow-hidden">
         <div className="p-3 border-b border-slate-100">
           <button onClick={() => newThread()}
-            className="w-full h-10 rounded-xl bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary-dark)] text-white font-semibold text-[13.5px] flex items-center justify-center gap-2 hover:opacity-95 transition">
+            className="w-full h-10 rounded-xl bg-gradient-to-r from-[var(--color-primary-900)] to-[var(--color-primary-800)] text-white font-semibold text-[13.5px] flex items-center justify-center gap-2 hover:opacity-95 transition">
             <Plus className="h-4 w-4" /> New chat
           </button>
         </div>
@@ -98,7 +97,7 @@ export default function AiAssistantPage() {
             <p className="text-[12px] text-slate-400 text-center px-3 py-6">Your conversations are saved here.</p>
           ) : threads.map(t => (
             <button key={t.id} onClick={() => selectThread(t.id)}
-              className={cn("group w-full text-left px-3 py-2.5 rounded-xl flex items-start gap-2.5 transition", t.id === activeId ? "bg-[rgba(238,107,38,0.07)]" : "hover:bg-slate-50")}>
+              className={cn("group w-full text-left px-3 py-2.5 rounded-xl flex items-start gap-2.5 transition", t.id === activeId ? "bg-[rgba(30,151,178,0.07)]" : "hover:bg-slate-50")}>
               <MessageSquare className={cn("h-4 w-4 mt-0.5 flex-shrink-0", t.id === activeId ? "text-[var(--color-accent)]" : "text-slate-400")} />
               <span className="flex-1 min-w-0">
                 <span className={cn("block text-[13px] font-semibold truncate", t.id === activeId ? "text-[var(--color-primary-dark)]" : "text-slate-700")}>{t.title}</span>
@@ -133,7 +132,7 @@ export default function AiAssistantPage() {
             <div className="relative">
               <User className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400 pointer-events-none" />
               <Select value={focusId ?? ''} onChange={e => setFocusId(e.target.value || null)}
-                className="h-9 pl-8 pr-7 rounded-xl bg-slate-50 border border-slate-200 text-[12.5px] font-medium text-slate-700 outline-none focus:border-[rgba(238,107,38,0.30)] focus:ring-2 focus:ring-primary/20 appearance-none cursor-pointer max-w-[200px]">
+                className="h-9 pl-8 pr-7 rounded-xl bg-slate-50 border border-slate-200 text-[12.5px] font-medium text-slate-700 outline-none focus:border-[rgba(30,151,178,0.30)] focus:ring-2 focus:ring-primary/20 appearance-none cursor-pointer max-w-[200px]">
                 <option value="">No patient pinned</option>
                 {pinnable.map(p => <option key={p.id} value={p.id}>{p.name} — {p.tag}</option>)}
               </Select>
@@ -166,11 +165,11 @@ export default function AiAssistantPage() {
                   onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(input) } }}
                   rows={1}
                   placeholder={focusName ? `Ask about ${focusName}, or "draft a round note"…` : 'Ask about a patient, a cohort, or request a draft…'}
-                  className="w-full resize-none max-h-32 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-[14px] text-slate-800 placeholder:text-slate-400 outline-none focus:border-[rgba(238,107,38,0.30)] focus:ring-2 focus:ring-primary/20"
+                  className="w-full resize-none max-h-32 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-[14px] text-slate-800 placeholder:text-slate-400 outline-none focus:border-[rgba(30,151,178,0.30)] focus:ring-2 focus:ring-primary/20"
                 />
               </div>
               <button onClick={() => send(input)} disabled={!input.trim() || thinking} aria-label="Send"
-                className="h-11 w-11 flex-shrink-0 rounded-2xl bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-dark)] text-white flex items-center justify-center disabled:opacity-40 hover:opacity-95 transition">
+                className="h-11 w-11 flex-shrink-0 rounded-2xl bg-gradient-to-br from-[var(--color-primary-900)] to-[var(--color-primary-800)] text-white flex items-center justify-center disabled:opacity-40 hover:opacity-95 transition">
                 <Send className="h-4.5 w-4.5" />
               </button>
             </div>
@@ -194,11 +193,11 @@ function EmptyHero({ focusName, onPick }: { focusName?: string; onPick: (q: stri
       <p className="text-[13.5px] text-slate-500 mt-1.5 leading-relaxed">
         Ask about any of your patients, run cohort questions, or have me draft a note, prescription, or discharge summary — all grounded in your records.
       </p>
-      {focusName && <p className="text-[12px] font-semibold text-[var(--color-accent)] mt-3 bg-[rgba(238,107,38,0.07)] px-3 py-1 rounded-full">Pinned: {focusName}</p>}
+      {focusName && <p className="text-[12px] font-semibold text-[var(--color-accent)] mt-3 bg-[rgba(30,151,178,0.07)] px-3 py-1 rounded-full">Pinned: {focusName}</p>}
       <div className="mt-6 flex flex-wrap gap-2 justify-center">
         {QUICK_PROMPTS.map(p => (
           <button key={p} onClick={() => onPick(p)}
-            className="text-[12.5px] font-medium text-slate-600 bg-white border border-slate-200 rounded-full px-3.5 py-2 hover:border-[rgba(238,107,38,0.30)] hover:text-[var(--color-accent)] hover:bg-[rgba(238,107,38,0.10)] transition">
+            className="text-[12.5px] font-medium text-slate-600 bg-white border border-slate-200 rounded-full px-3.5 py-2 hover:border-[rgba(30,151,178,0.30)] hover:text-[var(--color-accent)] hover:bg-[rgba(30,151,178,0.10)] transition">
             {p}
           </button>
         ))}
@@ -219,7 +218,7 @@ function Bubble({ role, text, draft }: { role: 'user' | 'ai'; text: string; draf
       )}
       <div className={cn("max-w-[80%] space-y-2", isUser && "flex flex-col items-end")}>
         <div className={cn("rounded-2xl px-4 py-2.5 text-[13.5px] leading-relaxed",
-          isUser ? "bg-[var(--color-primary)] text-white rounded-br-md" : "bg-white border border-slate-200 text-slate-700 rounded-bl-md shadow-sm")}>
+          isUser ? "bg-[var(--color-primary-dark)] text-white rounded-br-md" : "bg-white border border-slate-200 text-slate-700 rounded-bl-md shadow-sm")}>
           <Rich text={text} />
         </div>
         {draft && <DraftCard draft={draft} />}
@@ -261,15 +260,15 @@ function DraftCard({ draft }: { draft: AssistantDraft }) {
   }
 
   return (
-    <div className="w-full rounded-2xl border border-[rgba(238,107,38,0.20)] bg-[rgba(238,107,38,0.07)]/40 overflow-hidden shadow-sm">
-      <div className="flex items-center justify-between px-3.5 py-2 bg-white/70 border-b border-[rgba(238,107,38,0.15)]">
+    <div className="w-full rounded-2xl border border-[rgba(30,151,178,0.20)] bg-[rgba(30,151,178,0.07)]/40 overflow-hidden shadow-sm">
+      <div className="flex items-center justify-between px-3.5 py-2 bg-white/70 border-b border-[rgba(30,151,178,0.15)]">
         <span className="flex items-center gap-2 text-[12px] font-bold text-[var(--color-primary-dark)]">
           <Icon className="h-3.5 w-3.5" /> {draft.title}
         </span>
         <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--color-primary-light)]">AI draft</span>
       </div>
       <pre className="px-4 py-3 text-[12px] leading-relaxed text-slate-700 whitespace-pre-wrap font-mono max-h-72 overflow-y-auto">{draft.content}</pre>
-      <div className="flex items-center gap-2 px-3.5 py-2.5 border-t border-[rgba(238,107,38,0.15)] bg-white/50">
+      <div className="flex items-center gap-2 px-3.5 py-2.5 border-t border-[rgba(30,151,178,0.15)] bg-white/50">
         <button onClick={copy} className="flex items-center gap-1.5 text-[12px] font-semibold text-slate-600 bg-white border border-slate-200 rounded-lg px-3 py-1.5 hover:bg-slate-50 transition">
           {copied ? <Check className="h-3.5 w-3.5 text-green-600" /> : <Copy className="h-3.5 w-3.5" />} {copied ? "Copied" : "Copy"}
         </button>
@@ -280,7 +279,7 @@ function DraftCard({ draft }: { draft: AssistantDraft }) {
         )}
         {canExecute && (
           <button onClick={run} disabled={done}
-            className={cn("flex items-center gap-1.5 text-[12px] font-semibold text-white rounded-lg px-3 py-1.5 transition disabled:opacity-60", confirming ? "bg-amber-600 hover:bg-amber-700" : "bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)]")}>
+            className={cn("flex items-center gap-1.5 text-[12px] font-semibold text-white rounded-lg px-3 py-1.5 transition disabled:opacity-60", confirming ? "bg-amber-600 hover:bg-amber-700" : "bg-[var(--color-primary-dark)] hover:bg-[#1a5667]")}>
             {done ? <Check className="h-3.5 w-3.5" /> : <ClipboardCheck className="h-3.5 w-3.5" />} {done ? DONE_LABEL[draft.kind] : confirming ? `Confirm — ${EXECUTE_LABEL[draft.kind]}` : EXECUTE_LABEL[draft.kind]}
           </button>
         )}

@@ -52,8 +52,8 @@ export function CopilotPreviewCard({ intent, onAccept, onReject }: Props) {
   }
 
   return (
-    <div className="mx-3 my-2 rounded-xl bg-surface-sunken ring-1 ring-[rgba(238,107,38,0.20)] overflow-hidden">
-      <header className="flex items-center gap-2 px-3 py-2 border-b border-[rgba(238,107,38,0.15)]/60">
+    <div className="mx-3 my-2 rounded-xl bg-surface-sunken ring-1 ring-[rgba(30,151,178,0.20)] overflow-hidden">
+      <header className="flex items-center gap-2 px-3 py-2 border-b border-[rgba(30,151,178,0.15)]/60">
         <Wand2 className="h-3.5 w-3.5 text-[var(--color-accent)]" />
         <h3 className="text-[12.5px] font-semibold text-[var(--color-primary-dark)]">AI Copilot — confirm before running</h3>
         <span className="ml-auto inline-flex items-center gap-1 text-[10px] font-mono font-semibold text-[var(--color-accent)]">
@@ -85,7 +85,7 @@ export function CopilotPreviewCard({ intent, onAccept, onReject }: Props) {
         ) : null}
       </div>
 
-      <footer className="flex items-center gap-2 border-t border-[rgba(238,107,38,0.15)]/60 px-3 py-2 bg-white/60">
+      <footer className="flex items-center gap-2 border-t border-[rgba(30,151,178,0.15)]/60 px-3 py-2 bg-white/60">
         <span className="text-[10.5px] text-slate-500 mr-auto">HITL — accept / reject. Decision audited.</span>
         <button
           type="button"
@@ -98,7 +98,7 @@ export function CopilotPreviewCard({ intent, onAccept, onReject }: Props) {
           type="button"
           onClick={handleAccept}
           disabled={lowConf && intent.action === "unknown"}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11.5px] font-semibold bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white disabled:opacity-50 disabled:cursor-not-allowed"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11.5px] font-semibold bg-[var(--color-primary-dark)] hover:bg-[#1a5667] text-white disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <Check className="h-3 w-3" /> Run
         </button>

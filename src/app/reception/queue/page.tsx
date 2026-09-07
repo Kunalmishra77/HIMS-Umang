@@ -43,7 +43,7 @@ function RoomCard({ doctor, room, department, patients }: { doctor: string; room
               <span className="text-xl font-black leading-none">{nowServing.token}</span>
             </div>
             <div className="min-w-0">
-              <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--color-primary)] flex items-center gap-1"><span className="h-1.5 w-1.5 rounded-full bg-[rgba(8,145,178,0.07)]0 animate-pulse" /> {t('queue.nowServing')}</p>
+              <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--color-primary-dark)] flex items-center gap-1"><span className="h-1.5 w-1.5 rounded-full bg-[rgba(8,145,178,0.07)]0 animate-pulse" /> {t('queue.nowServing')}</p>
               <p className="text-sm font-bold text-slate-900 truncate flex items-center gap-1.5">{nowServing.name}<span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 rounded px-1 py-0.5">{nowServing.uhid ?? deriveUhid(nowServing.id)}</span></p>
             </div>
           </div>

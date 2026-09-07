@@ -46,10 +46,10 @@ export function DurationStep({ symptoms, durations, onChange }: Props) {
                       onClick={() => set(symptom, opt.value)}
                       aria-pressed={active}
                       className={cn(
-                        "h-8 px-3 rounded-[10px] text-[12px] font-medium border transition-all active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#EE6B26]",
+                        "h-8 px-3 rounded-[10px] text-[12px] font-medium border transition-all active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1E97B2]",
                         active
-                          ? "bg-[#EE6B26] border-[#EE6B26] text-[#0D2032] shadow-sm"
-                          : "bg-slate-50 border-slate-200 text-slate-600 hover:border-[#EE6B26]/40",
+                          ? "bg-[#1E97B2] border-[#1E97B2] text-[#0D2032] shadow-sm"
+                          : "bg-slate-50 border-slate-200 text-slate-600 hover:border-[#1E97B2]/40",
                       )}
                     >
                       {t(`duration.${opt.value}`)}

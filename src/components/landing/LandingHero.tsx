@@ -28,7 +28,7 @@ export function LandingHero() {
         <motion.div style={{ y: glowY }} className="absolute -top-32 left-1/2 -translate-x-1/2 w-[900px] h-[600px] rounded-full">
           <div className="w-full h-full" style={{ background: "radial-gradient(closest-side, rgba(13,32,50,0.06), transparent)" }} />
         </motion.div>
-        <div className="absolute top-40 -right-24 w-[360px] h-[360px] rounded-full" style={{ background: "radial-gradient(closest-side, rgba(238,107,38,0.06), transparent)" }} />
+        <div className="absolute top-40 -right-24 w-[360px] h-[360px] rounded-full" style={{ background: "radial-gradient(closest-side, rgba(30,151,178,0.06), transparent)" }} />
         <div className="absolute inset-0 opacity-[0.025]" style={{ backgroundImage: "linear-gradient(var(--color-primary) 1px, transparent 1px), linear-gradient(90deg, var(--color-primary) 1px, transparent 1px)", backgroundSize: "44px 44px", maskImage: "radial-gradient(closest-side at 50% 30%, black, transparent)" }} />
       </div>
 
@@ -38,10 +38,10 @@ export function LandingHero() {
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-[0.12em] text-[var(--color-accent)] bg-[var(--color-primary)]/[0.07] border border-[var(--color-primary)]/15">
             <Sparkles className="h-3.5 w-3.5" /> {t("hero.badge")}
           </span>
-          <h1 className="text-[40px] sm:text-[52px] lg:text-[58px] font-bold leading-[1.05] tracking-tight text-[#0B1220] mt-5">
+          <h1 className="text-[40px] sm:text-[52px] lg:text-[58px] font-bold leading-[1.05] tracking-tight text-[#0B1220] mt-5 font-display">
             {t("hero.titleLine1")}<br />
             <span className="relative whitespace-nowrap">{t("hero.titleEmphasis")}
-              <span className="absolute left-0 -bottom-1 h-[6px] w-full rounded-full" style={{ background: "linear-gradient(90deg,#EE6B26,#C2481A)" }} /></span>
+              <span className="absolute left-0 -bottom-1 h-[6px] w-full rounded-full" style={{ background: "linear-gradient(90deg,#1E97B2,#196b7e)" }} /></span>
           </h1>
           <p className="text-[16px] lg:text-[17.5px] leading-relaxed text-[#475467] mt-5 max-w-xl">
             {t("hero.subtitle")}
@@ -58,7 +58,7 @@ export function LandingHero() {
 
           <div className="flex flex-wrap items-center gap-3 mt-7">
             <button onClick={() => scrollTo("#launcher")}
-              className="inline-flex items-center gap-2 h-12 px-6 rounded-xl text-[15px] font-semibold text-white bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] transition-colors cursor-pointer shadow-[0_8px_24px_rgba(238,107,38,0.18)]">
+              className="inline-flex items-center gap-2 h-12 px-6 rounded-xl text-[15px] font-semibold text-white bg-[var(--color-primary-dark)] hover:bg-[#1a5667] transition-colors cursor-pointer shadow-[0_8px_24px_rgba(30,151,178,0.18)]">
               {t("cta.launchConsole")} <ArrowRight className="h-4 w-4" />
             </button>
             <button onClick={() => scrollTo("#platform")}

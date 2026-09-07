@@ -19,11 +19,11 @@ type Mode = 'in_person' | 'online'
 type Row = Patient & { mode: Mode }
 
 const STATUS_TINT: Record<QueueStatus, string> = {
-  waiting: 'bg-amber-50 text-amber-700', vitals: 'bg-surface-sunken text-accent', consulting: 'bg-[rgba(238,107,38,0.07)] text-[var(--color-accent)]',
-  billing: 'bg-primary-soft text-accent', done: 'bg-green-50 text-green-700',
+  waiting: 'bg-amber-50 text-amber-700', vitals: 'bg-surface-sunken text-accent', consulting: 'bg-[rgba(30,151,178,0.07)] text-[var(--color-accent)]',
+  pharmacy: 'bg-amber-50 text-amber-700', billing: 'bg-primary-soft text-accent', done: 'bg-green-50 text-green-700',
 }
 const TRIAGE_TINT: Record<string, string> = {
-  Critical: 'bg-red-100 text-red-700', High: 'bg-accent-soft text-accent', Medium: 'bg-amber-100 text-amber-700', Low: 'bg-slate-100 text-slate-500',
+  Critical: 'bg-red-100 text-red-700', High: 'bg-urgent-bg text-urgent', Medium: 'bg-amber-100 text-amber-700', Low: 'bg-slate-100 text-slate-500',
 }
 const initials = (n: string) => n.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase()
 
@@ -82,7 +82,7 @@ export default function DoctorRecords() {
         <div className="relative w-full sm:w-72">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
           <input value={search} onChange={e => setSearch(e.target.value)} placeholder={t('records.searchPlaceholder')}
-            className="w-full h-10 pl-9 pr-3 rounded-xl bg-white border border-slate-200 text-[14px] text-slate-800 placeholder:text-slate-400 outline-none focus:border-[rgba(238,107,38,0.30)] focus:ring-2 focus:ring-primary/20" />
+            className="w-full h-10 pl-9 pr-3 rounded-xl bg-white border border-slate-200 text-[14px] text-slate-800 placeholder:text-slate-400 outline-none focus:border-[rgba(30,151,178,0.30)] focus:ring-2 focus:ring-primary/20" />
         </div>
       </div>
 
@@ -92,7 +92,7 @@ export default function DoctorRecords() {
           <button key={key} onClick={() => setTab(key)}
             className={cn("flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-[13px] font-semibold transition", tab === key ? "bg-white text-slate-900 shadow-sm" : "text-slate-500 hover:text-slate-700")}>
             {key === 'online' && <Video className="h-3.5 w-3.5" />}{key === 'in_person' && <Building2 className="h-3.5 w-3.5" />}
-            {label} <span className={cn("text-[11px] font-bold px-1.5 rounded-full", tab === key ? "bg-[rgba(238,107,38,0.12)] text-[var(--color-accent)]" : "bg-slate-200 text-slate-500")}>{counts[key]}</span>
+            {label} <span className={cn("text-[11px] font-bold px-1.5 rounded-full", tab === key ? "bg-[rgba(30,151,178,0.12)] text-[var(--color-accent)]" : "bg-slate-200 text-slate-500")}>{counts[key]}</span>
           </button>
         ))}
       </div>
@@ -116,10 +116,10 @@ export default function DoctorRecords() {
               <tbody>
                 {filtered.map(r => (
                   <tr key={r.id} onClick={() => setSelectedId(r.id)}
-                    className="border-b border-slate-50 last:border-0 hover:bg-[rgba(238,107,38,0.10)]/40 cursor-pointer transition">
+                    className="border-b border-slate-50 last:border-0 hover:bg-[rgba(30,151,178,0.10)]/40 cursor-pointer transition">
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
-                        <span className={cn("h-9 w-9 rounded-xl text-white flex items-center justify-center font-bold text-[12.5px] flex-shrink-0", r.mode === 'online' ? "bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-light)]" : "bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-light)]")}>{initials(r.name)}</span>
+                        <span className={cn("h-9 w-9 rounded-xl text-white flex items-center justify-center font-bold text-[12.5px] flex-shrink-0", r.mode === 'online' ? "bg-gradient-to-br from-[var(--color-primary-900)] to-[var(--color-primary-800)]" : "bg-gradient-to-br from-[var(--color-primary-900)] to-[var(--color-primary-800)]")}>{initials(r.name)}</span>
                         <div className="min-w-0">
                           <p className="text-[13.5px] font-bold text-slate-900 truncate flex items-center gap-1.5">
                             {r.name}
@@ -131,7 +131,7 @@ export default function DoctorRecords() {
                     </td>
                     <td className="px-4 py-3 text-[13px] text-slate-600 whitespace-nowrap">{r.age}y · {r.gender}</td>
                     <td className="px-4 py-3">
-                      <span className={cn("inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-full", r.mode === 'online' ? "bg-[rgba(238,107,38,0.07)] text-[var(--color-accent)]" : "bg-[rgba(238,107,38,0.07)] text-[var(--color-accent)]")}>
+                      <span className={cn("inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-full", r.mode === 'online' ? "bg-[rgba(30,151,178,0.07)] text-[var(--color-accent)]" : "bg-[rgba(30,151,178,0.07)] text-[var(--color-accent)]")}>
                         {r.mode === 'online' ? <><Video className="h-3 w-3" /> {t('common.onlineLabel')}</> : <><Building2 className="h-3 w-3" /> {t('common.inPersonLabel')}</>}
                       </span>
                     </td>
@@ -155,7 +155,7 @@ export default function DoctorRecords() {
               className="fixed top-0 right-0 bottom-0 w-full max-w-md bg-white z-50 shadow-2xl overflow-y-auto" role="dialog" aria-modal="true" aria-label={t('records.patientRecord')}>
               <div className="sticky top-0 bg-white border-b border-slate-100 px-5 py-4 flex items-start justify-between gap-3 z-10">
                 <div className="flex items-center gap-3">
-                  <span className={cn("h-12 w-12 rounded-2xl text-white flex items-center justify-center font-bold text-[16px]", selected.mode === 'online' ? "bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-light)]" : "bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-light)]")}>{initials(selected.name)}</span>
+                  <span className={cn("h-12 w-12 rounded-2xl text-white flex items-center justify-center font-bold text-[16px]", selected.mode === 'online' ? "bg-gradient-to-br from-[var(--color-primary-900)] to-[var(--color-primary-800)]" : "bg-gradient-to-br from-[var(--color-primary-900)] to-[var(--color-primary-800)]")}>{initials(selected.name)}</span>
                   <div>
                     <p className="text-[17px] font-bold text-slate-900 leading-tight">{selected.name}</p>
                     <p className="text-[12.5px] text-slate-500">{selected.id} · {selected.age}y · {selected.gender} · <span className={cn("font-semibold", selected.mode === 'online' ? "text-[var(--color-accent)]" : "text-[var(--color-accent)]")}>{selected.mode === 'online' ? t('common.onlineLabel') : t('common.inPersonLabel')}</span></p>
@@ -207,7 +207,7 @@ export default function DoctorRecords() {
               </div>
 
               <div className="sticky bottom-0 bg-white border-t border-slate-100 p-4">
-                <button onClick={() => openConsult(selected)} className="w-full h-11 rounded-xl bg-[var(--color-primary)] text-white font-bold text-[13.5px] flex items-center justify-center gap-2 hover:bg-[var(--color-primary-dark)] transition">
+                <button onClick={() => openConsult(selected)} className="w-full h-11 rounded-xl bg-[var(--color-primary-dark)] text-white font-bold text-[13.5px] flex items-center justify-center gap-2 hover:bg-[#1a5667] transition">
                   {selected.mode === 'online' ? <Video className="h-4.5 w-4.5" /> : <Stethoscope className="h-4.5 w-4.5" />} {t('records.openConsultation')} <ArrowRight className="h-4 w-4" />
                 </button>
               </div>

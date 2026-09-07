@@ -2,8 +2,8 @@
 
 /* Live Visit Status — the patient's real-time journey through the hospital,
  * shown as a 6-stage track (Checked In → Waiting → Vitals → Consultation →
- * Billing → Completed). This is an OPD-only build (no Laboratory, Radiology
- * or Pharmacy portal), so the track only shows stages the patient actually
+ * Billing → Completed). This is an OPD-only build (no Laboratory or
+ * Radiology portal), so the track only shows stages the patient actually
  * passes through in person. Position is derived from the live journey engine
  * (usePatientLiveStore). A prescription is written during the consultation,
  * so the 'prescription' OpdStage (video-mode e-prescription step) maps back

@@ -195,7 +195,7 @@ export function DataTablePro<T>({
                       })}
                         className="w-full flex items-center gap-2 px-2 py-1.5 rounded-lg text-sm text-foreground-muted hover:bg-surface-sunken cursor-pointer">
                         <span className={cn("h-4 w-4 rounded border flex items-center justify-center flex-shrink-0",
-                          on ? "bg-[var(--color-primary)] border-[var(--color-primary)] text-white" : "border-border-strong")}>
+                          on ? "bg-[var(--color-primary-dark)] border-[var(--color-primary)] text-white" : "border-border-strong")}>
                           {on && <Check className="h-3 w-3" />}
                         </span>
                         {c.label}

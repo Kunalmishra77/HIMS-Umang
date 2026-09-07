@@ -128,7 +128,7 @@ export default function ReceptionAppointments() {
         return (
           <div className="flex items-center justify-end gap-1.5" onClick={e => e.stopPropagation()}>
             {online && isToday && (a.status === 'confirmed' || a.status === 'upcoming') && (
-              <button onClick={() => toast.success(t('appointments.launchingVideo'), { description: nameFor(a) })} className="text-[12px] font-bold text-white bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] px-2.5 py-1.5 rounded-lg inline-flex items-center gap-1 transition cursor-pointer"><Video className="h-3.5 w-3.5" /> {t('appointments.join')}</button>
+              <button onClick={() => toast.success(t('appointments.launchingVideo'), { description: nameFor(a) })} className="text-[12px] font-bold text-white bg-[var(--color-primary-dark)] hover:bg-[#1a5667] px-2.5 py-1.5 rounded-lg inline-flex items-center gap-1 transition cursor-pointer"><Video className="h-3.5 w-3.5" /> {t('appointments.join')}</button>
             )}
             {a.status === 'upcoming' && (
               <button onClick={() => { updateAppointment(a.id, { status: 'confirmed' }); toast.success(t('appointments.confirmedToast')) }} className="text-[12px] font-bold text-green-700 bg-green-50 hover:bg-green-100 px-2.5 py-1.5 rounded-lg inline-flex items-center gap-1 transition cursor-pointer"><CheckCircle className="h-3.5 w-3.5" /> {t('appointments.confirm')}</button>
@@ -153,7 +153,7 @@ export default function ReceptionAppointments() {
           <h1 className="text-[24px] font-bold text-slate-900 tracking-tight">{t('appointments.pageTitle')}</h1>
           <p className="text-[13px] text-slate-500 mt-0.5">{t('appointments.pageSubtitle', { today: counts.today, online: counts.online, upcoming: counts.upcoming })}</p>
         </div>
-        <button onClick={openNew} className="flex items-center gap-2 h-10 px-4 rounded-xl bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white text-[13.5px] font-bold shadow-sm active:scale-[0.98] transition">
+        <button onClick={openNew} className="flex items-center gap-2 h-10 px-4 rounded-xl bg-[var(--color-primary-dark)] hover:bg-[#1a5667] text-white text-[13.5px] font-bold shadow-sm active:scale-[0.98] transition">
           <Plus className="h-4 w-4" /> {t('appointments.bookAppointment')}
         </button>
       </div>
@@ -206,7 +206,7 @@ export default function ReceptionAppointments() {
                   <div className="relative">
                     <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                     <input list="rc-patient-list" value={draft.patientName} onChange={e => setDraft(d => ({ ...d, patientName: e.target.value }))} placeholder={t('appointments.patientNamePlaceholder')}
-                      className="w-full h-10 pl-9 pr-3 rounded-xl border border-slate-200 text-sm text-slate-900 outline-none focus:ring-2 focus:ring-primary/20 focus:border-[rgba(238,107,38,0.30)]" />
+                      className="w-full h-10 pl-9 pr-3 rounded-xl border border-slate-200 text-sm text-slate-900 outline-none focus:ring-2 focus:ring-primary/20 focus:border-[rgba(30,151,178,0.30)]" />
                     <datalist id="rc-patient-list">{patients.map(p => <option key={p.id} value={p.name} />)}</datalist>
                   </div>
                 </div>
@@ -216,7 +216,7 @@ export default function ReceptionAppointments() {
                   <div className="flex gap-2">
                     {([['in_person', t('appointments.inPerson'), Building2], ['online', t('appointments.online'), Video]] as const).map(([key, label, Icon]) => (
                       <button key={key} onClick={() => setDraft(d => ({ ...d, mode: key }))}
-                        className={cn("flex-1 h-10 rounded-xl text-sm font-semibold flex items-center justify-center gap-1.5 transition", draft.mode === key ? "bg-[var(--color-primary)] text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200")}>
+                        className={cn("flex-1 h-10 rounded-xl text-sm font-semibold flex items-center justify-center gap-1.5 transition", draft.mode === key ? "bg-[var(--color-primary-dark)] text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200")}>
                         <Icon className="h-4 w-4" /> {label}
                       </button>
                     ))}
@@ -249,7 +249,7 @@ export default function ReceptionAppointments() {
 
               <div className="flex gap-3 mt-6">
                 <button onClick={() => setShowModal(false)} className="flex-1 h-11 rounded-xl border border-slate-200 text-slate-700 font-bold text-[13.5px] hover:bg-slate-50 transition">{t('common.cancel')}</button>
-                <button onClick={submit} className="flex-1 h-11 rounded-xl bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white font-bold text-[13.5px] flex items-center justify-center gap-2 transition">
+                <button onClick={submit} className="flex-1 h-11 rounded-xl bg-[var(--color-primary-dark)] hover:bg-[#1a5667] text-white font-bold text-[13.5px] flex items-center justify-center gap-2 transition">
                   {rescheduleId ? t('appointments.saveChanges') : t('appointments.book')} <ArrowRight className="h-4 w-4" />
                 </button>
               </div>

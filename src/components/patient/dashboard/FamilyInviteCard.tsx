@@ -16,8 +16,10 @@ import { useEffect, useMemo, useState } from "react"
 import { Send, MessageCircle, UserPlus, X, Check, Phone, Sparkles, Clock } from "lucide-react"
 import { useAuthStore } from "@/store/useAuthStore"
 import { useAuditStore } from "@/store/useAuditStore"
-import { usePatientStore } from "@/store/usePatientStore"
+import { usePatientMe } from "@/lib/usePatientMe"
 import { useFamilyTokenStore } from "@/store/useFamilyTokenStore"
+import { nowIso, nowMs } from '@/lib/clock'
+import { useStoredState } from '@/lib/useStoredState'
 
 type InviteStatus = "sent" | "delivered" | "accepted"
 
@@ -32,7 +34,6 @@ interface Invite {
 
 const RELATIONS = ["Spouse", "Parent", "Child", "Sibling", "Friend", "Guardian"] as const
 
-const DEMO_PATIENT_ID = "PT-20394"
 const LS_KEY = "agentix.patient.familyInvites"
 
 function loadInvites(): Invite[] {
@@ -55,11 +56,12 @@ function tinyAgo(iso: string): string {
   return `${Math.floor(m / 60)}h ago`
 }
 
+const NO_INVITES: Invite[] = []
+
 export function FamilyInviteCard({ className }: { className?: string }) {
   const currentUser = useAuthStore((s) => s.currentUser)
-  const patients     = usePatientStore((s) => s.patients)
   const audit         = useAuditStore((s) => s.log)
-  const me            = patients.find((p) => p.id === currentUser?.id)
+  const { me }        = usePatientMe()
   // The link must point at /p/[uhid] with a token that page actually
   // validates (lib/familyToken.ts) — usePatientStore's own familyAccessToken
   // (a bare crypto.randomUUID(), used elsewhere for the reception-side
@@ -67,28 +69,32 @@ export function FamilyInviteCard({ className }: { className?: string }) {
   // real signed one via useFamilyTokenStore, same as FamilyTrackingCard.tsx.
   // /p/[uhid] looks patients up by .id despite the route's [uhid] param name
   // (see that page's own lookup: `s.patients.find(p => p.id === upUhid)`).
-  const uhid          = me?.id ?? currentUser?.id ?? DEMO_PATIENT_ID
+  //
+  // No demo/auth-id fallback: minting a token against a fallback id used to
+  // mean an unlinked patient shared a live link into SOMEONE ELSE'S record
+  // (the demo patient's). Below, the whole card renders an empty state
+  // instead when `me` is undefined.
+  const uhid          = me?.id
   const issueFamilyTrackToken = useFamilyTokenStore((s) => s.issue)
-  const familyTrackRecord     = useFamilyTokenStore((s) => s.records[uhid.toUpperCase()])
+  const familyTrackRecord     = useFamilyTokenStore((s) => (uhid ? s.records[uhid.toUpperCase()] : undefined))
 
-  const [invites, setInvites] = useState<Invite[]>([])
+  const [invites, setInvites] = useStoredState(loadInvites, NO_INVITES)
   const [showForm, setShowForm] = useState(false)
   const [name,    setName]    = useState("")
   const [phone,   setPhone]   = useState("")
   const [relation, setRelation] = useState<typeof RELATIONS[number]>("Spouse")
 
-  // Hydrate from LS on mount (browser-only).
-  useEffect(() => { setInvites(loadInvites()) }, [])
-
-  // Ensure a consented, unexpired tracker token exists for this patient's own share link.
+  // Ensure a consented, unexpired tracker token exists for this patient's own
+  // share link — only once a real linked patient record is resolved.
   useEffect(() => {
+    if (!uhid) return
     if (!familyTrackRecord || familyTrackRecord.expiresAt <= Date.now()) {
       issueFamilyTrackToken(uhid, me?.name ?? currentUser?.name ?? "Patient", { consent: true })
     }
   }, [uhid, familyTrackRecord, me?.name, currentUser?.name, issueFamilyTrackToken])
 
   const trackUrl = useMemo(
-    () => (typeof window !== "undefined" && familyTrackRecord ? `${window.location.origin}/p/${uhid}?t=${familyTrackRecord.token}` : ''),
+    () => (typeof window !== "undefined" && uhid && familyTrackRecord ? `${window.location.origin}/p/${uhid}?t=${familyTrackRecord.token}` : ''),
     [uhid, familyTrackRecord],
   )
 
@@ -97,10 +103,10 @@ export function FamilyInviteCard({ className }: { className?: string }) {
     if (name.trim().length < 2)  return
     if (digits.length !== 10)    return
 
-    const id = `INV-${Date.now()}`
+    const id = `INV-${nowMs()}`
     const fresh: Invite = {
       id, name: name.trim(), phone: '+91 ' + digits, relation, status: "sent",
-      invitedAt: new Date().toISOString(),
+      invitedAt: nowIso(),
     }
     const next = [fresh, ...invites].slice(0, 6)
     setInvites(next); saveInvites(next)
@@ -154,6 +160,21 @@ export function FamilyInviteCard({ className }: { className?: string }) {
     `${currentUser?.name?.split(' ')[0] ?? 'Your loved one'} has invited you to follow their hospital visit at Umang Hospital.\n\n` +
     `You'll see ward, condition, and wait-time updates in real-time — no medical details, fully consented.\n\n` +
     `Tap to open: ${trackUrl}`
+
+  if (!uhid) {
+    return (
+      <section className={`rounded-3xl bg-white shadow-[0_1px_4px_rgba(15,23,42,0.06),0_8px_28px_rgba(15,23,42,0.05)] p-5 ${className ?? ''}`}>
+        <header className="flex items-center gap-2 mb-1">
+          <span className="h-8 w-8 rounded-xl bg-emerald-50 flex items-center justify-center"><MessageCircle className="h-4 w-4 text-emerald-600" /></span>
+          <div>
+            <h3 className="text-[15px] font-bold text-slate-900 leading-tight">Invite family on WhatsApp</h3>
+            <p className="text-[11.5px] text-slate-500">One tap → secure tracker link · no medical data</p>
+          </div>
+        </header>
+        <p className="text-[12.5px] text-slate-400 mt-3">No hospital record linked to this account yet — link your record to invite family.</p>
+      </section>
+    )
+  }
 
   return (
     <section className={`rounded-3xl bg-white shadow-[0_1px_4px_rgba(15,23,42,0.06),0_8px_28px_rgba(15,23,42,0.05)] p-5 ${className ?? ''}`}>

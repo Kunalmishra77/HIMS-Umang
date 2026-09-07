@@ -59,8 +59,8 @@ const SEED: Refund[] = [
 
 const STATUS_CONFIG: Record<RefundStatus, { label: string; color: string; icon: React.ElementType }> = {
   pending:           { label: 'Pending approval',    color: 'bg-amber-100 text-amber-700',  icon: Clock },
-  approved_lead:     { label: 'Awaiting Finance',     color: 'bg-[rgba(238,107,38,0.12)] text-[var(--color-accent)]',    icon: Shield },
-  approved_finance:  { label: 'Ready for payout',     color: 'bg-[rgba(238,107,38,0.12)] text-[var(--color-accent)]', icon: CheckCircle },
+  approved_lead:     { label: 'Awaiting Finance',     color: 'bg-[rgba(30,151,178,0.12)] text-[var(--color-accent)]',    icon: Shield },
+  approved_finance:  { label: 'Ready for payout',     color: 'bg-[rgba(30,151,178,0.12)] text-[var(--color-accent)]', icon: CheckCircle },
   rejected:          { label: 'Rejected',             color: 'bg-red-100 text-red-700',      icon: XCircle },
   processed:         { label: 'Processed',            color: 'bg-green-100 text-green-700',  icon: CheckCircle },
 }
@@ -167,8 +167,8 @@ export default function BillingRefunds() {
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px] font-semibold">
           <Pill label="Pending" value={totals.pending} tint="bg-amber-50 text-amber-700" />
-          <Pill label="Awaiting Finance" value={totals.awaitingFh} tint="bg-[rgba(238,107,38,0.07)] text-[var(--color-accent)]" />
-          <Pill label="Ready for payout" value={totals.ready} tint="bg-[rgba(238,107,38,0.07)] text-[var(--color-accent)]" />
+          <Pill label="Awaiting Finance" value={totals.awaitingFh} tint="bg-[rgba(30,151,178,0.07)] text-[var(--color-accent)]" />
+          <Pill label="Ready for payout" value={totals.ready} tint="bg-[rgba(30,151,178,0.07)] text-[var(--color-accent)]" />
           <Pill label="Processed" value={totals.processed} tint="bg-emerald-50 text-emerald-700" />
         </div>
       </div>
@@ -215,10 +215,10 @@ export default function BillingRefunds() {
                   </span>
                   <div className="flex gap-2 flex-wrap justify-end">
                     {r.status === 'pending' && canLeadApprove && (
-                      <button onClick={() => leadApprove(r)} className="px-3 py-1.5 text-xs font-bold bg-[var(--color-primary)] text-white rounded-lg hover:bg-[var(--color-primary-dark)]">Approve 1/2</button>
+                      <button onClick={() => leadApprove(r)} className="px-3 py-1.5 text-xs font-bold bg-[var(--color-primary-dark)] text-white rounded-lg hover:bg-[#1a5667]">Approve 1/2</button>
                     )}
                     {r.status === 'approved_lead' && canFinanceApprove && (
-                      <button onClick={() => financeApprove(r)} className="px-3 py-1.5 text-xs font-bold bg-[var(--color-primary)] text-white rounded-lg hover:bg-[var(--color-primary-dark)]">Authorise 2/2</button>
+                      <button onClick={() => financeApprove(r)} className="px-3 py-1.5 text-xs font-bold bg-[var(--color-primary-dark)] text-white rounded-lg hover:bg-[#1a5667]">Authorise 2/2</button>
                     )}
                     {(r.status === 'pending' || r.status === 'approved_lead') && (canLeadApprove || canFinanceApprove) && (
                       <button onClick={() => reject(r)} className="px-3 py-1.5 text-xs font-bold bg-red-50 text-red-700 rounded-lg hover:bg-red-100">Reject</button>

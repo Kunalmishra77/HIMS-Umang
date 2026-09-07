@@ -7,14 +7,7 @@ import { useMortuaryStore } from './useMortuaryStore'
 import { usePatientStore } from './usePatientStore'
 import { useFamilyTokenStore } from './useFamilyTokenStore'
 import { getSupabaseClient } from '@/lib/supabase/client'
-import {
-  news2 as calcNEWS2,
-  qsofa as calcQSOFA,
-  suggestArea,
-  type Vitals,
-  type ESIBand,
-  type TreatmentArea,
-} from '@/lib/erClinical'
+import { news2 as calcNEWS2, qsofa as calcQSOFA, type Vitals, type ESIBand, type TreatmentArea } from '@/lib/erClinical'
 
 // ── Domain types ───────────────────────────────────────────────────────────
 

@@ -1,13 +1,13 @@
 "use client"
 
-import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Cell } from "recharts"
+import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip } from "recharts"
 import { useTranslations } from "next-intl"
 import { usePatientStore, type TriageLevel } from "@/store/usePatientStore"
 import { useBillingStore } from "@/store/useBillingStore"
 import { Users, UserPlus, Wallet, Activity } from "lucide-react"
 import { cn } from "@/lib/utils"
 
-const TRIAGE_COLOR: Record<TriageLevel, string> = { Critical: '#ef4444', High: '#EE6B26', Medium: '#f59e0b', Low: '#22c55e' }
+const TRIAGE_COLOR: Record<TriageLevel, string> = { Critical: '#ef4444', High: 'var(--color-urgent)', Medium: '#f59e0b', Low: '#22c55e' }
 const CARD = "rounded-2xl bg-white shadow-[0_1px_4px_rgba(15,23,42,0.06),0_4px_16px_rgba(15,23,42,0.04)]"
 
 export default function ReceptionReports() {
@@ -34,8 +34,8 @@ export default function ReceptionReports() {
   const maxTriage = Math.max(1, ...byTriage.map(t => t.count))
 
   const tiles = [
-    { label: t('reports.tileRegistrationsToday'), value: todayPatients.length, icon: Users, tint: 'bg-[rgba(238,107,38,0.07)] text-[var(--color-accent)]' },
-    { label: t('reports.tileAppointmentsToday'), value: apptsToday, icon: UserPlus, tint: 'bg-[rgba(238,107,38,0.07)] text-[var(--color-accent)]' },
+    { label: t('reports.tileRegistrationsToday'), value: todayPatients.length, icon: Users, tint: 'bg-[rgba(30,151,178,0.07)] text-[var(--color-accent)]' },
+    { label: t('reports.tileAppointmentsToday'), value: apptsToday, icon: UserPlus, tint: 'bg-[rgba(30,151,178,0.07)] text-[var(--color-accent)]' },
     { label: t('reports.tileInQueueNow'), value: inQueue, icon: Activity, tint: 'bg-amber-50 text-amber-600' },
     { label: t('reports.tileCollectedToday'), value: `₹${collected.toLocaleString('en-IN')}`, icon: Wallet, tint: 'bg-green-50 text-green-600' },
   ]
@@ -64,7 +64,7 @@ export default function ReceptionReports() {
               <BarChart data={byDept} margin={{ top: 4, right: 8, left: -20, bottom: 0 }}>
                 <XAxis dataKey="name" tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false} interval={0} />
                 <YAxis allowDecimals={false} tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
-                <Tooltip cursor={{ fill: 'rgba(238,107,38,0.25)' }} contentStyle={{ borderRadius: 12, border: '1px solid #e2e8f0', fontSize: 12 }} />
+                <Tooltip cursor={{ fill: 'rgba(30,151,178,0.25)' }} contentStyle={{ borderRadius: 12, border: '1px solid #e2e8f0', fontSize: 12 }} />
                 <Bar dataKey="value" radius={[6, 6, 0, 0]} fill="#16324A" />
               </BarChart>
             </ResponsiveContainer>

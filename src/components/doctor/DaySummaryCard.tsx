@@ -10,7 +10,7 @@
  *   <DaySummaryCard doctorId="DR-1012" doctorName="Dr. Priya Nair" />
  */
 import { useMemo, useState } from "react"
-import { Sparkles, X, Calendar, TrendingUp, Check, ArrowRight, ListChecks } from "lucide-react"
+import { Sparkles, X, Calendar, TrendingUp, Check, ListChecks } from "lucide-react"
 import { useAuditStore } from "@/store/useAuditStore"
 import { useDoctorStatsStore } from "@/store/useDoctorStatsStore"
 import { ReasoningChip } from "@/components/clinical/ReasoningChip"
@@ -127,7 +127,7 @@ export function DaySummaryCard({ doctorId, doctorName, className }: Props) {
         <button
           type="button"
           onClick={() => setDismissed(true)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11.5px] font-semibold bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11.5px] font-semibold bg-[var(--color-primary-dark)] hover:bg-[#1a5667] text-white"
         >
           <Check className="h-3 w-3" /> Got it
         </button>

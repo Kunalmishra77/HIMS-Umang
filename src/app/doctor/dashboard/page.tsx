@@ -43,6 +43,8 @@ import { useHRStore } from "@/store/useHRStore"
 import { useDialogs } from "@/components/ui/ConfirmDialog"
 import { getSupabaseClient } from "@/lib/supabase/client"
 import type { Session } from "@supabase/supabase-js"
+import { randomId } from '@/lib/clock'
+import { useIsMounted } from '@/lib/useIsMounted'
 
 const DRUGS = ["Paracetamol 500mg","Amoxicillin 500mg","Azithromycin 500mg","Cetirizine 10mg","Pantoprazole 40mg","Dolo 650mg","Metformin 500mg","Amlodipine 5mg","Atorvastatin 20mg","Omeprazole 20mg","Ibuprofen 400mg","Montelukast 10mg","Metronidazole 400mg","Ondansetron 4mg","Diclofenac 50mg"]
 // Lab tests come straight from the central catalog so every doctor-selected
@@ -278,7 +280,9 @@ export default function DoctorDashboard() {
   const [duration, setDuration] = useState("5 days")
   const [frequency, setFrequency] = useState("TDS")
   const [qty, setQty] = useState("10")
-  const [noteSaved, setNoteSaved] = useState(false)
+  // The badge is on while the last autosave matches what's in the box, so
+  // typing turns it off by derivation instead of a setState in the effect.
+  const [savedNotes, setSavedNotes] = useState<string | null>(null)
   const [labTest, setLabTest] = useState("")
   const [labPriority, setLabPriority] = useState<'Routine' | 'Urgent'>("Routine")
   const [radScanType, setRadScanType] = useState<'X-Ray' | 'MRI' | 'CT Scan' | 'Ultrasound'>("X-Ray")
@@ -303,9 +307,9 @@ export default function DoctorDashboard() {
   const patientVisits = currentPatient ? visits.filter(v => v.patientId === currentPatient.id).sort((a, b) => b.date.localeCompare(a.date)) : []
 
   // Ambient voice scribe.
-  const [speechOk, setSpeechOk] = useState(false)
+  const mounted = useIsMounted()
+  const speechOk = mounted && isSpeechSupported()
   const recognitionRef = useRef<Recognition | null>(null)
-  useEffect(() => { setSpeechOk(isSpeechSupported()) }, [])
   const handleDictate = () => {
     if (isDictating) { recognitionRef.current?.stop(); recognitionRef.current = null; toggleDictation(); return }
     if (!speechOk) { toast.error('Voice input not supported in this browser'); return }
@@ -337,15 +341,15 @@ export default function DoctorDashboard() {
   const wardFree = beds.filter(b => b.ward === admType && b.status === 'Available').length
   const wardTotal = beds.filter(b => b.ward === admType).length
 
+  const noteSaved = savedNotes !== null && savedNotes === notes
   useEffect(() => {
     if (!notes) return
-    setNoteSaved(false)
-    const t = setTimeout(() => setNoteSaved(true), 800)
+    const t = setTimeout(() => setSavedNotes(notes), 800)
     return () => clearTimeout(t)
   }, [notes])
   useEffect(() => {
     if (!noteSaved) return
-    const t = setTimeout(() => setNoteSaved(false), 2500)
+    const t = setTimeout(() => setSavedNotes(null), 2500)
     return () => clearTimeout(t)
   }, [noteSaved])
 
@@ -357,7 +361,9 @@ export default function DoctorDashboard() {
   // stranded before consultation just because of a name-string mismatch.
   const mine     = patients.filter(p => belongsToDoctorQueue(p.doctor, currentUser?.name, activeDoctorNames))
   const queue    = mine.filter(p => ["waiting","vitals","consulting"].includes(p.queueStatus))
-  const seen     = mine.filter(p => ["billing","done"].includes(p.queueStatus)).length
+  // "Seen" counts everyone past consultation — pharmacy included, since a
+  // patient sent there has already been seen by this doctor today.
+  const seen     = mine.filter(p => ["pharmacy","billing","done"].includes(p.queueStatus)).length
   const filtered = DRUGS.filter(d => d.toLowerCase().includes(medSearch.toLowerCase()) && medSearch.length > 0)
 
   // Open a patient → mark them in consultation (handoff signal to reception/queue).
@@ -495,6 +501,16 @@ export default function DoctorDashboard() {
 
       updateStatus(currentPatient.id, 'done')
       toast.success(`Consultation complete — ${currentPatient.name} → Admission requested (${admissionOrder.admissionType})`)
+    } else if (prescriptions.length > 0) {
+      // The button reads "Complete consultation" once meds are drafted, but
+      // only sendRx() actually puts a prescription on the pharmacy board.
+      // Dispatch it now if the doctor never pressed the separate "Send to
+      // Pharmacy" control — isPharmacySent is the reliable per-encounter flag
+      // (set by sendToPharmacy() inside sendRx(), cleared by resetConsultation
+      // on the next patient), so this can't double-dispatch.
+      if (!isPharmacySent) await sendRx()
+      updateStatus(currentPatient.id, 'pharmacy')
+      toast.success(`Consultation complete — ${currentPatient.name} → Pharmacy`)
     } else {
       updateStatus(currentPatient.id, 'billing')
       toast.success(`Consultation complete — ${currentPatient.name} → Billing`)
@@ -506,7 +522,7 @@ export default function DoctorDashboard() {
 
   const addMed = (name: string) => {
     if (!name.trim()) return
-    addPrescription({ id: Math.random().toString(36), medicine: name, dosage, duration, instructions: frequency })
+    addPrescription({ id: randomId(), medicine: name, dosage, duration, instructions: frequency })
     setMedSearch("")
     setShowDrugs(false)
   }
@@ -973,7 +989,7 @@ export default function DoctorDashboard() {
             <div className="hms-card p-5">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
-                  <div className="h-7 w-7 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'linear-gradient(135deg,var(--color-primary-dark),var(--color-primary))', boxShadow: '0 3px 8px rgba(238,107,38,0.30)' }}>
+                  <div className="h-7 w-7 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'linear-gradient(135deg,var(--color-primary-dark),var(--color-primary))', boxShadow: '0 3px 8px rgba(30,151,178,0.30)' }}>
                     <Activity className="h-3.5 w-3.5 text-white" aria-hidden="true" />
                   </div>
                   <h3 className="text-sm font-bold text-foreground">Consultation Notes</h3>
@@ -1135,7 +1151,7 @@ export default function DoctorDashboard() {
                         className="flex-1 h-10 rounded-xl font-bold text-[13px] flex items-center justify-center gap-2 text-white transition-all cursor-pointer disabled:opacity-50"
                         style={isPharmacySent
                           ? { background: 'linear-gradient(135deg,var(--color-success),var(--color-success-strong))', boxShadow: '0 4px 14px rgba(22,163,74,0.30)' }
-                          : { background: 'linear-gradient(135deg,var(--color-primary),var(--color-primary-dark))', boxShadow: '0 4px 14px rgba(238,107,38,0.30)' }}
+                          : { background: 'linear-gradient(135deg,var(--color-primary),var(--color-primary-dark))', boxShadow: '0 4px 14px rgba(30,151,178,0.30)' }}
                       >
                         {isPharmacySent
                           ? <><CheckCircle2 className="h-4 w-4" aria-hidden="true" /> Sent to Pharmacy</>
@@ -1178,7 +1194,7 @@ export default function DoctorDashboard() {
             {/* AI Assistant */}
             <div className="ai-card p-4 flex flex-col">
               <div className="flex items-center gap-2 mb-3 flex-shrink-0">
-                <div className="h-7 w-7 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg,var(--color-primary-dark),var(--color-primary))', boxShadow: '0 3px 8px rgba(238,107,38,0.30)' }}>
+                <div className="h-7 w-7 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg,var(--color-primary-dark),var(--color-primary))', boxShadow: '0 3px 8px rgba(30,151,178,0.30)' }}>
                   <Bot className="h-3.5 w-3.5 text-white" aria-hidden="true" />
                 </div>
                 <span className="font-bold text-sm text-foreground">AI Assistant</span>
@@ -1211,7 +1227,7 @@ export default function DoctorDashboard() {
             {/* ── Clinical Actions ── */}
             <div className="hms-card p-4">
               <div className="flex items-center gap-2 mb-3">
-                <div className="h-7 w-7 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg,var(--color-primary-dark),var(--color-primary))', boxShadow: '0 3px 8px rgba(238,107,38,0.30)' }}>
+                <div className="h-7 w-7 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg,var(--color-primary-dark),var(--color-primary))', boxShadow: '0 3px 8px rgba(30,151,178,0.30)' }}>
                   <Activity className="h-3.5 w-3.5 text-white" aria-hidden="true" />
                 </div>
                 <h3 className="text-sm font-bold text-foreground">Clinical Actions</h3>
@@ -1264,7 +1280,7 @@ export default function DoctorDashboard() {
             {/* Bed Availability */}
             <div className="hms-card p-4 flex flex-col gap-3">
               <div className="flex items-center gap-2">
-                <div className="h-7 w-7 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'linear-gradient(135deg,var(--color-primary-dark),var(--color-primary))', boxShadow: '0 3px 8px rgba(238,107,38,0.30)' }}>
+                <div className="h-7 w-7 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'linear-gradient(135deg,var(--color-primary-dark),var(--color-primary))', boxShadow: '0 3px 8px rgba(30,151,178,0.30)' }}>
                   <Bed className="h-3.5 w-3.5 text-white" aria-hidden="true" />
                 </div>
                 <span className="font-bold text-sm text-foreground">Bed Availability</span>
@@ -1490,7 +1506,7 @@ export default function DoctorDashboard() {
                 }}
                 className={cn(
                   "absolute right-2 top-2 h-7 w-7 rounded-full flex items-center justify-center transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-primary",
-                  refListening ? "bg-primary text-white animate-pulse" : "bg-accent-soft text-accent hover:brightness-95"
+                  refListening ? "bg-primary-dark text-white animate-pulse" : "bg-accent-soft text-accent hover:brightness-95"
                 )}
               >
                 <Mic className="h-3.5 w-3.5" aria-hidden="true" />

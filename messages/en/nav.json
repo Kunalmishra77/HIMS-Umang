@@ -6,7 +6,8 @@
     "reception": "Reception",
     "admin": "Admin Portal",
     "nurse": "Nursing Station",
-    "billing": "Billing Dept"
+    "billing": "Billing Dept",
+    "pharmacy": "Pharmacy"
   },
   "section": {
     "care": "Care",
@@ -19,7 +20,9 @@
     "utilities": "Utilities",
     "clinical": "Clinical",
     "workspace": "Workspace",
-    "insights": "Insights"
+    "insights": "Insights",
+    "fulfilment": "Fulfilment",
+    "stock_compliance": "Stock & Compliance"
   },
   "item": {
     "patient_dashboard": "Dashboard",
@@ -61,7 +64,14 @@
     "billing_dashboard": "Billing Overview",
     "billing_packages": "Packages",
     "billing_refunds": "Refunds",
-    "billing_discounts": "Discounts"
+    "billing_discounts": "Discounts",
+    "pharmacy_dashboard": "Overview",
+    "pharmacy_queue": "Prescription Queue",
+    "pharmacy_inventory": "Inventory",
+    "pharmacy_master": "Drug Master",
+    "pharmacy_narcotics": "Narcotics Log",
+    "pharmacy_messages": "Messaging",
+    "patient_pharmacy": "My Medicines"
   },
   "chrome": {
     "skipToContent": "Skip to main content",

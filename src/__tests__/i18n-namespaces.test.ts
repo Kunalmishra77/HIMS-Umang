@@ -4,8 +4,8 @@ import path from 'node:path'
 
 const ROOT = process.cwd()
 const KEPT = [
-  'abha', 'checkin', 'discovery', 'doctor', 'intake', 'journey', 'labs', 'landing',
-  'nav', 'notify', 'nurse', 'orderSets', 'p', 'patient', 'reception', 'ui',
+  'checkin', 'discovery', 'doctor', 'intake', 'journey', 'labs', 'landing',
+  'nav', 'notify', 'nurse', 'orderSets', 'p', 'patient', 'pharmacy', 'reception', 'ui',
 ]
 
 const walk = (dir: string, out: string[] = []): string[] => {

@@ -43,7 +43,7 @@ function AskAI() {
         <AnimatePresence initial={false}>
           {msgs.map((m, i) => (
             <motion.div key={i} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className={cn("flex", m.role === 'me' ? "justify-end" : "justify-start")}>
-              <div className={cn("max-w-[80%] px-4 py-2.5 rounded-2xl text-[14px] leading-relaxed", m.role === 'me' ? "bg-[var(--color-primary)] text-white rounded-br-md" : "bg-slate-100 text-slate-800 rounded-bl-md")}>
+              <div className={cn("max-w-[80%] px-4 py-2.5 rounded-2xl text-[14px] leading-relaxed", m.role === 'me' ? "bg-[var(--color-primary-dark)] text-white rounded-br-md" : "bg-slate-100 text-slate-800 rounded-bl-md")}>
                 {m.text}
                 {m.role === 'ai' && i > 0 && <span className="flex items-center gap-1.5 mt-2 text-[11px] text-slate-400"><ShieldCheck className="h-3.5 w-3.5 text-[var(--color-accent)]" /> {t('common.aiGuidance')}</span>}
               </div>
@@ -55,15 +55,15 @@ function AskAI() {
       <div className="px-4 pt-2 pb-4 border-t border-slate-100">
         <div className="flex flex-wrap gap-2 mb-3">
           {SUGGESTIONS.map(s => { const Icon = s.icon; const label = t(s.key); return (
-            <button key={s.key} onClick={() => send(label)} className="flex items-center gap-1.5 text-[12.5px] font-medium px-3 py-1.5 rounded-full border border-slate-200 text-slate-600 hover:border-[rgba(238,107,38,0.30)] hover:text-[var(--color-accent)] transition-colors active:scale-95">
+            <button key={s.key} onClick={() => send(label)} className="flex items-center gap-1.5 text-[12.5px] font-medium px-3 py-1.5 rounded-full border border-slate-200 text-slate-600 hover:border-[rgba(30,151,178,0.30)] hover:text-[var(--color-accent)] transition-colors active:scale-95">
               <Icon className="h-3.5 w-3.5" /> {label}
             </button>
           ) })}
         </div>
         <div className="flex items-center gap-2 rounded-2xl bg-slate-50 border border-slate-200 px-3 h-12 focus-within:ring-2 focus-within:ring-inset focus-within:ring-primary/25 transition-shadow">
           <input value={text} onChange={e => setText(e.target.value)} onKeyDown={e => { if (e.key === 'Enter') send(text) }} placeholder={t('aiCare.inputPlaceholder')} aria-label={t('aiCare.inputAria')} className="intake-input flex-1 bg-transparent border-none text-[15px] text-slate-900 placeholder:text-slate-400" />
-          <button aria-label={t('aiCare.speak')} className="h-8 w-8 rounded-full flex items-center justify-center text-slate-400 hover:text-[var(--color-accent)] hover:bg-[rgba(238,107,38,0.10)] transition-colors"><Mic className="h-4.5 w-4.5" /></button>
-          <button aria-label={t('aiCare.send')} onClick={() => send(text)} className="h-8 w-8 rounded-full bg-[var(--color-primary)] text-white flex items-center justify-center active:scale-95 transition-transform"><ArrowUp className="h-4.5 w-4.5" /></button>
+          <button aria-label={t('aiCare.speak')} className="h-8 w-8 rounded-full flex items-center justify-center text-slate-400 hover:text-[var(--color-accent)] hover:bg-[rgba(30,151,178,0.10)] transition-colors"><Mic className="h-4.5 w-4.5" /></button>
+          <button aria-label={t('aiCare.send')} onClick={() => send(text)} className="h-8 w-8 rounded-full bg-[var(--color-primary-dark)] text-white flex items-center justify-center active:scale-95 transition-transform"><ArrowUp className="h-4.5 w-4.5" /></button>
         </div>
       </div>
     </div>
@@ -118,7 +118,7 @@ export default function AiCarePage() {
   return (
     <div className="max-w-3xl mx-auto pb-10">
       <h1 className="text-[24px] font-bold text-slate-900 tracking-tight flex items-center gap-2 mb-3">
-        <span className="h-8 w-8 rounded-xl bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-light)] flex items-center justify-center"><Sparkles className="h-4.5 w-4.5 text-white" /></span>
+        <span className="h-8 w-8 rounded-xl bg-gradient-to-br from-[var(--color-primary-900)] to-[var(--color-primary-800)] flex items-center justify-center"><Sparkles className="h-4.5 w-4.5 text-white" /></span>
         {t('aiCare.title')}
       </h1>
       <div className="inline-flex p-1 rounded-xl bg-slate-100 mb-4">

@@ -1,12 +1,14 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
 import { getSupabaseClient } from "@/lib/supabase/client"
 import { useAuthStore } from "@/store/useAuthStore"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
+import { useStoredState } from '@/lib/useStoredState'
 
 // Every portal's post-login landing route, keyed by the account's real role
 // (profiles.role). Mirrors the hrefs advertised in PortalLauncher. `admin` has
@@ -18,20 +20,22 @@ const ROLE_DASHBOARD: Record<string, string> = {
   reception: "/reception/dashboard",
   billing: "/billing/dashboard",
   patient: "/patient/dashboard",
+  pharmacy: "/pharmacy/dashboard",
+}
+
+// Prefill the demo email when arriving from a portal card (`/login?role=lab`),
+// so testers can sign in per role with one field to type (the password).
+// Reads `window`, so it only runs once the component is on the client.
+function demoEmailFromUrl(): string {
+  const role = new URLSearchParams(window.location.search).get("role")
+  return role && /^[a-z_]+$/.test(role) ? `demo-${role}@example.test` : ""
 }
 
 export default function LoginPage() {
   const router = useRouter()
-  const [email, setEmail] = useState("")
+  const [email, setEmail] = useStoredState(demoEmailFromUrl, "")
   const [password, setPassword] = useState("")
   const [submitting, setSubmitting] = useState(false)
-
-  // Prefill the demo email when arriving from a portal card (`/login?role=lab`),
-  // so testers can sign in per role with one field to type (the password).
-  useEffect(() => {
-    const role = new URLSearchParams(window.location.search).get("role")
-    if (role && /^[a-z_]+$/.test(role)) setEmail(`demo-${role}@example.test`)
-  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -45,7 +49,7 @@ export default function LoginPage() {
       }
 
       // Bridge the browser session into server-readable cookies (Task 3) so
-      // middleware (Task 4) and Server Components can see the signed-in user.
+      // proxy (Task 4) and Server Components can see the signed-in user.
       const syncRes = await fetch("/api/auth/session", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -91,6 +95,12 @@ export default function LoginPage() {
         <Button type="submit" disabled={submitting || !email || !password} className="w-full">
           {submitting ? "Signing in..." : "Sign in"}
         </Button>
+        <p className="mt-4 text-center text-sm text-foreground-lighter">
+          {"First time here? "}
+          <Link href="/claim" className="font-medium text-accent hover:underline">
+            Claim your patient record
+          </Link>
+        </p>
       </form>
     </div>
   )

@@ -7,11 +7,12 @@
  * the billing desk + patient (so it surfaces in the bell).
  */
 
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Plus, X, Save, Receipt } from "lucide-react"
 import { toast } from "sonner"
 import { notifyAndAudit } from "@/lib/notifyAndAudit"
+import { useStoredState } from '@/lib/useStoredState'
 
 interface BillingPackage {
   id: string
@@ -92,7 +93,7 @@ function PackageFormModal({ initial, onClose, onSave }: { initial: BillingPackag
         </div>
         <div className="flex gap-3 mt-5">
           <button onClick={onClose} className="flex-1 h-10 rounded-xl border border-slate-200 text-sm font-semibold text-slate-700 hover:bg-slate-50 cursor-pointer">Cancel</button>
-          <button onClick={submit} className="flex-1 h-10 rounded-xl bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white text-sm font-bold cursor-pointer inline-flex items-center justify-center gap-1.5">
+          <button onClick={submit} className="flex-1 h-10 rounded-xl bg-[var(--color-primary-dark)] hover:bg-[#1a5667] text-white text-sm font-bold cursor-pointer inline-flex items-center justify-center gap-1.5">
             <Save className="h-3.5 w-3.5" /> Save
           </button>
         </div>
@@ -102,12 +103,9 @@ function PackageFormModal({ initial, onClose, onSave }: { initial: BillingPackag
 }
 
 export default function BillingPackages() {
-  const [packages, setPackages] = useState<BillingPackage[]>(SEED)
-  const [loaded, setLoaded] = useState(false)
+  const [packages, setPackages, loaded] = useStoredState(loadPackages, SEED)
   const [editing, setEditing] = useState<BillingPackage | null>(null)
   const [creating, setCreating] = useState(false)
-
-  useEffect(() => { setPackages(loadPackages()); setLoaded(true) }, [])
 
   function persist(next: BillingPackage[]) { setPackages(next); savePackages(next) }
   function save(pkg: BillingPackage) {
@@ -139,7 +137,7 @@ export default function BillingPackages() {
           <p className="text-slate-500 text-sm mt-1">{packages.length} bundled packages — all-inclusive pricing</p>
         </div>
         <button onClick={() => setCreating(true)}
-          className="px-4 py-2 bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white text-sm font-bold rounded-xl inline-flex items-center gap-1.5 cursor-pointer">
+          className="px-4 py-2 bg-[var(--color-primary-dark)] hover:bg-[#1a5667] text-white text-sm font-bold rounded-xl inline-flex items-center gap-1.5 cursor-pointer">
           <Plus className="h-4 w-4" /> New Package
         </button>
       </div>
@@ -147,7 +145,7 @@ export default function BillingPackages() {
         {packages.map((pkg) => (
           <div key={pkg.id} className="bg-white rounded-xl border border-slate-200 p-5 flex flex-col">
             <div className="flex items-start justify-between mb-3">
-              <span className="text-[11px] font-bold px-2 py-0.5 bg-[rgba(238,107,38,0.12)] text-[var(--color-accent)] rounded-full border border-[rgba(238,107,38,0.20)]">{pkg.category}</span>
+              <span className="text-[11px] font-bold px-2 py-0.5 bg-[rgba(30,151,178,0.12)] text-[var(--color-accent)] rounded-full border border-[rgba(30,151,178,0.20)]">{pkg.category}</span>
               <button onClick={() => setEditing(pkg)} className="text-[10.5px] font-semibold text-slate-500 hover:text-[var(--color-accent)] cursor-pointer">Edit</button>
             </div>
             <p className="font-bold text-slate-900 leading-tight mb-2">{pkg.name}</p>
@@ -163,7 +161,7 @@ export default function BillingPackages() {
               </ul>
             </div>
             <button onClick={() => applyToBill(pkg)}
-              className="mt-4 w-full py-2 text-sm font-semibold border border-[rgba(238,107,38,0.20)] text-[var(--color-accent)] rounded-xl hover:bg-[rgba(238,107,38,0.10)] transition-colors inline-flex items-center justify-center gap-1.5 cursor-pointer">
+              className="mt-4 w-full py-2 text-sm font-semibold border border-[rgba(30,151,178,0.20)] text-[var(--color-accent)] rounded-xl hover:bg-[rgba(30,151,178,0.10)] transition-colors inline-flex items-center justify-center gap-1.5 cursor-pointer">
               <Receipt className="h-4 w-4" /> Apply to Bill
             </button>
           </div>

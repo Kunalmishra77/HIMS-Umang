@@ -258,7 +258,7 @@ function humanizeDatesForSpeech(text: string, lang: 'en' | 'hi'): string {
 
 // ── Product names & healthcare abbreviations ─────────────────────────────────
 // Left alone, the TTS engine (and the browser fallback) guess at acronyms — it
-// spells "HIMS" out letter by letter, mangles "UHID", and reads "ABHA" as four
+// spells "HIMS" out letter by letter and mangles "UHID"
 // letters instead of the word it actually is. These rules rewrite each known
 // term into a phonetic form so it is spoken the same, correct way everywhere the
 // assistant talks — static lines and anything the LLM generates alike.
@@ -287,8 +287,6 @@ const PRONUNCIATION: Array<{ re: RegExp; en: string; hi: string }> = [
   // "HIMS" (Hospital Information & Management System) is read letter by letter ("H.I.M.S").
   // "Umang Hospital" itself needs no rule — both words are ordinary and read correctly as-is.
   { re: /\bHIMS\b/g, ...spelled('HIMS') },
-  // ABHA (Ayushman Bharat Health Account) is a spoken word — "Ah-bha".
-  { re: /\bABHA\b/g, en: 'Abha', hi: 'आभा' },
   // Everything below is read out letter by letter.
   { re: /\bABDM\b/g, ...spelled('ABDM') },
   { re: /\bUHID\b/g, ...spelled('UHID') },

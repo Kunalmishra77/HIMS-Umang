@@ -3,6 +3,7 @@ import { createClient } from '@supabase/supabase-js'
 import { usePatientStore } from '@/store/usePatientStore'
 import { Visits } from '@/lib/api'
 import { getSupabaseClient } from '@/lib/supabase/client'
+import { attachServerSession, detachServerSession } from '@/lib/testing/serverSession'
 
 // Whole-phase review finding (critical-in-effect): Task 8's addPatient
 // creates the real backend `visits` row at status 'waiting'. Reception's
@@ -60,6 +61,7 @@ afterAll(async () => {
   await admin.auth.admin.deleteUser(receptionUserId)
   await admin.auth.admin.deleteUser(nurseUserId)
   await getSupabaseClient().auth.signOut()
+  detachServerSession()
 })
 
 afterEach(async () => {
@@ -75,13 +77,15 @@ afterEach(async () => {
 })
 
 async function signInAsReception() {
-  const { error } = await getSupabaseClient().auth.signInWithPassword({ email: receptionEmail, password })
-  if (error) throw new Error(`reception signIn failed: ${error.message}`)
+  const { data, error } = await getSupabaseClient().auth.signInWithPassword({ email: receptionEmail, password })
+  if (error || !data.session) throw new Error(`reception signIn failed: ${error?.message}`)
+  await attachServerSession(data.session)
 }
 
 async function signInAsNurse() {
-  const { error } = await getSupabaseClient().auth.signInWithPassword({ email: nurseEmail, password })
-  if (error) throw new Error(`nurse signIn failed: ${error.message}`)
+  const { data, error } = await getSupabaseClient().auth.signInWithPassword({ email: nurseEmail, password })
+  if (error || !data.session) throw new Error(`nurse signIn failed: ${error?.message}`)
+  await attachServerSession(data.session)
 }
 
 describe('usePatientStore.updateStatus — reception→vitals real backend bridge', () => {
@@ -124,6 +128,7 @@ describe('usePatientStore.updateStatus — reception→vitals real backend bridg
 
     const advanceSpy = vi.spyOn(Visits, 'advance')
     await getSupabaseClient().auth.signOut()
+    detachServerSession()
 
     await usePatientStore.getState().updateStatus(created.id, 'vitals')
 
@@ -135,7 +140,7 @@ describe('usePatientStore.updateStatus — reception→vitals real backend bridg
     expect(remoteVisit.data?.status).toBe('waiting')
   })
 
-  it('completes the full real chain: reception creates (waiting) → reception sends to vitals (vitals) → nurse records vitals and advances (consulting)', async () => {
+  it('completes the full real chain: reception creates (waiting) → reception sends to vitals (vitals) → nurse records vitals and advances (consulting) → doctor sends to pharmacy (pharmacy) → pharmacy hands off to billing (billing)', async () => {
     await signInAsReception()
     usePatientStore.setState({ patients: [], queue: [] })
 
@@ -167,5 +172,20 @@ describe('usePatientStore.updateStatus — reception→vitals real backend bridg
     const finalVisit = await admin.from('visits').select('status').eq('id', visitId).single()
     expect(finalVisit.data?.status).toBe('consulting')
     expect(usePatientStore.getState().patients.find(p => p.id === created.id)?.queueStatus).toBe('consulting')
+
+    // Doctor completes the consultation and sends the patient to pharmacy —
+    // this task's new hop. Still signed in as the nurse from above; the
+    // real-backend write goes through the service-role /api/opd-advance
+    // route, which only requires *some* live session, not a specific role.
+    await usePatientStore.getState().updateStatus(created.id, 'pharmacy')
+    const afterPharmacy = await admin.from('visits').select('status').eq('id', visitId).single()
+    expect(afterPharmacy.data?.status).toBe('pharmacy')
+    expect(usePatientStore.getState().patients.find(p => p.id === created.id)?.queueStatus).toBe('pharmacy')
+
+    // Pharmacy hands the patient off to billing — the final hop in the OPD journey.
+    await usePatientStore.getState().updateStatus(created.id, 'billing')
+    const afterBilling = await admin.from('visits').select('status').eq('id', visitId).single()
+    expect(afterBilling.data?.status).toBe('billing')
+    expect(usePatientStore.getState().patients.find(p => p.id === created.id)?.queueStatus).toBe('billing')
   })
 })

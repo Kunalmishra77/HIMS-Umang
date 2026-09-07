@@ -12,7 +12,7 @@ import {
   CreditCard, HeartPulse,
   Heart, AlertTriangle,
   Sparkles, ChevronRight, MessageSquare, MessageSquarePlus, Menu,
-  UserPlus,
+  UserPlus, BookOpen, Pill,
 } from "lucide-react"
 import { useAuthStore, type Role } from "@/store/useAuthStore"
 import { usePatientStore } from "@/store/usePatientStore"
@@ -22,9 +22,11 @@ import { Avatar } from "@/components/ui/avatar"
 import { LocaleToggle } from "@/components/ui/LocaleToggle"
 import { CommandPalette, CommandPaletteTrigger } from "@/components/layout/CommandPalette"
 import { CriticalValueBanner } from "@/components/clinical/CriticalValueBanner"
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { useTranslations } from "next-intl"
 import { cn } from "@/lib/utils"
+import { useIsMounted } from '@/lib/useIsMounted'
+import Image from "next/image"
 
 type NavItem = { href: string; label: string; icon: React.ElementType }
 
@@ -37,6 +39,7 @@ const PATIENT_SECTIONS: { header: string; items: NavItem[] }[] = [
   { header: 'section.consultations', items: [
     { href: '/patient/consultations', label: 'item.patient_consultations', icon: Calendar },
     { href: '/patient/orders',        label: 'item.patient_orders',        icon: ClipboardList },
+    { href: '/patient/pharmacy',      label: 'item.patient_pharmacy',      icon: Pill },
   ] },
   { header: 'section.records_billing', items: [
     { href: '/patient/downloads', label: 'item.patient_downloads', icon: FileText },
@@ -93,6 +96,21 @@ const DOCTOR_SECTIONS: { header: string; items: NavItem[] }[] = [
   ] },
 ]
 
+const PHARMACY_SECTIONS: { header: string; items: NavItem[] }[] = [
+  { header: 'section.fulfilment', items: [
+    { href: '/pharmacy/dashboard', label: 'item.pharmacy_dashboard', icon: LayoutDashboard },
+    { href: '/pharmacy/queue',     label: 'item.pharmacy_queue',     icon: ClipboardList },
+  ] },
+  { header: 'section.stock_compliance', items: [
+    { href: '/pharmacy/inventory', label: 'item.pharmacy_inventory', icon: Package },
+    { href: '/pharmacy/master',    label: 'item.pharmacy_master',    icon: BookOpen },
+    { href: '/pharmacy/narcotics', label: 'item.pharmacy_narcotics', icon: AlertTriangle },
+  ] },
+  { header: 'section.utilities', items: [
+    { href: '/pharmacy/messages',  label: 'item.pharmacy_messages',  icon: MessageSquare },
+  ] },
+]
+
 const navByRole: Record<Role, NavItem[]> = {
   patient: PATIENT_SECTIONS.flatMap(s => s.items),
   doctor: DOCTOR_SECTIONS.flatMap(s => s.items),
@@ -113,6 +131,7 @@ const navByRole: Record<Role, NavItem[]> = {
   ],
   // `admin` ships no portal — see src/types/roles.ts.
   admin: [],
+  pharmacy: PHARMACY_SECTIONS.flatMap(s => s.items),
 }
 
 // Single disciplined deep-blue identity shared by every portal (uniform per design
@@ -124,6 +143,7 @@ const ROLE_LABELS: Record<Role, string> = {
   nurse:     'role.nurse',
   billing:   'role.billing',
   admin:     'role.admin',
+  pharmacy:  'role.pharmacy',
 }
 
 // Roles whose sidebar is rendered as grouped sections (with headers) instead of a flat list.
@@ -131,6 +151,7 @@ const sectionsByRole: Partial<Record<Role, { header: string; items: NavItem[] }[
   patient: PATIENT_SECTIONS,
   reception: RECEPTION_SECTIONS,
   doctor: DOCTOR_SECTIONS,
+  pharmacy: PHARMACY_SECTIONS,
 }
 
 export function AppShell({ children }: { children: React.ReactNode }) {
@@ -142,13 +163,15 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const roleLabel = t(ROLE_LABELS[activeRole])
   const [collapsed, setCollapsed] = useState(false)
   const [notifOpen, setNotifOpen] = useState(false)
-  const [mounted, setMounted] = useState(false)
+  const mounted = useIsMounted()
   const [query, setQuery] = useState('')
-  const [mobileOpen, setMobileOpen] = useState(false)
+  // The drawer is remembered as "open on this route" rather than a bare
+  // boolean, so navigating away closes it by derivation instead of via an
+  // effect that would setState during the render after every route change.
+  const [openOnPath, setOpenOnPath] = useState<string | null>(null)
+  const mobileOpen = openOnPath === pathname
+  const setMobileOpen = (open: boolean) => setOpenOnPath(open ? pathname : null)
   const shouldReduceMotion = useReducedMotion()
-
-  // Close the mobile sidebar drawer on navigation.
-  useEffect(() => { setMobileOpen(false) }, [pathname])
 
   // Wired header search + bell (M16).
   const allPatients = usePatientStore(s => s.patients)
@@ -196,11 +219,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     if (activeRole === 'doctor') { router.push('/doctor/records'); return }
     const dest = PATIENTS_ROUTE[activeRole]; if (dest) router.push(dest)
   }
-
-  // Page-enter animation is attached only after mount so the server render and
-  // the first client render emit identical (un-transformed) markup — avoids the
-  // framer-motion `initial` transform causing a hydration attribute mismatch.
-  useEffect(() => { setMounted(true) }, [])
 
   const handleLogout = () => {
     logout()
@@ -263,7 +281,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         {/* Brand Header */}
         <div className="h-[68px] flex items-center px-4 flex-shrink-0 border-b border-border-light">
           <div className="flex items-center overflow-hidden whitespace-nowrap w-full pl-2">
-            <img src="/Umang-logo.webp" alt="Umang Hospital" className={cn("w-auto object-contain", collapsed ? "h-8" : "h-10")} />
+            <Image src="/Umang-logo.webp" alt="Umang Hospital" width={726} height={208} priority className={cn("w-auto object-contain", collapsed ? "h-8" : "h-10")} />
           </div>
         </div>
 

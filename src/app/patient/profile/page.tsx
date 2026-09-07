@@ -1,9 +1,9 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { Droplet, AlertTriangle, HeartPulse, Phone, Pill, ShieldCheck, MapPin, Activity, UserCheck, Pencil, X, Plus, Upload, FileText, Check } from "lucide-react"
 import { useAuthStore } from "@/store/useAuthStore"
-import { usePatientStore } from "@/store/usePatientStore"
+import { usePatientMe } from "@/lib/usePatientMe"
 import { usePatientProfileStore, type PatientProfile } from "@/store/usePatientProfileStore"
 import { toast } from "sonner"
 import { notifyAndAudit } from "@/lib/notifyAndAudit"
@@ -45,7 +45,7 @@ function ChipList({ values, onChange, disabled, placeholder }: { values: string[
             placeholder={placeholder}
             className="flex-1 h-8 px-2 rounded-md ring-1 ring-slate-200 text-[12.5px] focus:outline-none focus:ring-[var(--color-primary-light)]" />
           <button onClick={() => { if (draft.trim()) { onChange([...values, draft.trim()]); setDraft('') } }}
-            className="h-8 w-8 rounded-md bg-[var(--color-primary)] text-white flex items-center justify-center hover:bg-[var(--color-primary-dark)] cursor-pointer">
+            className="h-8 w-8 rounded-md bg-[var(--color-primary-dark)] text-white flex items-center justify-center hover:bg-[#1a5667] cursor-pointer">
             <Plus className="h-3.5 w-3.5" />
           </button>
         </div>
@@ -56,31 +56,28 @@ function ChipList({ values, onChange, disabled, placeholder }: { values: string[
 
 export default function ProfilePage() {
   const currentUser = useAuthStore(s => s.currentUser)
-  const id = currentUser?.role === "patient" ? currentUser.id : "PT-20394"
-  const profile = usePatientProfileStore(s => s.profiles[id])
+  const { me, profile } = usePatientMe()
   const saveProfile = usePatientProfileStore(s => s.saveProfile)
-  const patient = usePatientStore(s => s.patients.find(p => p.id === id))
-  const name = currentUser?.name ?? patient?.name ?? "Patient"
+  const name = currentUser?.name ?? me?.name ?? "Patient"
   const initials = name.split(" ").map(n => n[0]).join("").slice(0, 2)
 
   const [editing, setEditing] = useState(false)
   const [draft, setDraft] = useState<PatientProfile | null>(null)
   const [uploads, setUploads] = useState<UploadResult[]>([])
 
-  // Initialise draft when entering edit mode.
-  useEffect(() => { if (editing && profile && !draft) setDraft({ ...profile, allergies: [...profile.allergies], chronicConditions: [...profile.chronicConditions], currentMedications: [...profile.currentMedications] }) }, [editing, profile, draft])
-
   function startEdit() { if (profile) { setDraft({ ...profile, allergies: [...profile.allergies], chronicConditions: [...profile.chronicConditions], currentMedications: [...profile.currentMedications] }); setEditing(true) } }
   function cancel() { setEditing(false); setDraft(null) }
   function save() {
-    if (!draft) return
-    saveProfile(id, draft, 'Self · patient portal')
+    // No linked patient record — nothing to save against (also guards the
+    // edit UI itself, which only renders once `me` resolves).
+    if (!draft || !me) return
+    saveProfile(me.id, draft, 'Self · patient portal')
     notifyAndAudit({
       to: 'doctor', type: 'system', priority: 'low',
       title: `Profile updated · ${name}`,
       body: `${name} updated their clinical profile (allergies / meds / contact). Review on next visit.`,
       patientName: name,
-      audit: { action: 'hitl_modify', resource: 'patient_profile', resourceId: id, detail: `Patient self-edited profile`, userName: name },
+      audit: { action: 'hitl_modify', resource: 'patient_profile', resourceId: me.id, detail: `Patient self-edited profile`, userName: name },
     })
     toast.success('Profile saved · your team is notified')
     setEditing(false); setDraft(null)
@@ -102,6 +99,19 @@ export default function ProfilePage() {
     e.currentTarget.value = ''
   }
 
+  // No linked patient record — nothing to edit, save against, or upload for.
+  if (!me) {
+    return (
+      <div className="max-w-4xl mx-auto pb-10">
+        <div className="rounded-3xl bg-white shadow-[0_1px_4px_rgba(15,23,42,0.06)] p-10 text-center">
+          <UserCheck className="h-10 w-10 text-slate-300 mx-auto mb-3" />
+          <p className="text-[15px] font-bold text-slate-500">No hospital record linked to this account</p>
+          <p className="text-[13px] text-slate-400 mt-1">Once your account is linked to a hospital record, your profile will appear here.</p>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="max-w-4xl mx-auto pb-10 space-y-5">
       <div className="flex items-end justify-between gap-3 flex-wrap">
@@ -110,7 +120,7 @@ export default function ProfilePage() {
           <p className="text-[13px] text-slate-500 mt-1">Your details, medical info, family &amp; data consent</p>
         </div>
         {profile?.completedAt && !editing && (
-          <button onClick={startEdit} className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white text-[12.5px] font-semibold cursor-pointer">
+          <button onClick={startEdit} className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[var(--color-primary-dark)] hover:bg-[#1a5667] text-white text-[12.5px] font-semibold cursor-pointer">
             <Pencil className="h-3.5 w-3.5" /> Edit profile
           </button>
         )}
@@ -128,10 +138,10 @@ export default function ProfilePage() {
 
       {/* Identity */}
       <div className="rounded-3xl bg-white shadow-[0_1px_4px_rgba(15,23,42,0.06)] p-5 flex items-center gap-4">
-        <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-light)] flex items-center justify-center text-white text-[20px] font-bold">{initials}</div>
+        <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-[var(--color-primary-900)] to-[var(--color-primary-800)] flex items-center justify-center text-white text-[20px] font-bold">{initials}</div>
         <div className="flex-1">
           <p className="text-[18px] font-bold text-slate-900">{name}</p>
-          <p className="text-[13px] text-slate-500">{line([id, patient ? `${patient.age}y` : undefined, patient?.gender, profile?.abhaId ? `ABHA: ${profile.abhaId}` : undefined])}</p>
+          <p className="text-[13px] text-slate-500">{line([me.id, `${me.age}y`, me.gender])}</p>
         </div>
         {profile?.completedAt && (
           <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-100 rounded-full px-2.5 py-1 flex items-center gap-1"><UserCheck className="h-3.5 w-3.5" /> Verified by nursing</span>
@@ -173,7 +183,7 @@ export default function ProfilePage() {
               {editing && draft ? (
                 <ChipList values={draft.currentMedications} onChange={(v) => setDraft({ ...draft, currentMedications: v })} placeholder="e.g. Metformin 500mg" />
               ) : profile.currentMedications.length ? (
-                <div className="flex flex-wrap gap-1.5">{profile.currentMedications.map(m => <span key={m} className="text-[12px] font-semibold text-[var(--color-accent)] bg-[rgba(238,107,38,0.07)] px-2 py-0.5 rounded-full">{m}</span>)}</div>
+                <div className="flex flex-wrap gap-1.5">{profile.currentMedications.map(m => <span key={m} className="text-[12px] font-semibold text-[var(--color-accent)] bg-[rgba(30,151,178,0.07)] px-2 py-0.5 rounded-full">{m}</span>)}</div>
               ) : <p className="text-[13px] text-slate-400">None recorded</p>}
             </Card>
             <Card title="Emergency contact" icon={Phone}>
@@ -241,7 +251,7 @@ export default function ProfilePage() {
           <div className="rounded-3xl bg-white shadow-[0_1px_4px_rgba(15,23,42,0.06)] p-5">
             <h3 className="text-[15px] font-bold text-slate-900 mb-3 flex items-center gap-2"><FileText className="h-4.5 w-4.5 text-[var(--color-accent)]" /> My documents</h3>
             <label className="flex items-center gap-3 p-3 rounded-xl border-2 border-dashed border-slate-200 hover:bg-slate-50 cursor-pointer">
-              <span className="h-9 w-9 rounded-full bg-[rgba(238,107,38,0.12)] text-[var(--color-accent)] flex items-center justify-center"><Upload className="h-4 w-4" /></span>
+              <span className="h-9 w-9 rounded-full bg-[rgba(30,151,178,0.12)] text-[var(--color-accent)] flex items-center justify-center"><Upload className="h-4 w-4" /></span>
               <span className="flex-1">
                 <span className="block text-[13px] font-semibold text-slate-800">Upload insurance card, ID proof, lab report…</span>
                 <span className="block text-[11px] text-slate-500">PDF or image, max 5 MB. Available to your care team.</span>

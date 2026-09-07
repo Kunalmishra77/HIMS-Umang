@@ -17,33 +17,39 @@ import { useTranslations } from "next-intl"
 import { cn } from "@/lib/utils"
 import { toast } from "sonner"
 import { notifyAndAuditMany } from "@/lib/notifyAndAudit"
-import { AadhaarAbhaFlow, type AadhaarAbhaResult } from "@/components/reception/AadhaarAbhaFlow"
+import { AadhaarFlow, type AadhaarResult } from "@/components/reception/AadhaarFlow"
 
 const STATUS_TOKEN: Record<QueueStatus, Status> = {
-  waiting: 'pending', vitals: 'caution', consulting: 'info', billing: 'neutral', done: 'done',
+  waiting: 'pending', vitals: 'caution', consulting: 'info', pharmacy: 'caution', billing: 'neutral', done: 'done',
 }
 const opdTriageToken = (lvl?: TriageLevel): Status =>
   lvl === 'Critical' ? 'critical' : lvl === 'High' ? 'urgent' : lvl === 'Medium' ? 'caution' : 'stable'
 
+// Reception's manual "advance" override doesn't know whether a patient has a
+// prescription (only the doctor's consultation does — see doctor/consultation/
+// page.tsx's completeConsultation), so it never routes consulting → pharmacy
+// on its own. It does let a patient already sitting at pharmacy (routed there
+// by the doctor, or arriving that way from Gov-HIMS) be pushed on to billing.
 const NEXT_STATUS: Partial<Record<QueueStatus, QueueStatus>> = {
-  waiting: 'vitals', vitals: 'consulting', consulting: 'billing', billing: 'done',
+  waiting: 'vitals', vitals: 'consulting', consulting: 'billing', pharmacy: 'billing', billing: 'done',
 }
 const NEXT_KEY: Partial<Record<QueueStatus, string>> = {
   waiting: 'nextSendToVitals', vitals: 'nextSendToDoctor', consulting: 'nextSendToBilling',
-  billing: 'nextMarkDone',
+  pharmacy: 'nextSendToBilling', billing: 'nextMarkDone',
 }
 
 const STATUS_PILL: Record<QueueStatus, { key: string; cls: string }> = {
   waiting:    { key: 'statusWaiting',    cls: 'bg-slate-100 text-slate-600' },
   vitals:     { key: 'statusInVitals',  cls: 'bg-amber-100 text-amber-700' },
   consulting: { key: 'statusConsulting', cls: 'bg-surface-sunken text-accent' },
+  pharmacy:   { key: 'statusPharmacy',  cls: 'bg-amber-100 text-amber-700' },
   billing:    { key: 'statusBilling',   cls: 'bg-amber-100 text-amber-700' },
   done:       { key: 'statusCompleted',  cls: 'bg-green-100 text-green-700' },
 }
 
 const SOURCE_META: Record<NonNullable<ReturnType<typeof sourceOf>>, { key: string; cls: string }> = {
   walk_in:     { key: 'sourceWalkIn',     cls: 'bg-slate-100 text-slate-600' },
-  online:      { key: 'sourceOnline', cls: 'bg-[rgba(238,107,38,0.10)] text-[var(--color-primary-dark)]' },
+  online:      { key: 'sourceOnline', cls: 'bg-[rgba(30,151,178,0.10)] text-[var(--color-primary-dark)]' },
   appointment: { key: 'sourceAppointment', cls: 'bg-accent-soft text-accent' },
 }
 function sourceOf(s?: 'walk_in' | 'online' | 'appointment') { return s ?? 'walk_in' }
@@ -62,7 +68,7 @@ function matchesStatusFilter(status: QueueStatus, hasUhid: boolean, filter: Stat
     case 'Waiting':       return status === 'waiting'
     case 'Needs Aadhaar': return status === 'waiting' && !hasUhid
     case 'In Vitals':     return status === 'vitals'
-    case 'In Care':       return status === 'consulting' || status === 'billing'
+    case 'In Care':       return status === 'consulting' || status === 'pharmacy' || status === 'billing'
     case 'Done':          return status === 'done'
   }
 }
@@ -127,9 +133,9 @@ export default function OpdQueuePage() {
 
   const openVerify = (id: string) => { setVerifyingId(id); setVerifiedDone(false) }
   const closeVerify = () => { setVerifyingId(null); setVerifiedDone(false) }
-  const handleVerified = (r: AadhaarAbhaResult) => {
+  const handleVerified = (r: AadhaarResult) => {
     if (!verifyingId) return
-    linkPatientIdentity(verifyingId, { uhid: r.uhid, abhaId: r.abhaId, aadhaarVerified: true })
+    linkPatientIdentity(verifyingId, { uhid: r.uhid, aadhaarVerified: true })
     setVerifiedDone(true)
     toast.success(t('opd.identityLinkedToast'), { description: t('opd.identityLinkedDesc', { uhid: r.uhid }) })
   }
@@ -209,7 +215,7 @@ export default function OpdQueuePage() {
             {canAnnounce && (
               <button onClick={() => announce(p.token, p.name, p.queueStatus === 'consulting' ? t('opd.consultation') : undefined)}
                 aria-label={t('opd.announceTokenAria', { token: p.token })} title={t('opd.announceTitle')}
-                className="h-8 w-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-[var(--color-accent)] hover:bg-[rgba(238,107,38,0.10)] transition cursor-pointer"><Volume2 className="h-4 w-4" /></button>
+                className="h-8 w-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-[var(--color-accent)] hover:bg-[rgba(30,151,178,0.10)] transition cursor-pointer"><Volume2 className="h-4 w-4" /></button>
             )}
             {canAnnounce && (
               <button onClick={() => escalate(p.id, p.name, p.triageLevel)}
@@ -234,7 +240,7 @@ export default function OpdQueuePage() {
           <p className="text-[13px] text-slate-500 mt-0.5">{t('opd.pageSubtitle')}</p>
         </div>
         <Button onClick={() => router.push('/reception/register')} size="lg"
-          className="h-10 px-5 gap-2 font-bold shadow-sm hover:shadow-md transition-all rounded-xl bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white cursor-pointer">
+          className="h-10 px-5 gap-2 font-bold shadow-sm hover:shadow-md transition-all rounded-xl bg-[var(--color-primary-dark)] hover:bg-[#1a5667] text-white cursor-pointer">
           <UserPlus className="h-4 w-4" aria-hidden="true" /> {t('opd.registerWalkIn')}
         </Button>
       </div>
@@ -293,7 +299,7 @@ export default function OpdQueuePage() {
           </div>
         ) : undefined}
       >
-        {verifyingId && <AadhaarAbhaFlow key={verifyingId} patientName={verifyingPatient?.name} onComplete={handleVerified} />}
+        {verifyingId && <AadhaarFlow key={verifyingId} onComplete={handleVerified} />}
       </SideDrawer>
     </div>
   )

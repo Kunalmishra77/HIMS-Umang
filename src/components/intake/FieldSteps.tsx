@@ -30,7 +30,7 @@ export function AboutStep({ form, update }: { form: IntakeForm; update: Update }
 
   return (
     <div className="space-y-6 pt-2">
-      <div className="bg-white rounded-[22px] overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-slate-100 divide-y divide-slate-100 focus-within:ring-2 focus-within:ring-inset focus-within:ring-[#EE6B26] transition-shadow">
+      <div className="bg-white rounded-[22px] overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-slate-100 divide-y divide-slate-100 focus-within:ring-2 focus-within:ring-inset focus-within:ring-[#1E97B2] transition-shadow">
         <label className={rowCls}>
           <User className="h-5.5 w-5.5 flex-shrink-0 text-slate-400" aria-hidden="true" />
           <input className={inputCls} placeholder={t('about.fullName')} aria-label={t('about.fullName')} value={form.name} onChange={e => update({ name: e.target.value })} />
@@ -56,7 +56,7 @@ export function AboutStep({ form, update }: { form: IntakeForm; update: Update }
                 onClick={() => update({ gender: g })}
                 aria-pressed={sel}
                 className={cn(
-                  "flex-1 h-11 rounded-[12px] text-[15px] font-semibold transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-[#EE6B26] relative",
+                  "flex-1 h-11 rounded-[12px] text-[15px] font-semibold transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1E97B2] relative",
                   sel ? "text-slate-900 shadow-[0_2px_8px_rgba(0,0,0,0.08)] bg-white" : "text-slate-500 hover:text-slate-700"
                 )}
               >
@@ -87,7 +87,7 @@ export function InsuranceStep({ form, update }: { form: IntakeForm; update: Upda
   return (
     <div className="h-full flex flex-col pt-2">
       <div className="flex-shrink-0">
-        <div className="bg-white rounded-[22px] shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-slate-100 flex items-center gap-3.5 px-4 h-[56px] focus-within:ring-2 focus-within:ring-inset focus-within:ring-[#EE6B26] transition-shadow">
+        <div className="bg-white rounded-[22px] shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-slate-100 flex items-center gap-3.5 px-4 h-[56px] focus-within:ring-2 focus-within:ring-inset focus-within:ring-[#1E97B2] transition-shadow">
           <CreditCard className="h-5.5 w-5.5 flex-shrink-0 text-slate-400" aria-hidden="true" />
           <input className="intake-input w-full h-full bg-transparent border-none text-slate-900 text-[17px] font-medium placeholder:text-slate-400 placeholder:font-normal focus:outline-none" placeholder="Health / Insurance card no." aria-label="Insurance card number" value={form.insuranceCardNo} onChange={e => update({ insuranceCardNo: e.target.value })} />
         </div>
@@ -108,8 +108,8 @@ export function ReportsStep({ form, update }: { form: IntakeForm; update: Update
         onClick={() => update({ hasReports: !form.hasReports })}
         aria-pressed={form.hasReports}
         className={cn(
-          "w-full flex items-center gap-4 px-5 py-5 rounded-[24px] border transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-[#EE6B26]",
-          form.hasReports ? "bg-[#EE6B26] border-[#EE6B26] text-[#0D2032] shadow-[0_8px_24px_rgba(238,107,38,0.3)] scale-[0.99]" : "bg-white border-slate-200 text-slate-900 shadow-[0_2px_12px_rgba(0,0,0,0.03)] active:scale-[0.98]"
+          "w-full flex items-center gap-4 px-5 py-5 rounded-[24px] border transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1E97B2]",
+          form.hasReports ? "bg-[#1E97B2] border-[#1E97B2] text-[#0D2032] shadow-[0_8px_24px_rgba(30,151,178,0.3)] scale-[0.99]" : "bg-white border-slate-200 text-slate-900 shadow-[0_2px_12px_rgba(0,0,0,0.03)] active:scale-[0.98]"
         )}
       >
         <span className={cn("h-11 w-11 rounded-full flex items-center justify-center flex-shrink-0 transition-colors", form.hasReports ? "bg-white/20" : "bg-slate-100")}>
@@ -129,8 +129,8 @@ export function FamilyStep({ form, update }: { form: IntakeForm; update: Update 
       <div className="bg-white rounded-[24px] overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-slate-100">
         <button onClick={() => update({ dishaConsent: !form.dishaConsent })} aria-pressed={form.dishaConsent} className="w-full flex items-center justify-between px-5 py-4 focus:outline-none active:bg-slate-50 transition-colors">
           <span className="flex items-center gap-4">
-            <span className={cn("h-11 w-11 rounded-full flex items-center justify-center flex-shrink-0 transition-colors", form.dishaConsent ? "bg-[rgba(238,107,38,0.12)]" : "bg-slate-100")}>
-              <QrCode className={cn("h-6 w-6", form.dishaConsent ? "text-[#B84A16]" : "text-slate-500")} aria-hidden="true" />
+            <span className={cn("h-11 w-11 rounded-full flex items-center justify-center flex-shrink-0 transition-colors", form.dishaConsent ? "bg-[rgba(30,151,178,0.12)]" : "bg-slate-100")}>
+              <QrCode className={cn("h-6 w-6", form.dishaConsent ? "text-[#955408]" : "text-slate-500")} aria-hidden="true" />
             </span>
             <span className="text-left">
               <span className="block text-[17px] font-semibold text-slate-900 leading-tight">{t('family.share')}</span>

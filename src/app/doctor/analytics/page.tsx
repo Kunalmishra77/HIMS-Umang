@@ -9,6 +9,8 @@ import { useAuthStore } from "@/store/useAuthStore"
 import { ClientOnly } from "@/components/ClientOnly"
 import { cn } from "@/lib/utils"
 import { DaySummaryCard } from "@/components/doctor/DaySummaryCard"
+import { nowMs } from '@/lib/clock'
+import { useNow } from '@/lib/useNow'
 
 const GRAPH_DAYS: Record<PeriodKey, number> = { today: 7, yesterday: 7, week: 7, month: 30, quarter: 90, half: 182, year: 365 }
 
@@ -23,23 +25,24 @@ export default function DoctorAnalytics() {
   const totalsForRange = useDoctorStatsStore(s => s.totalsForRange)
   const [period, setPeriod] = useState<PeriodKey>('today')
   const [custom, setCustom] = useState(false)
-  const [range, setRange] = useState({ from: isoDay(new Date(Date.now() - 29 * 86400000)), to: isoDay(new Date()) })
+  const now = useNow()
+  const [range, setRange] = useState(() => ({ from: isoDay(new Date(nowMs() - 29 * 86400000)), to: isoDay(new Date(nowMs())) }))
   const doctorId = currentUser?.id ?? 'DR-1012'
   const seriesFor = useDoctorStatsStore(s => s.seriesFor)
   const t = custom ? totalsForRange(doctorId, range.from, range.to) : totalsFor(doctorId, period)
   const periodLabel = custom ? `${fmtDay(range.from)} – ${fmtDay(range.to)}` : (PERIODS.find(p => p.key === period)?.label ?? '')
 
-  const gFrom = custom ? range.from : isoDay(new Date(Date.now() - (GRAPH_DAYS[period] - 1) * 86400000))
-  const gTo = custom ? range.to : isoDay(new Date())
+  const gFrom = custom ? range.from : isoDay(new Date(now - (GRAPH_DAYS[period] - 1) * 86400000))
+  const gTo = custom ? range.to : isoDay(new Date(now))
   const series = seriesFor(doctorId, gFrom, gTo)
   const tickFmt = (d: string) => new Date(d + 'T00:00:00').toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })
 
   const tiles = [
-    { label: tr('analytics.tileConsults'), value: t.consults, icon: Users, tint: 'bg-[rgba(238,107,38,0.07)] text-[var(--color-accent)]' },
-    { label: tr('analytics.tileOpd'), value: t.opd, icon: Building2, tint: 'bg-[rgba(238,107,38,0.07)] text-[var(--color-accent)]' },
-    { label: tr('analytics.tileOnline'), value: t.online, icon: Video, tint: 'bg-[rgba(238,107,38,0.07)] text-[var(--color-accent)]' },
+    { label: tr('analytics.tileConsults'), value: t.consults, icon: Users, tint: 'bg-[rgba(30,151,178,0.07)] text-[var(--color-accent)]' },
+    { label: tr('analytics.tileOpd'), value: t.opd, icon: Building2, tint: 'bg-[rgba(30,151,178,0.07)] text-[var(--color-accent)]' },
+    { label: tr('analytics.tileOnline'), value: t.online, icon: Video, tint: 'bg-[rgba(30,151,178,0.07)] text-[var(--color-accent)]' },
     { label: tr('analytics.tileTests'), value: t.tests, icon: FlaskConical, tint: 'bg-rose-50 text-rose-600' },
-    { label: tr('analytics.tilePrescriptions'), value: t.prescriptions, icon: Pill, tint: 'bg-[rgba(238,107,38,0.07)] text-[var(--color-accent)]' },
+    { label: tr('analytics.tilePrescriptions'), value: t.prescriptions, icon: Pill, tint: 'bg-[rgba(30,151,178,0.07)] text-[var(--color-accent)]' },
     { label: tr('analytics.tileAdmissions'), value: t.admissions, icon: BedDouble, tint: 'bg-amber-50 text-amber-600' },
   ]
 
@@ -115,12 +118,12 @@ export default function DoctorAnalytics() {
         <div className="flex items-center gap-2 mb-2"><Activity className="h-4.5 w-4.5 text-slate-400" /><h3 className="text-[15px] font-bold text-slate-900">{tr('analytics.consultMix', { period: periodLabel })}</h3></div>
         <div className="flex items-center gap-3 mb-2">
           <span className="text-[12.5px] font-semibold text-slate-500 w-24">{tr('analytics.inPerson')}</span>
-          <div className="flex-1 h-3 rounded-full bg-slate-100 overflow-hidden"><div className="h-full bg-[rgba(238,107,38,0.07)]0" style={{ width: `${t.consults ? (t.opd / t.consults) * 100 : 0}%` }} /></div>
+          <div className="flex-1 h-3 rounded-full bg-slate-100 overflow-hidden"><div className="h-full bg-[rgba(30,151,178,0.07)]0" style={{ width: `${t.consults ? (t.opd / t.consults) * 100 : 0}%` }} /></div>
           <span className="text-[12.5px] font-bold text-slate-700 w-10 text-right">{t.opd}</span>
         </div>
         <div className="flex items-center gap-3">
           <span className="text-[12.5px] font-semibold text-slate-500 w-24">{tr('analytics.online')}</span>
-          <div className="flex-1 h-3 rounded-full bg-slate-100 overflow-hidden"><div className="h-full bg-[rgba(238,107,38,0.07)]0" style={{ width: `${t.consults ? (t.online / t.consults) * 100 : 0}%` }} /></div>
+          <div className="flex-1 h-3 rounded-full bg-slate-100 overflow-hidden"><div className="h-full bg-[rgba(30,151,178,0.07)]0" style={{ width: `${t.consults ? (t.online / t.consults) * 100 : 0}%` }} /></div>
           <span className="text-[12.5px] font-bold text-slate-700 w-10 text-right">{t.online}</span>
         </div>
         <p className="text-[11.5px] text-slate-400 mt-3">{tr('analytics.mixHint')}</p>

@@ -29,12 +29,13 @@ export function triageMeta(level?: string | null): StatusMeta {
   }
 }
 
-/** OPD queue status: waiting → vitals → consulting → billing → done. */
+/** OPD queue status: waiting → vitals → consulting → pharmacy → billing → done. */
 export function queueStatusMeta(status?: string | null): StatusMeta {
   switch ((status ?? "").toLowerCase()) {
     case "consulting": return { variant: "blue", label: "Consulting" }
     case "vitals":     return { variant: "warning", label: "Vitals" }
     case "waiting":    return { variant: "muted", label: "Waiting" }
+    case "pharmacy":   return { variant: "warning", label: "Pharmacy" }
     case "billing":    return { variant: "blue", label: "Billing" }
     case "done":       return { variant: "success", label: "Done" }
     default:           return { variant: "muted", label: status || "—" }

@@ -35,15 +35,15 @@ const DEPT_ICON: Record<Department, React.ElementType> = {
 }
 
 const STAGE_META: Record<StageKey, { label: string; icon: React.ElementType; accent: string }> = {
-  registration: { label: 'Registration Confirmed', icon: ClipboardList, accent: 'var(--color-primary)' },
+  registration: { label: 'Registration Confirmed', icon: ClipboardList, accent: '#1a5667' },
   emergency:    { label: 'Emergency & Triage', icon: AlertTriangle, accent: '#DC2626' },
   triage:       { label: 'Triage & Vitals', icon: Activity, accent: '#16A34A' },
-  consultation: { label: "It's Your Turn", icon: Stethoscope, accent: 'var(--color-primary)' },
+  consultation: { label: "It's Your Turn", icon: Stethoscope, accent: '#1a5667' },
   diagnostics:  { label: 'Tests Ordered', icon: FlaskConical, accent: '#F59E0B' },
   pharmacy:     { label: 'Medication', icon: Pill, accent: '#EC4899' },
-  surgery:      { label: 'Surgery / OT', icon: Building2, accent: 'var(--color-primary)' },
-  admission:    { label: 'Admission Required', icon: Bed, accent: '#EE6B26' },
-  billing:      { label: 'Payment Confirmed', icon: Receipt, accent: '#EE6B26' },
+  surgery:      { label: 'Surgery / OT', icon: Building2, accent: '#1a5667' },
+  admission:    { label: 'Admission Required', icon: Bed, accent: '#1a5667' },
+  billing:      { label: 'Payment Confirmed', icon: Receipt, accent: '#1a5667' },
   discharge:    { label: "You're Being Discharged", icon: LogOut, accent: '#16A34A' },
 }
 
@@ -131,7 +131,7 @@ export function PatientJourneyFlow({ patientId, patientName, className }: Props)
     return (
       <div className={cn("hms-card p-8 text-center", className)}>
         <Flag className="h-7 w-7 text-foreground-placeholder mx-auto mb-3" />
-        <p className="t-title text-foreground">The journey hasn't started yet</p>
+        <p className="t-title text-foreground">The journey hasn&apos;t started yet</p>
         <p className="t-body ink-muted mt-1">Every touchpoint across departments will appear here as care unfolds.</p>
       </div>
     )

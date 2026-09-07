@@ -11,7 +11,7 @@
  */
 
 import { useMemo, useState } from "react"
-import { Sparkles, Check, X, Send, Inbox, Users, Stethoscope, Activity, Wand2 } from "lucide-react"
+import { Sparkles, Check, X, Send, Inbox, Users, Wand2 } from "lucide-react"
 import { useHRStore } from "@/store/useHRStore"
 import { useShiftStore, type HandoverRecord, type ShiftType } from "@/store/useShiftStore"
 import { useAuditStore } from "@/store/useAuditStore"
@@ -143,7 +143,7 @@ export function CareTeamPresenceCard({ ward = "Cardiac Care", department, classN
                 title={`${m.name} · ${m.role}${m.shiftHours ? ' · ' + m.shiftHours : ''}`}
               >
                 <span className="relative">
-                  <span className="h-6 w-6 rounded-full bg-[rgba(238,107,38,0.12)] text-[var(--color-accent)] flex items-center justify-center text-[10.5px] font-bold">{m.initials}</span>
+                  <span className="h-6 w-6 rounded-full bg-[rgba(30,151,178,0.12)] text-[var(--color-accent)] flex items-center justify-center text-[10.5px] font-bold">{m.initials}</span>
                   <span className={`absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full ring-2 ring-white ${s.dot}`} />
                 </span>
                 <span className="text-[11.5px] font-semibold text-slate-800 max-w-[110px] truncate">{m.name}</span>
@@ -158,7 +158,7 @@ export function CareTeamPresenceCard({ ward = "Cardiac Care", department, classN
           {handoverPendingCount > 0 ? <ReasoningChip compact tone="warn" title={`${handoverPendingCount} handover near`} /> : null}
           {pendingIncoming.length > 0 ? <ReasoningChip compact tone="info" title={`${pendingIncoming.length} incoming handover${pendingIncoming.length === 1 ? '' : 's'}`} /> : null}
           <button type="button" onClick={openCompose}
-            className="ml-auto inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11.5px] font-semibold bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white">
+            className="ml-auto inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11.5px] font-semibold bg-[var(--color-primary-dark)] hover:bg-[#1a5667] text-white">
             <Send className="h-3 w-3" /> Compose handover
           </button>
         </div>
@@ -194,7 +194,7 @@ export function CareTeamPresenceCard({ ward = "Cardiac Care", department, classN
 
       {/* Compose dialog (inline panel, not modal — keeps page state visible) */}
       {composeOpen ? (
-        <div className="border-t border-[rgba(238,107,38,0.15)]/60 p-3 bg-surface-sunken space-y-2">
+        <div className="border-t border-[rgba(30,151,178,0.15)]/60 p-3 bg-surface-sunken space-y-2">
           <div className="flex items-center gap-2">
             <Wand2 className="h-3.5 w-3.5 text-[var(--color-accent)]" />
             <p className="text-[11.5px] font-semibold text-[var(--color-primary-dark)]">SBAR draft · AI-skeleton, editable</p>
@@ -220,7 +220,7 @@ export function CareTeamPresenceCard({ ward = "Cardiac Care", department, classN
               <Wand2 className="h-3 w-3" /> Regenerate
             </button>
             <button type="button" onClick={sign} disabled={sbarText.trim().length < 30}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11.5px] font-semibold bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white disabled:opacity-50">
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11.5px] font-semibold bg-[var(--color-primary-dark)] hover:bg-[#1a5667] text-white disabled:opacity-50">
               <Send className="h-3 w-3" /> Sign & send
             </button>
           </div>

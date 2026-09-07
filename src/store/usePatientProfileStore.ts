@@ -15,7 +15,6 @@ export type AyushmanStatus = 'Active' | 'Pending' | 'Not enrolled'
 export type PatientProfile = {
   // identity & contact
   uhid?: string
-  abhaId?: string
   address?: string
   city?: string
   pincode?: string
@@ -65,7 +64,7 @@ export const emptyProfile = (): PatientProfile => ({
 // his as already complete so the patient portal renders real data.
 const SEED: Record<string, PatientProfile> = {
   'PT-20394': {
-    abhaId: '14-2841-7762-9012', address: '12, Shanti Nagar, Sector 4', city: 'Pune', pincode: '411014',
+    address: '12, Shanti Nagar, Sector 4', city: 'Pune', pincode: '411014',
     preferredLanguage: 'Marathi', maritalStatus: 'Married', occupation: 'Schoolteacher',
     emergencyName: 'Sunita Patil', emergencyRelation: 'Spouse', emergencyPhone: '+91 98765 43211',
     bloodGroup: 'AB+', noKnownAllergies: false, allergies: ['Penicillin', 'Sulfa'],

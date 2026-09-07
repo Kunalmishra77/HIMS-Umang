@@ -38,7 +38,6 @@ export interface IntakeForm {
   policyId: string
   policyHolder: string
   insuranceVerified: boolean
-  abhaId: string
   ayushmanCardNo: string
   govtSchemeVerified: boolean
   schemeName: 'AB-PMJAY' | 'CMHIS-UP' | ''
@@ -62,7 +61,7 @@ export function initialForm(): IntakeForm {
     hasReports: false, dishaConsent: false, familyPhone: '',
     payer: '', payMethod: '', insurer: '', insuranceCardNo: '',
     policyId: '', policyHolder: '', insuranceVerified: false,
-    abhaId: '', ayushmanCardNo: '', govtSchemeVerified: false, schemeName: '',
+    ayushmanCardNo: '', govtSchemeVerified: false, schemeName: '',
   }
 }
 

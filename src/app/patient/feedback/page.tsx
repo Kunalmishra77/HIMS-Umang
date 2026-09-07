@@ -8,7 +8,8 @@ import { usePatientFeedbackStore, type SubmitFeedbackInput } from "@/store/usePa
 import { useNotificationStore } from "@/store/useNotificationStore"
 import { useAuditStore } from "@/store/useAuditStore"
 import { useAuthStore } from "@/store/useAuthStore"
-import type { FeedbackRequest, FeedbackRecord, FeedbackCategoryRatings } from "@/types/feedback"
+import { usePatientMe } from "@/lib/usePatientMe"
+import type { FeedbackRequest, FeedbackCategoryRatings } from "@/types/feedback"
 import { Star, CheckCircle, ThumbsUp, ThumbsDown, ChevronDown, ChevronUp, MessageSquarePlus } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { toast } from "sonner"
@@ -43,7 +44,7 @@ const CAT_LABELS: Record<keyof FeedbackCategoryRatings, { label: string; low: st
 }
 
 const NPS_COLORS = [
-  '#EF4444','#EF4444','#EE6B26','#EE6B26','#EE6B26',
+  '#EF4444','#EF4444','#F97316','#F97316','#F97316',
   '#EAB308','#EAB308','#22C55E','#22C55E','#22C55E','#16A34A',
 ]
 
@@ -238,7 +239,7 @@ function FeedbackForm({ request, onSubmitted }: { request: FeedbackRequest; onSu
       <button
         type="submit"
         disabled={submitting || !overallRating}
-        className="w-full h-12 rounded-xl bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] active:scale-[0.98] text-white font-bold flex items-center justify-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full h-12 rounded-xl bg-[var(--color-primary-dark)] hover:bg-[#1a5667] active:scale-[0.98] text-white font-bold flex items-center justify-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {submitting ? 'Submitting…' : <><CheckCircle className="h-4 w-4" /> Submit Feedback</>}
       </button>
@@ -248,7 +249,7 @@ function FeedbackForm({ request, onSubmitted }: { request: FeedbackRequest; onSu
 
 // ── Main page ─────────────────────────────────────────────────────────────────
 export default function PatientFeedbackPage() {
-  const currentUser = useAuthStore(s => s.currentUser)
+  const { me }      = usePatientMe()
   const records     = usePatientFeedbackStore(s => s.records)
   const requests    = usePatientFeedbackStore(s => s.requests)
   const getPending  = usePatientFeedbackStore(s => s.getPendingForPatient)
@@ -263,9 +264,10 @@ export default function PatientFeedbackPage() {
     return () => clearTimeout(t)
   }, [expireStale])
 
-  const patientId   = currentUser?.id ?? 'PT-20394'
-  const pending     = getPending(patientId)
-  const myRecords   = getRecords(patientId)
+  // No demo fallback: an unlinked account has no feedback requests/records to show.
+  const patientId   = me?.id
+  const pending     = patientId ? getPending(patientId) : []
+  const myRecords   = patientId ? getRecords(patientId) : []
 
   void records; void requests // used via getPending/getRecords selectors
 
@@ -295,7 +297,7 @@ export default function PatientFeedbackPage() {
                 </div>
                 <button
                   onClick={() => setActiveFormId(activeFormId === req.id ? null : req.id)}
-                  className="ml-4 h-9 px-4 rounded-xl bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white text-xs font-bold flex items-center gap-1.5 flex-shrink-0 transition-colors cursor-pointer"
+                  className="ml-4 h-9 px-4 rounded-xl bg-[var(--color-primary-dark)] hover:bg-[#1a5667] text-white text-xs font-bold flex items-center gap-1.5 flex-shrink-0 transition-colors cursor-pointer"
                 >
                   {activeFormId === req.id ? <><ChevronUp className="h-3.5 w-3.5" /> Close</> : <><Star className="h-3.5 w-3.5" /> Give Feedback</>}
                 </button>
@@ -364,7 +366,7 @@ export default function PatientFeedbackPage() {
                   {rec.themes.length > 0 && (
                     <div className="flex flex-wrap gap-1">
                       {rec.themes.map(t => (
-                        <span key={t} className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[rgba(238,107,38,0.07)] text-[var(--color-accent)]">{t}</span>
+                        <span key={t} className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[rgba(30,151,178,0.07)] text-[var(--color-accent)]">{t}</span>
                       ))}
                     </div>
                   )}

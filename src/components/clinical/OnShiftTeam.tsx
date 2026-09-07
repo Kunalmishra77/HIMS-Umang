@@ -51,13 +51,13 @@ const ROLE_ICON: Record<string, React.ElementType> = {
 }
 
 const ROLE_TINT: Record<string, string> = {
-  doctor:    'bg-[rgba(238,107,38,0.07)] text-[var(--color-accent)]',
+  doctor:    'bg-[rgba(30,151,178,0.07)] text-[var(--color-accent)]',
   emergency: 'bg-red-50 text-red-700',
   nurse:     'bg-emerald-50 text-emerald-700',
-  ot:        'bg-[rgba(238,107,38,0.07)] text-[var(--color-accent)]',
-  lab:       'bg-[rgba(238,107,38,0.07)] text-[var(--color-accent)]',
-  pharmacy:  'bg-[rgba(238,107,38,0.07)] text-[var(--color-accent)]',
-  radiology: 'bg-[rgba(238,107,38,0.07)] text-[var(--color-accent)]',
+  ot:        'bg-[rgba(30,151,178,0.07)] text-[var(--color-accent)]',
+  lab:       'bg-[rgba(30,151,178,0.07)] text-[var(--color-accent)]',
+  pharmacy:  'bg-[rgba(30,151,178,0.07)] text-[var(--color-accent)]',
+  radiology: 'bg-[rgba(30,151,178,0.07)] text-[var(--color-accent)]',
 }
 
 function deptMatches(staffDept: string, target: string): boolean {
@@ -152,7 +152,7 @@ export function OnShiftTeam({
                 disabled={!onClickMember}
                 className={cn('w-full text-left flex items-center gap-3 px-3 py-2 rounded-lg border border-slate-200 hover:bg-slate-50 cursor-pointer transition',
                   !onClickMember && 'cursor-default')}>
-                <span className="h-8 w-8 rounded-lg bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-light)] text-white flex items-center justify-center text-[11px] font-bold flex-shrink-0">
+                <span className="h-8 w-8 rounded-lg bg-gradient-to-br from-[var(--color-primary-900)] to-[var(--color-primary-800)] text-white flex items-center justify-center text-[11px] font-bold flex-shrink-0">
                   {initials}
                 </span>
                 <div className="flex-1 min-w-0">
@@ -175,7 +175,7 @@ export function OnShiftTeam({
                     <a href={`mailto:${member.email}`}
                       onClick={(e) => e.stopPropagation()}
                       title={`Email ${member.email}`}
-                      className="p-1.5 rounded-lg bg-[rgba(238,107,38,0.07)] text-[var(--color-accent)] hover:bg-[rgba(238,107,38,0.14)] cursor-pointer">
+                      className="p-1.5 rounded-lg bg-[rgba(30,151,178,0.07)] text-[var(--color-accent)] hover:bg-[rgba(30,151,178,0.14)] cursor-pointer">
                       <Mail className="h-3 w-3" />
                     </a>
                   )}

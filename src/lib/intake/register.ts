@@ -1,8 +1,7 @@
 // Shared OPD registration used by both the typed wizard and the voice assistant.
-// Generates a permanent UHID, registers the patient, links ABHA when supplied,
+// Generates a permanent UHID and registers the patient,
 // logs the new self-check-in into the patient's live journey, and notifies staff.
 
-import { usePatientProfileStore, emptyProfile } from '@/store/usePatientProfileStore'
 import { useAuthStore } from '@/store/useAuthStore'
 import { useJourneyStore } from '@/store/useJourneyStore'
 import { usePatientLiveStore } from '@/store/usePatientLiveStore'
@@ -15,7 +14,6 @@ export interface RegisterResult {
   // Undefined for a brand-new self-check-in: no permanent UHID is stamped
   // until reception completes Aadhaar/ABHA verification for this patient
   // (see registerPatientFromIntake below). Only set here when the patient's
-  // self-reported ABHA already resolves to a UHID from an earlier real visit.
   uhid?: string
   token: number
   familyToken: string | null
@@ -42,14 +40,6 @@ export function generateUhid(patients: Patient[]): string {
   return `${prefix}${String(seq).padStart(5, '0')}`
 }
 
-// Returning-patient lookup (Decision Point #2): reuse the UHID already linked to
-// this ABHA so repeat visitors keep one permanent identifier.
-export function findUhidByAbha(abhaId: string): string | undefined {
-  const clean = abhaId.trim()
-  if (!clean) return undefined
-  return Object.values(usePatientProfileStore.getState().profiles)
-    .find(p => p.abhaId === clean && p.uhid)?.uhid
-}
 
 // ── Concurrency-safe UHID issuance ──────────────────────────────────────────
 //
@@ -130,21 +120,20 @@ export async function registerPatientFromIntake(form: IntakeForm, deps: Register
   const newId = `PT-${Date.now()}`
   // Self-check-in never performs Aadhaar OTP verification (that only happens
   // at reception — see src/app/reception/register/page.tsx and
-  // AadhaarAbhaFlow.tsx), so it must not stamp a fresh, permanent UHID here.
-  // The one exception is a genuinely returning patient: if the self-reported
-  // ABHA on this form already resolves to a UHID from an earlier *verified*
-  // hospital visit (findUhidByAbha), reusing it is safe — that UHID was
-  // established by reception's real Aadhaar flow at that prior visit, this
-  // is just Decision Point #2's returning-patient shortcut, unchanged. A
-  // brand-new patient (no match) gets NO uhid (undefined, never ''), so the
-  // real patients.uhid column stays NULL until reception's Aadhaar flow
-  // stamps it — they correctly land in reception's "Needs Aadhaar" queue
-  // (opd/page.tsx's matchesStatusFilter: status==='waiting' && !hasUhid) —
-  // reception's own Aadhaar/ABHA/UHID flow (linkPatientIdentity) is what
-  // stamps their permanent UHID, matching the intent already documented in
-  // ReviewSuccess.tsx ("The UHID is created at the hospital after Aadhaar
-  // verification... our staff will help you create or verify it").
-  const uhid = form.abhaId ? findUhidByAbha(form.abhaId) : undefined
+  // AadhaarFlow.tsx), so it must not stamp a UHID here. Every self-check-in
+  // patient gets NO uhid (undefined, never ''), so the real patients.uhid
+  // column stays NULL until reception's Aadhaar flow stamps it — they
+  // correctly land in reception's "Needs Aadhaar" queue (opd/page.tsx's
+  // matchesStatusFilter: status==='waiting' && !hasUhid), and reception's
+  // linkPatientIdentity is what issues the permanent UHID. This matches the
+  // intent already documented in ReviewSuccess.tsx ("The UHID is created at
+  // the hospital after Aadhaar verification").
+  //
+  // Until ABHA was removed there was one exception — a self-reported ABHA
+  // that already resolved to a UHID from an earlier verified visit could be
+  // reused. With no ABHA to match on, there is no returning-patient shortcut
+  // at self-check-in; reception resolves it instead.
+  const uhid = undefined
   const triage = effectiveTriage(form)
   const estWaitMins = (patients.filter(p => ['waiting', 'vitals'].includes(p.queueStatus)).length + 1) * 4
   const isGovtScheme = form.payer === 'govtScheme'
@@ -177,23 +166,6 @@ export async function registerPatientFromIntake(form: IntakeForm, deps: Register
   // log the new self-check-in into the live journey tracker.
   useJourneyStore.getState().addPatient(newId, form.name, doctor)
 
-  // Persist the permanent UHID↔ABHA link so future visits resolve the returning
-  // patient — only when we actually have an established UHID (the returning-patient
-  // case above). A brand-new patient has no confirmed link yet; that gets written
-  // once reception's own Aadhaar flow verifies and stamps a real UHID.
-  if (form.abhaId && uhid) {
-    usePatientProfileStore.getState().saveProfile(
-      newId,
-      {
-        ...emptyProfile(),
-        uhid,
-        abhaId: form.abhaId,
-        payerType: isGovtScheme ? 'Govt scheme' : undefined,
-        insurer: isGovtScheme ? form.schemeName : undefined,
-      },
-      form.name,
-    )
-  }
 
   // Register the patient in the monitoring/SLA journey view so the admin cockpit
   // tracks self/voice check-ins the same as desk registrations.
@@ -215,7 +187,7 @@ export async function registerPatientFromIntake(form: IntakeForm, deps: Register
     type: 'appointment',
     priority: triage.level === 'Critical' ? 'critical' : triage.level === 'High' ? 'high' : 'medium',
     title: `Self check-in · ${form.name}`,
-    body: `${form.name} just checked in (${uhidClause}). Triage: ${triage.level}. ${isGovtScheme ? `Govt scheme: ${form.schemeName} · ABHA verified. ` : ''}${form.symptoms.length ? 'Symptoms: ' + form.symptoms.join(', ') + '.' : 'No symptoms provided.'} Token #${newToken}.`,
+    body: `${form.name} just checked in (${uhidClause}). Triage: ${triage.level}. ${isGovtScheme ? `Govt scheme: ${form.schemeName}. ` : ''}${form.symptoms.length ? 'Symptoms: ' + form.symptoms.join(', ') + '.' : 'No symptoms provided.'} Token #${newToken}.`,
     patientName: form.name,
     audit: { action: 'reception_registered', resource: 'patient', resourceId: newId, detail: `Self-check-in completed · ${uhidClause} · token ${newToken}`, userName: form.name },
   })

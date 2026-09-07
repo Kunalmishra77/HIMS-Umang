@@ -10,6 +10,7 @@
 // Called by PatientJourneyTimeline (drawer, /journey/[id] page).
 
 import { usePatientStore } from "@/store/usePatientStore"
+import { usePharmacyStore } from "@/store/usePharmacyStore"
 import { useERStore } from "@/store/useERStore"
 import { useLabOrdersStore } from "@/store/useLabOrdersStore"
 import { useRadiologyStudiesStore } from "@/store/useRadiologyStudiesStore"
@@ -305,6 +306,34 @@ function fromDischarge(patientId: string): JourneyEvent[] {
   return out
 }
 
+// Pharmacy stage — a prescription materializes in usePharmacyStore whenever
+// the doctor sends one (doctor/consultation's completeConsultation, or
+// doctor/dashboard's sendRx), independent of the OPD queue's current
+// queueStatus. That makes it a durable marker of "this patient collected
+// medicines" that survives the visit later advancing past 'pharmacy' to
+// 'billing'/'done' — unlike queueStatus, which only reflects the CURRENT stage.
+function fromPharmacy(patientId: string): JourneyEvent[] {
+  const out: JourneyEvent[] = []
+  for (const rx of usePharmacyStore.getState().prescriptions) {
+    if (rx.patientId !== patientId) continue
+    const itemCount = rx.medicines.length
+    out.push({
+      at: rx.dispatchedAt, dept: 'Pharmacy',
+      title: `Sent for medicines · ${itemCount} item${itemCount !== 1 ? 's' : ''}`,
+      detail: rx.medicines.map(m => m.name).join(' · '),
+      actor: rx.doctorName, severity: 'info', resourceId: rx.id,
+    })
+    if (rx.status === 'collected' && rx.collectedAt) {
+      out.push({
+        at: rx.collectedAt, dept: 'Pharmacy',
+        title: 'Medicines collected',
+        actor: rx.dispensedBy?.name, severity: 'success', resourceId: rx.id,
+      })
+    }
+  }
+  return out
+}
+
 function fromBilling(patientId: string): JourneyEvent[] {
   const out: JourneyEvent[] = []
   const b = useBillingStore.getState().bills.find(x => x.patientId === patientId)
@@ -365,6 +394,7 @@ export function aggregateJourney(patientId: string, patientName: string): Journe
     ...fromRadiology(patientId),
     ...fromIPD(patientId),
     ...fromOT(patientId),
+    ...fromPharmacy(patientId),
     ...fromDischarge(patientId),
     ...fromBilling(patientId),
     ...fromInsurance(patientId),
@@ -375,15 +405,15 @@ export function aggregateJourney(patientId: string, patientName: string): Journe
 }
 
 export const DEPT_COLOR: Record<Department, string> = {
-  Reception: '#0EA5E9',  // sky
+  Reception: '#0284C7',  // sky-600
   Emergency: '#DC2626',  // red
   Nursing:   '#10B981',  // emerald
   Doctor:    '#7C3AED',  // violet
   Lab:       '#F59E0B',  // amber
   Radiology: '#9333EA',  // purple
   Pharmacy:  '#EC4899',  // pink
-  OT:        '#1976E6',  // blue
-  IPD:       '#EE6B26',  // brand orange
+  OT:        '#2563EB',  // blue
+  IPD:       '#1E97B2',  // brand teal
   Discharge: '#059669',  // green
   Billing:   '#EAB308',  // yellow
   Insurance: '#64748B',  // slate

@@ -3,8 +3,9 @@ import { createClient } from '@supabase/supabase-js'
 import { usePatientStore, type Patient } from '@/store/usePatientStore'
 import { Patients } from '@/lib/api'
 import { getSupabaseClient } from '@/lib/supabase/client'
+import { attachServerSession, detachServerSession } from '@/lib/testing/serverSession'
 
-// AABHA/UHID bridge, mirror-image case to usePatientStore.addPatient.test.ts:
+// Aadhaar/UHID bridge, mirror-image case to usePatientStore.addPatient.test.ts:
 // here Aadhaar/ABHA verification completes AFTER the patient already exists
 // in the real backend (src/app/reception/opd/page.tsx's "Complete Aadhaar"
 // drawer, via AadhaarAbhaFlow.tsx -> linkPatientIdentity). Before this bridge,
@@ -29,16 +30,19 @@ beforeAll(async () => {
     id: staffUserId, role: 'reception', full_name: 'LinkIdentity Test Reception',
   })
   if (profileError) throw new Error(`profile insert failed: ${profileError.message}`)
-  const { error: signInError } = await getSupabaseClient().auth.signInWithPassword({
+  const { data: signInData, error: signInError } = await getSupabaseClient().auth.signInWithPassword({
     email: staffEmail, password: staffPassword,
   })
   if (signInError) throw new Error(`signIn failed: ${signInError.message}`)
+  if (!signInData.session) throw new Error('signIn returned no session')
+  await attachServerSession(signInData.session)
 })
 
 afterAll(async () => {
   await admin.from('profiles').delete().eq('id', staffUserId)
   await admin.auth.admin.deleteUser(staffUserId)
   await getSupabaseClient().auth.signOut()
+  detachServerSession()
 })
 
 afterEach(async () => {
@@ -50,12 +54,13 @@ afterEach(async () => {
 })
 
 async function reSignInAsStaff() {
-  const { error } = await getSupabaseClient().auth.signInWithPassword({ email: staffEmail, password: staffPassword })
-  if (error) throw new Error(`re-signIn failed: ${error.message}`)
+  const { data, error } = await getSupabaseClient().auth.signInWithPassword({ email: staffEmail, password: staffPassword })
+  if (error || !data.session) throw new Error(`re-signIn failed: ${error?.message}`)
+  await attachServerSession(data.session)
 }
 
 describe('usePatientStore.linkPatientIdentity — real backend bridge', () => {
-  it('mirrors reception completing Aadhaar/ABHA for an already-queued patient onto the REAL patients row', async () => {
+  it('mirrors reception completing Aadhaar for an already-queued patient onto the REAL patients row', async () => {
     usePatientStore.setState({ patients: [], queue: [] })
     await usePatientStore.getState().addPatient({
       name: 'LinkIdentity Bridge Test Patient', phone: '9888800001', age: 29, gender: 'Female', department: 'General Medicine',
@@ -69,7 +74,7 @@ describe('usePatientStore.linkPatientIdentity — real backend bridge', () => {
     expect(before.data?.aadhaar_verified).toBe(false)
 
     await usePatientStore.getState().linkPatientIdentity(created.id, {
-      uhid: 'PUH-2026-77001', abhaId: '14-7000-8000-9000', aadhaarVerified: true,
+      uhid: 'PUH-2026-77001', aadhaarVerified: true,
     })
 
     // Local state updates immediately, same as before this bridge existed.
@@ -78,7 +83,6 @@ describe('usePatientStore.linkPatientIdentity — real backend bridge', () => {
     // ...and the REAL Postgres row now reflects it too.
     const after = await admin.from('patients').select('uhid, abha_id, aadhaar_verified').eq('id', created.id).single()
     expect(after.data?.uhid).toBe('PUH-2026-77001')
-    expect(after.data?.abha_id).toBe('14-7000-8000-9000')
     expect(after.data?.aadhaar_verified).toBe(true)
   })
 
@@ -94,7 +98,7 @@ describe('usePatientStore.linkPatientIdentity — real backend bridge', () => {
     const updateSpy = vi.spyOn(Patients, 'update')
 
     await usePatientStore.getState().linkPatientIdentity('PT-LOCALONLY-1', {
-      uhid: 'PUH-2026-77002', abhaId: '14-1000-2000-3000', aadhaarVerified: true,
+      uhid: 'PUH-2026-77002', aadhaarVerified: true,
     })
 
     expect(usePatientStore.getState().patients.find(p => p.id === 'PT-LOCALONLY-1')?.uhid).toBe('PUH-2026-77002')
@@ -113,9 +117,10 @@ describe('usePatientStore.linkPatientIdentity — real backend bridge', () => {
 
     const updateSpy = vi.spyOn(Patients, 'update')
     await getSupabaseClient().auth.signOut()
+    detachServerSession()
 
     await usePatientStore.getState().linkPatientIdentity(created.id, {
-      uhid: 'PUH-2026-77003', abhaId: '14-4000-5000-6000', aadhaarVerified: true,
+      uhid: 'PUH-2026-77003', aadhaarVerified: true,
     })
 
     expect(updateSpy).not.toHaveBeenCalled()

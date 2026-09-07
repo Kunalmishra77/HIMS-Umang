@@ -50,6 +50,7 @@ export function VoiceAssistantFlow({ form, update, onExitToForm }: { form: Intak
   // switches to the patient's spoken language on each subsequent turn.
   const globalLocale = useLocale() as 'en' | 'hi'
   const [lang, setLang] = useState<'en' | 'hi'>(globalLocale)
+  const [prevLocale, setPrevLocale] = useState(globalLocale)
   const [messages, setMessages] = useState<Msg[]>([])
   const [interim, setInterim] = useState('')
   const [phase, setPhase] = useState<Phase>('thinking')
@@ -93,7 +94,12 @@ export function VoiceAssistantFlow({ form, update, onExitToForm }: { form: Intak
   useEffect(() => { langRef.current = lang })
   // Follow the global locale toggle: switching EN⇄हिं updates the assistant's
   // language so the greeting, quick replies and TTS stay in sync with the UI.
-  useEffect(() => { setLang(globalLocale) }, [globalLocale])
+  // Adjusted during render (React's documented pattern for "reset state when a
+  // prop changes") because `lang` is also set from a turn's detected language.
+  if (prevLocale !== globalLocale) {
+    setPrevLocale(globalLocale)
+    setLang(globalLocale)
+  }
   useEffect(() => { phaseRef.current = phase }, [phase])
   useEffect(() => () => { recRef.current?.stop(); cancelSpeech(); silenceTimersRef.current.forEach(clearTimeout) }, [])
 
@@ -334,8 +340,8 @@ export function VoiceAssistantFlow({ form, update, onExitToForm }: { form: Intak
   return (
     <div className="flex flex-col flex-1 h-full w-full relative">
       {/* Soft ambient gradient — premium, restrained */}
-      <div aria-hidden className="pointer-events-none absolute -top-24 -right-24 h-72 w-72 rounded-full opacity-60 blur-3xl" style={{ background: 'radial-gradient(circle, rgba(238,107,38,0.22), transparent 70%)' }} />
-      <div aria-hidden className="pointer-events-none absolute -bottom-28 -left-24 h-72 w-72 rounded-full opacity-50 blur-3xl" style={{ background: 'radial-gradient(circle, rgba(238,107,38,0.14), transparent 70%)' }} />
+      <div aria-hidden className="pointer-events-none absolute -top-24 -right-24 h-72 w-72 rounded-full opacity-60 blur-3xl" style={{ background: 'radial-gradient(circle, rgba(30,151,178,0.22), transparent 70%)' }} />
+      <div aria-hidden className="pointer-events-none absolute -bottom-28 -left-24 h-72 w-72 rounded-full opacity-50 blur-3xl" style={{ background: 'radial-gradient(circle, rgba(30,151,178,0.14), transparent 70%)' }} />
 
         {/* Orb + spoken text */}
         <div className="relative z-10 flex-1 min-h-0 flex flex-col items-center justify-center px-7 text-center">
@@ -355,9 +361,9 @@ export function VoiceAssistantFlow({ form, update, onExitToForm }: { form: Intak
             </AnimatePresence>
             {interim && <p className="mt-3 text-[15px] text-slate-400 italic">“{interim}”</p>}
           </div>
-          <p className={cn("mt-5 text-[14px] font-semibold h-5 flex items-center gap-1.5", phase === 'listening' ? "text-[#B84A16]" : "text-slate-400")}>
+          <p className={cn("mt-5 text-[14px] font-semibold h-5 flex items-center gap-1.5", phase === 'listening' ? "text-[#955408]" : "text-slate-400")}>
             {phase === 'listening' && <span className="inline-flex gap-0.5">
-              {[0, 1, 2].map(i => <span key={i} className="h-1.5 w-1.5 rounded-full bg-[#EE6B26] animate-pulse" style={{ animationDelay: `${i * 150}ms` }} />)}
+              {[0, 1, 2].map(i => <span key={i} className="h-1.5 w-1.5 rounded-full bg-[#1E97B2] animate-pulse" style={{ animationDelay: `${i * 150}ms` }} />)}
             </span>}
             {status}
           </p>
@@ -370,7 +376,7 @@ export function VoiceAssistantFlow({ form, update, onExitToForm }: { form: Intak
                 <button
                   key={c.send}
                   onClick={() => quickAnswer(c.send)}
-                  className="h-11 px-5 rounded-full border-2 border-[#EE6B26] text-[15px] font-semibold text-[#B84A16] bg-white active:scale-95 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-[#EE6B26]"
+                  className="h-11 px-5 rounded-full border-2 border-[#1E97B2] text-[15px] font-semibold text-[#955408] bg-white active:scale-95 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1E97B2]"
                 >
                   {c.label}
                 </button>
@@ -381,7 +387,7 @@ export function VoiceAssistantFlow({ form, update, onExitToForm }: { form: Intak
 
         {/* Controls */}
         <div className="relative z-10 px-9 pb-[max(2.25rem,env(safe-area-inset-bottom))] pt-2 flex items-center justify-between">
-          <button onClick={() => setShowLog(true)} aria-label="View transcript" disabled={!messages.length} className="h-12 w-12 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 active:scale-95 transition-transform disabled:opacity-40 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#EE6B26]">
+          <button onClick={() => setShowLog(true)} aria-label="View transcript" disabled={!messages.length} className="h-12 w-12 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 active:scale-95 transition-transform disabled:opacity-40 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1E97B2]">
             <MessageSquare className="h-5 w-5" aria-hidden="true" />
           </button>
 
@@ -389,17 +395,17 @@ export function VoiceAssistantFlow({ form, update, onExitToForm }: { form: Intak
             onClick={stopAndAnswer}
             disabled={!supported || phase === 'thinking'}
             aria-label={phase === 'listening' ? 'Stop and submit answer' : phase === 'speaking' ? 'Tap to interrupt and answer' : 'Tap to answer'}
-            className={cn("relative h-[88px] w-[88px] rounded-full flex items-center justify-center transition-all active:scale-95 disabled:opacity-70 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#EE6B26]",
+            className={cn("relative h-[88px] w-[88px] rounded-full flex items-center justify-center transition-all active:scale-95 disabled:opacity-70 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#1E97B2]",
               phase === 'listening' ? "bg-red-500 shadow-[0_10px_30px_rgba(239,68,68,0.4)]"
                 : phase === 'thinking' || phase === 'speaking' ? "bg-amber-400 shadow-[0_10px_30px_rgba(245,158,11,0.35)]"
-                  : "bg-[#EE6B26] shadow-[0_10px_30px_rgba(238,107,38,0.4)]")}>
+                  : "bg-[#1E97B2] shadow-[0_10px_30px_rgba(30,151,178,0.4)]")}>
             {phase === 'listening' && !reduce && <span className="absolute inset-0 rounded-full bg-red-500 animate-ping opacity-30" />}
             {phase === 'thinking' ? <Loader2 className="h-9 w-9 text-white animate-spin" aria-hidden="true" />
               : phase === 'listening' ? <MicOff className="h-9 w-9 text-white" aria-hidden="true" />
                 : <Mic className="h-9 w-9 text-white" aria-hidden="true" />}
           </button>
 
-          <button onClick={exitVoice} aria-label="Type instead" className="h-12 w-12 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 active:scale-95 transition-transform focus:outline-none focus-visible:ring-2 focus-visible:ring-[#EE6B26]">
+          <button onClick={exitVoice} aria-label="Type instead" className="h-12 w-12 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 active:scale-95 transition-transform focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1E97B2]">
             <Keyboard className="h-5 w-5" aria-hidden="true" />
           </button>
         </div>
@@ -407,7 +413,7 @@ export function VoiceAssistantFlow({ form, update, onExitToForm }: { form: Intak
         {(!supported || aiDown) && (
           <div className="absolute inset-x-0 bottom-0 z-20 bg-white/95 backdrop-blur px-6 pt-4 pb-[max(1.5rem,env(safe-area-inset-bottom))] border-t border-slate-200 text-center">
             <p className="text-[14px] text-slate-600 mb-3">{aiDown ? 'The voice assistant is unavailable right now.' : 'Voice isn’t available on this device.'}</p>
-            <button onClick={() => onExitToForm('type')} className="w-full py-3.5 rounded-2xl font-semibold text-[15px] text-[#0D2032] bg-[#EE6B26] active:scale-[0.98] transition-transform flex items-center justify-center gap-2">
+            <button onClick={() => onExitToForm('type')} className="w-full py-3.5 rounded-2xl font-semibold text-[15px] text-[#0D2032] bg-[#1E97B2] active:scale-[0.98] transition-transform flex items-center justify-center gap-2">
               <Keyboard className="h-5 w-5" aria-hidden="true" /> Type my details instead
             </button>
           </div>
@@ -432,7 +438,7 @@ function Orb({ phase, reduce }: { phase: Phase; reduce: boolean }) {
       {listening && !reduce && [0, 1].map(i => (
         <motion.span
           key={i}
-          className="absolute h-[176px] w-[176px] rounded-full border-2 border-[#F7B98E]"
+          className="absolute h-[176px] w-[176px] rounded-full border-2 border-[#a8e3ec]"
           initial={{ scale: 0.85, opacity: 0.5 }}
           animate={{ scale: 1.45, opacity: 0 }}
           transition={{ duration: 2, repeat: Infinity, delay: i * 0.7, ease: 'easeOut' }}
@@ -441,8 +447,8 @@ function Orb({ phase, reduce }: { phase: Phase; reduce: boolean }) {
       <motion.div
         className="h-[176px] w-[176px] rounded-full"
         style={{
-          background: 'radial-gradient(circle at 32% 26%, #FDEADD 0%, #FBD5BC 22%, #F7B98E 46%, #EE6B26 72%, #C2481A 100%)',
-          boxShadow: '0 24px 60px rgba(238,107,38,0.42), inset 0 -16px 40px rgba(238,107,38,0.45)',
+          background: 'radial-gradient(circle at 32% 26%, #f0fbfc 0%, #d4f1f5 22%, #a8e3ec 46%, #1E97B2 72%, #196b7e 100%)',
+          boxShadow: '0 24px 60px rgba(30,151,178,0.42), inset 0 -16px 40px rgba(30,151,178,0.45)',
         }}
         animate={reduce ? {} : {
           scale: listening ? [1, 1.06, 1] : speaking ? [1, 1.035, 1] : [1, 1.02, 1],
@@ -474,10 +480,10 @@ function TranscriptSheet({ messages, interim, onClose }: { messages: Msg[]; inte
         <div className="flex-1 min-h-0 overflow-y-auto px-5 pb-6 pt-1 space-y-2.5">
           {messages.map((m, i) => (
             <div key={i} className={cn("flex", m.role === 'patient' ? "justify-end" : "justify-start")}>
-              <div className={cn("max-w-[82%] px-3.5 py-2.5 rounded-2xl text-[14px] leading-snug", m.role === 'patient' ? "bg-[#EE6B26] text-[#0D2032] rounded-br-md" : "bg-slate-100 text-slate-800 rounded-bl-md")}>{m.text}</div>
+              <div className={cn("max-w-[82%] px-3.5 py-2.5 rounded-2xl text-[14px] leading-snug", m.role === 'patient' ? "bg-[#1E97B2] text-[#0D2032] rounded-br-md" : "bg-slate-100 text-slate-800 rounded-bl-md")}>{m.text}</div>
             </div>
           ))}
-          {interim && <div className="flex justify-end"><div className="max-w-[82%] px-3.5 py-2.5 rounded-2xl rounded-br-md bg-[#EE6B26]/40 text-white text-[14px] italic">{interim}</div></div>}
+          {interim && <div className="flex justify-end"><div className="max-w-[82%] px-3.5 py-2.5 rounded-2xl rounded-br-md bg-[#1E97B2]/40 text-[#0D2032] text-[14px] italic">{interim}</div></div>}
         </div>
       </motion.div>
     </motion.div>
@@ -509,7 +515,7 @@ function VoiceReview({ form, lang, submitting, onUpdate, onEdit, onConfirm, onBa
   return (
     <div className="flex flex-col flex-1 h-full w-full">
       <header className="px-6 pt-6 pb-2 shrink-0">
-        <p className="text-[12px] font-bold uppercase tracking-wider text-[#B84A16]">{t.eyebrow}</p>
+        <p className="text-[12px] font-bold uppercase tracking-wider text-[#955408]">{t.eyebrow}</p>
         <h2 className="text-[28px] font-bold text-slate-900 tracking-tight mt-0.5 leading-tight">{t.title}</h2>
         <p className="text-[15px] text-slate-500 mt-1">{t.sub}</p>
       </header>
@@ -526,7 +532,7 @@ function VoiceReview({ form, lang, submitting, onUpdate, onEdit, onConfirm, onBa
               {form.symptoms.length === 0
                 ? <span className="text-slate-400 text-[14px]">—</span>
                 : <div className="flex flex-wrap gap-1.5">
-                    {form.symptoms.map(s => <span key={s} className="px-2.5 py-1 text-[12.5px] font-medium rounded-lg bg-[rgba(238,107,38,0.08)] text-[#B84A16]">{s}</span>)}
+                    {form.symptoms.map(s => <span key={s} className="px-2.5 py-1 text-[12.5px] font-medium rounded-lg bg-[rgba(30,151,178,0.08)] text-[#955408]">{s}</span>)}
                   </div>}
             </ReviewRow>
             <ReviewRow label={t.duration} onEdit={() => onEdit('symptomDuration')}>
@@ -543,8 +549,8 @@ function VoiceReview({ form, lang, submitting, onUpdate, onEdit, onConfirm, onBa
                 const active = form.apptDate === d.value
                 return (
                   <button key={d.value} onClick={() => onUpdate({ apptDate: d.value })} aria-pressed={active}
-                    className={cn("flex-shrink-0 min-w-[68px] px-3 py-2 rounded-xl border text-center transition-all active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#EE6B26]",
-                      active ? "bg-[#EE6B26] border-[#EE6B26] text-[#0D2032] shadow-sm" : "bg-slate-50 border-slate-200 text-slate-700")}>
+                    className={cn("flex-shrink-0 min-w-[68px] px-3 py-2 rounded-xl border text-center transition-all active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1E97B2]",
+                      active ? "bg-[#1E97B2] border-[#1E97B2] text-[#0D2032] shadow-sm" : "bg-slate-50 border-slate-200 text-slate-700")}>
                     <span className="block text-[13px] font-semibold leading-tight">{d.label}</span>
                   </button>
                 )
@@ -556,8 +562,8 @@ function VoiceReview({ form, lang, submitting, onUpdate, onEdit, onConfirm, onBa
                 const active = form.apptTime === time
                 return (
                   <button key={time} onClick={() => onUpdate({ apptTime: time })} aria-pressed={active}
-                    className={cn("px-3 py-1.5 rounded-lg border text-[13px] font-semibold transition-all active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#EE6B26]",
-                      active ? "bg-[#EE6B26] border-[#EE6B26] text-[#0D2032] shadow-sm" : "bg-slate-50 border-slate-200 text-slate-700")}>
+                    className={cn("px-3 py-1.5 rounded-lg border text-[13px] font-semibold transition-all active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1E97B2]",
+                      active ? "bg-[#1E97B2] border-[#1E97B2] text-[#0D2032] shadow-sm" : "bg-slate-50 border-slate-200 text-slate-700")}>
                     {time}
                   </button>
                 )
@@ -566,7 +572,7 @@ function VoiceReview({ form, lang, submitting, onUpdate, onEdit, onConfirm, onBa
           </div>
 
           <div className={cn("flex items-center justify-between px-4 py-3 rounded-[16px]",
-            triage.variant === 'danger' ? 'bg-red-50' : triage.variant === 'warning' ? 'bg-amber-50' : triage.variant === 'orange' ? 'bg-primary-soft' : 'bg-green-50')}>
+            triage.variant === 'danger' ? 'bg-red-50' : triage.variant === 'warning' ? 'bg-amber-50' : triage.variant === 'orange' ? 'bg-urgent-bg' : 'bg-green-50')}>
             <span className="flex items-center gap-2.5">
               <AlertTriangle className={cn("h-5 w-5", triage.color)} aria-hidden="true" />
               <span className="text-[14px] font-bold text-slate-900">{t.urgency}</span>
@@ -574,9 +580,9 @@ function VoiceReview({ form, lang, submitting, onUpdate, onEdit, onConfirm, onBa
             <NeonBadge variant={triage.variant} dot pulse className="px-3 py-1">{triage.level}</NeonBadge>
           </div>
 
-          <div className="flex items-start gap-2.5 px-4 py-3 bg-[rgba(238,107,38,0.06)] rounded-[16px]">
-            <ShieldCheck className="h-5 w-5 text-[#B84A16] flex-shrink-0 mt-0.5" aria-hidden="true" />
-            <p className="text-[12.5px] text-[#B84A16] leading-snug">{t.share}</p>
+          <div className="flex items-start gap-2.5 px-4 py-3 bg-[rgba(30,151,178,0.06)] rounded-[16px]">
+            <ShieldCheck className="h-5 w-5 text-[#955408] flex-shrink-0 mt-0.5" aria-hidden="true" />
+            <p className="text-[12.5px] text-[#955408] leading-snug">{t.share}</p>
           </div>
         </div>
 
@@ -584,13 +590,13 @@ function VoiceReview({ form, lang, submitting, onUpdate, onEdit, onConfirm, onBa
           <button
             onClick={onConfirm}
             disabled={submitting}
-            className={cn("w-full h-14 rounded-2xl font-semibold text-[17px] text-[#0D2032] transition-all active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#EE6B26] flex items-center justify-center gap-2",
-              submitting ? "bg-[#EE6B26]/70 cursor-not-allowed" : "bg-[#EE6B26] hover:bg-[#C2481A] shadow-[0_8px_20px_rgba(238,107,38,0.28)]")}
+            className={cn("w-full h-14 rounded-2xl font-semibold text-[17px] text-[#0D2032] transition-all active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#1E97B2] flex items-center justify-center gap-2",
+              submitting ? "bg-[#1E97B2]/70 cursor-not-allowed" : "bg-[#1E97B2] hover:bg-[#196b7e] shadow-[0_8px_20px_rgba(30,151,178,0.28)]")}
           >
             {submitting && <Loader2 className="h-5 w-5 animate-spin" aria-hidden="true" />}
             {submitting ? t.registering : t.confirm}
           </button>
-          <button onClick={onBack} disabled={submitting} className="w-full h-14 rounded-2xl font-semibold text-[15px] text-slate-600 bg-slate-100/50 hover:bg-slate-100 active:scale-[0.98] transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-[#EE6B26] disabled:opacity-50 disabled:cursor-not-allowed">
+          <button onClick={onBack} disabled={submitting} className="w-full h-14 rounded-2xl font-semibold text-[15px] text-slate-600 bg-slate-100/50 hover:bg-slate-100 active:scale-[0.98] transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1E97B2] disabled:opacity-50 disabled:cursor-not-allowed">
 
             {t.back}
           </button>
@@ -604,7 +610,7 @@ function ReviewRow({ label, onEdit, children }: { label: string; onEdit: () => v
     <div className="px-4 py-3">
       <div className="flex items-center justify-between mb-1">
         <p className="text-[11px] uppercase text-slate-400 font-bold tracking-wider">{label}</p>
-        <button onClick={onEdit} className="text-[#B84A16] text-[12px] font-semibold flex items-center gap-1 active:opacity-60 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#EE6B26] rounded px-1">
+        <button onClick={onEdit} className="text-[#955408] text-[12px] font-semibold flex items-center gap-1 active:opacity-60 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1E97B2] rounded px-1">
           <Pencil className="h-3 w-3" aria-hidden="true" /> Edit
         </button>
       </div>

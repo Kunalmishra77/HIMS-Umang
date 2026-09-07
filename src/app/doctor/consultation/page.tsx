@@ -9,7 +9,7 @@
  * next role.
  */
 
-import { useEffect, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 import { useRouter } from "next/navigation"
 import { Stethoscope, Pill, FlaskConical, ScanLine, ArrowLeft, Save, Sparkles, FileText, Send, Plus, X, Activity, AlertTriangle, Bed, Printer, Utensils, CalendarClock } from "lucide-react"
 import { useAuthStore } from "@/store/useAuthStore"
@@ -29,6 +29,7 @@ import { notifyAndAudit } from "@/lib/notifyAndAudit"
 import { printableHtml } from "@/lib/fileIO"
 import { news2FromRecord, vitalsAnomalies } from "@/lib/vitals"
 import { cn } from "@/lib/utils"
+import { useNow } from '@/lib/useNow'
 
 interface RxMed { name: string; dosage: string; frequency: string; duration: string; quantity: string }
 const EMPTY_MED: RxMed = { name: '', dosage: '', frequency: '', duration: '', quantity: '' }
@@ -52,6 +53,7 @@ function saveSoap(patientId: string, s: SoapDraft) {
 }
 
 export default function DoctorConsultation() {
+  const now = useNow(60000)
   const router = useRouter()
   const currentUser = useAuthStore(s => s.currentUser)
   const patients = usePatientStore(s => s.patients)
@@ -87,13 +89,28 @@ export default function DoctorConsultation() {
   const [diet, setDiet] = useState("")
   const [followUp, setFollowUp] = useState("")
   const [imagingAdvice, setImagingAdvice] = useState("")
-  // Hydrate the SOAP draft and reset the encounter baskets whenever the patient changes.
-  useEffect(() => {
+  // Per-encounter dispatch flag — the exact local-state equivalent of
+  // dashboard/page.tsx's useConsultationStore.isPharmacySent. A prior version
+  // of this guard checked usePharmacyStore for an existing non-collected
+  // prescription for this patientId, but prescriptions never expire (they
+  // persist to localStorage / cross-device), so a patient who never collected
+  // a past visit's Rx and returns for a new encounter would have their NEW
+  // prescription silently skipped by that check. This flag only ever reflects
+  // *this* encounter's dispatch state.
+  const [rxDispatched, setRxDispatched] = useState(false)
+  // Hydrate the SOAP draft and reset the encounter baskets whenever the patient
+  // changes. Adjusted during render — React's documented pattern for resetting
+  // state when an input changes — so the new patient's screen is never painted
+  // holding the previous patient's orders, not even for one frame.
+  const [loadedFor, setLoadedFor] = useState<string | undefined>(undefined)
+  if (loadedFor !== active?.id) {
+    setLoadedFor(active?.id)
     if (active) { setSoap(loadSoap(active.id)); setHydrated(true) }
     setLabTests([]); setLabPick("")
     setImagingStudies([]); setImagingPick(""); setReferSpecialty(""); setAdmitWard("General Ward")
     setMeds([]); setMedDraft(EMPTY_MED); setDiet(""); setFollowUp(""); setImagingAdvice("")
-  }, [active?.id])
+    setRxDispatched(false)
+  }
 
   if (!active) {
     return (
@@ -101,7 +118,7 @@ export default function DoctorConsultation() {
         <Stethoscope className="h-10 w-10 text-slate-300 mx-auto mb-3" />
         <p className="text-[15px] font-semibold text-slate-700">No active patient.</p>
         <p className="text-[12.5px] text-slate-500 mt-1">Pick a patient from the queue to start a consultation.</p>
-        <button onClick={() => router.push('/doctor/dashboard')} className="mt-4 inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#C2481A] hover:bg-[#9A3A14] text-white text-[12.5px] font-semibold cursor-pointer">
+        <button onClick={() => router.push('/doctor/dashboard')} className="mt-4 inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#196b7e] hover:bg-[#1a5667] text-white text-[12.5px] font-semibold cursor-pointer">
           <ArrowLeft className="h-3.5 w-3.5" /> Back to dashboard
         </button>
       </div>
@@ -132,10 +149,12 @@ export default function DoctorConsultation() {
   }
   const removeMed = (i: number) => setMeds(m => m.filter((_, idx) => idx !== i))
 
-  function orderRx() {
+  // Persist a real prescription so it lands in the Pharmacy queue + notify.
+  // Shared by the explicit "Send Rx to pharmacy" button (orderRx) and the
+  // completion button's auto-dispatch fallback (completeConsultation) so the
+  // two paths can never disagree on what a dispatch looks like.
+  function dispatchRx() {
     if (!active) return
-    if (meds.length === 0) { toast.error('Add at least one medicine to the prescription'); return }
-    // Persist a real prescription so it lands in the Pharmacy queue.
     addPrescription({
       id: `RX-${Date.now()}`,
       patientId: active.id,
@@ -154,16 +173,24 @@ export default function DoctorConsultation() {
       })),
       status: 'queued',
       dispatchedAt: new Date().toISOString(),
-      estimatedReadyIn: 15,
+      // Aligned with dashboard/page.tsx's sendRx formula (was hardcoded 15).
+      estimatedReadyIn: meds.length * 3,
       notes: diet.trim() ? `Diet: ${diet.trim()}` : undefined,
     })
     notifyAndAudit({
-      to: 'admin', type: 'medicines_ready', priority: 'high',
+      to: 'pharmacy', type: 'medicines_ready', priority: 'high',
       title: `New Rx · ${active.name}`,
       body: `Doctor prescribed ${meds.length} medicine(s) for ${active.name}: ${meds.map(m => m.name.trim()).join(', ')}. Begin dispense workflow.`,
       patientName: active.name,
       audit: { action: 'prescription_create', resource: 'consultation', resourceId: active.id, detail: `Rx (${meds.length} item(s)) ordered for ${active.name}`, userName: currentUser?.name ?? 'Doctor' },
     })
+    setRxDispatched(true)
+  }
+
+  function orderRx() {
+    if (!active) return
+    if (meds.length === 0) { toast.error('Add at least one medicine to the prescription'); return }
+    dispatchRx()
     toast.success(`Rx sent`, { description: `${meds.length} medicine(s)` })
   }
 
@@ -321,10 +348,29 @@ export default function DoctorConsultation() {
     toast.success(`Admission requested · ${admitWard}`)
   }
 
+  // A patient with medicines prescribed this encounter goes to Pharmacy first
+  // (they collect their medicines before settling the bill); one with none
+  // goes straight to Billing, same as before pharmacy existed as a stage.
+  //
+  // The button reads "Send to pharmacy" whenever there are draft medicines, so
+  // it must make that true: if the doctor filled the Rx but never pressed the
+  // separate "Send Rx to pharmacy" dispatch control, dispatch it now before
+  // routing onward. Guarded against double-dispatch by rxDispatched — a
+  // per-encounter local flag (reset with the rest of the draft baskets
+  // whenever `active` changes), not a lookup against usePharmacyStore: that
+  // store's prescriptions never expire, so a returning patient with an old
+  // uncollected Rx from a past visit would have a genuinely new prescription
+  // silently skipped by a patientId-based check.
   function completeConsultation() {
     if (!active) return
-    updateStatus(active.id, 'billing')
-    toast.success(`Consultation complete · ${active.name} sent to Billing`)
+    if (meds.length > 0) {
+      if (!rxDispatched) dispatchRx()
+      updateStatus(active.id, 'pharmacy')
+      toast.success(`Consultation complete · ${active.name} sent to Pharmacy`)
+    } else {
+      updateStatus(active.id, 'billing')
+      toast.success(`Consultation complete · ${active.name} sent to Billing`)
+    }
   }
 
   if (!hydrated) return null
@@ -337,7 +383,7 @@ export default function DoctorConsultation() {
   const anomalies = opdV ? vitalsAnomalies(opdV) : []
 
   const vitalsTimeAgo = (iso: string) => {
-    const mins = Math.round((Date.now() - new Date(iso).getTime()) / 60000)
+    const mins = Math.round((now - new Date(iso).getTime()) / 60000)
     if (mins < 1) return 'just now'
     if (mins < 60) return `${mins}m ago`
     return `${Math.round(mins / 60)}h ago`
@@ -363,7 +409,7 @@ export default function DoctorConsultation() {
         <button onClick={() => router.push('/doctor/dashboard')} aria-label="Back" className="h-8 w-8 rounded-lg bg-slate-100 hover:bg-slate-200 flex items-center justify-center cursor-pointer">
           <ArrowLeft className="h-4 w-4 text-slate-500" />
         </button>
-        <span className="h-11 w-11 rounded-2xl bg-gradient-to-br from-[#C2481A] to-[#EE6B26] flex items-center justify-center text-white text-[15px] font-bold">
+        <span className="h-11 w-11 rounded-2xl bg-gradient-to-br from-[#1b4856] to-[#1a5667] flex items-center justify-center text-white text-[15px] font-bold">
           {active.name.split(' ').map(w => w[0]).join('').slice(0, 2)}
         </span>
         <div className="flex-1 min-w-0">
@@ -371,7 +417,7 @@ export default function DoctorConsultation() {
           <p className="text-[12px] text-slate-500">{active.id} · {active.age}y · {active.gender} · {active.department}</p>
           {active.symptoms?.length ? <p className="text-[11.5px] text-slate-600 mt-0.5">Chief complaint: <b>{active.symptoms.join(', ')}</b></p> : null}
         </div>
-        <span className="text-[10.5px] font-semibold text-[#B84A16] bg-[rgba(238,107,38,0.07)] border border-[rgba(238,107,38,0.15)] rounded-full px-2 py-0.5 inline-flex items-center gap-1">
+        <span className="text-[10.5px] font-semibold text-[#955408] bg-[rgba(30,151,178,0.07)] border border-[rgba(30,151,178,0.15)] rounded-full px-2 py-0.5 inline-flex items-center gap-1">
           <Sparkles className="h-3 w-3" /> AI scribe ready
         </span>
       </div>
@@ -380,7 +426,7 @@ export default function DoctorConsultation() {
       <div className="rounded-2xl bg-white shadow-[0_1px_4px_rgba(15,23,42,0.06)] p-4">
         <div className="flex items-center justify-between gap-2 flex-wrap mb-3">
           <div className="flex items-center gap-2">
-            <Activity className="h-4 w-4 text-[#B84A16]" />
+            <Activity className="h-4 w-4 text-[#955408]" />
             <h3 className="text-[14px] font-semibold text-slate-900">Patient Vitals</h3>
             {opdV?.at && (
               <span className="text-[10.5px] text-slate-400">
@@ -393,7 +439,7 @@ export default function DoctorConsultation() {
               <span className={cn(
                 "text-[10.5px] font-bold px-2 py-0.5 rounded-full border",
                 active.triageLevel === 'Critical' ? 'bg-red-50 text-red-700 border-red-200' :
-                active.triageLevel === 'High'     ? 'bg-primary-soft text-accent border-primary/20' :
+                active.triageLevel === 'High'     ? 'bg-urgent-bg text-urgent border-urgent/20' :
                 active.triageLevel === 'Medium'   ? 'bg-amber-50 text-amber-700 border-amber-200' :
                                                     'bg-emerald-50 text-emerald-700 border-emerald-200'
               )}>
@@ -480,7 +526,7 @@ export default function DoctorConsultation() {
         {/* SOAP note */}
         <div className="lg:col-span-2 rounded-2xl bg-white shadow-[0_1px_4px_rgba(15,23,42,0.06)] p-4 space-y-2.5">
           <div className="flex items-center gap-2">
-            <FileText className="h-4 w-4 text-[#B84A16]" />
+            <FileText className="h-4 w-4 text-[#955408]" />
             <h3 className="text-[14px] font-semibold text-slate-900">SOAP note</h3>
             <span className="ml-auto text-[10.5px] text-slate-400">auto-saves as you type</span>
           </div>
@@ -490,10 +536,10 @@ export default function DoctorConsultation() {
               <textarea value={soap[k]} onChange={(e) => persist({ ...soap, [k]: e.target.value })}
                 rows={k === 'plan' ? 3 : 2}
                 placeholder={k === 'subjective' ? 'Patient reports…' : k === 'objective' ? 'On examination…' : k === 'assessment' ? 'Most likely…' : 'Plan: Rx, labs, follow-up, red-flag advice…'}
-                className="w-full px-3 py-2 rounded-lg ring-1 ring-slate-200 bg-white text-[13px] focus:outline-none focus:ring-[#EE6B26] resize-none" />
+                className="w-full px-3 py-2 rounded-lg ring-1 ring-slate-200 bg-white text-[13px] focus:outline-none focus:ring-[#1E97B2] resize-none" />
             </div>
           ))}
-          <button onClick={signNote} className="w-full mt-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#C2481A] hover:bg-[#9A3A14] text-white text-[13.5px] font-semibold cursor-pointer">
+          <button onClick={signNote} className="w-full mt-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#196b7e] hover:bg-[#1a5667] text-white text-[13.5px] font-semibold cursor-pointer">
             <Save className="h-4 w-4" /> Sign &amp; save SOAP
           </button>
         </div>
@@ -501,7 +547,7 @@ export default function DoctorConsultation() {
         {/* Quick-orders rail */}
         <div className="rounded-2xl bg-white shadow-[0_1px_4px_rgba(15,23,42,0.06)] p-4 space-y-2">
           <h3 className="text-[14px] font-semibold text-slate-900 flex items-center gap-2">
-            <Sparkles className="h-4 w-4 text-[#B84A16]" /> Quick orders
+            <Sparkles className="h-4 w-4 text-[#955408]" /> Quick orders
           </h3>
           <div className="rounded-lg bg-rose-50 p-2.5 space-y-2">
             <div className="flex items-center gap-1.5 text-[12.5px] font-semibold text-rose-800">
@@ -531,30 +577,30 @@ export default function DoctorConsultation() {
             </button>
           </div>
           {/* Order imaging */}
-          <div className="rounded-lg bg-[rgba(238,107,38,0.06)] p-2.5 space-y-2">
-            <div className="flex items-center gap-1.5 text-[12.5px] font-semibold text-[#B84A16]">
+          <div className="rounded-lg bg-[rgba(30,151,178,0.06)] p-2.5 space-y-2">
+            <div className="flex items-center gap-1.5 text-[12.5px] font-semibold text-[#955408]">
               <ScanLine className="h-4 w-4" /> Order imaging
             </div>
             <div className="flex gap-1.5">
-              <Select value={imagingPick} onChange={e => setImagingPick(e.target.value)} className="flex-1 h-8 rounded-lg border border-[rgba(238,107,38,0.25)] bg-white text-[12px] px-2 text-slate-700">
+              <Select value={imagingPick} onChange={e => setImagingPick(e.target.value)} className="flex-1 h-8 rounded-lg border border-[rgba(30,151,178,0.25)] bg-white text-[12px] px-2 text-slate-700">
                 <option value="">Select study…</option>
                 {IMAGING_OPTIONS.map(o => <option key={o.code} value={o.code}>{o.name}</option>)}
               </Select>
-              <button onClick={addImagingStudy} aria-label="Add study" className="h-8 w-8 flex-shrink-0 rounded-lg bg-[rgba(238,107,38,0.14)] hover:bg-[rgba(238,107,38,0.22)] text-[#B84A16] flex items-center justify-center cursor-pointer">
+              <button onClick={addImagingStudy} aria-label="Add study" className="h-8 w-8 flex-shrink-0 rounded-lg bg-[rgba(30,151,178,0.14)] hover:bg-[rgba(30,151,178,0.22)] text-[#955408] flex items-center justify-center cursor-pointer">
                 <Plus className="h-4 w-4" />
               </button>
             </div>
             {imagingStudies.length > 0 && (
               <div className="flex flex-wrap gap-1.5">
                 {imagingStudies.map(code => (
-                  <span key={code} className="inline-flex items-center gap-1 text-[11px] font-medium text-[#B84A16] bg-white border border-[rgba(238,107,38,0.25)] rounded-full pl-2.5 pr-1.5 py-0.5">
+                  <span key={code} className="inline-flex items-center gap-1 text-[11px] font-medium text-[#955408] bg-white border border-[rgba(30,151,178,0.25)] rounded-full pl-2.5 pr-1.5 py-0.5">
                     {RADIOLOGY_CATALOG[code]?.name ?? code}
-                    <button onClick={() => removeImagingStudy(code)} aria-label={`Remove ${code}`} className="hover:text-[#9A3A14] cursor-pointer"><X className="h-3 w-3" /></button>
+                    <button onClick={() => removeImagingStudy(code)} aria-label={`Remove ${code}`} className="hover:text-[#1a5667] cursor-pointer"><X className="h-3 w-3" /></button>
                   </span>
                 ))}
               </div>
             )}
-            <button onClick={orderImaging} disabled={imagingStudies.length === 0} className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-[#C2481A] hover:bg-[#9A3A14] disabled:opacity-50 text-white text-[12.5px] font-semibold cursor-pointer">
+            <button onClick={orderImaging} disabled={imagingStudies.length === 0} className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-[#196b7e] hover:bg-[#1a5667] disabled:opacity-50 text-white text-[12.5px] font-semibold cursor-pointer">
               <Send className="h-3.5 w-3.5" /> Send {imagingStudies.length > 0 ? `${imagingStudies.length} ` : ''}to Radiology
             </button>
           </div>
@@ -591,7 +637,7 @@ export default function DoctorConsultation() {
           </div>
 
           <button onClick={completeConsultation} className="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-[13px] font-semibold cursor-pointer mt-1">
-            <Send className="h-4 w-4" /> Complete consultation
+            <Send className="h-4 w-4" /> {meds.length > 0 ? 'Send to pharmacy' : 'Complete consultation'}
           </button>
           <p className="text-[10.5px] text-slate-400 mt-1.5">Each action is audited and routes the patient onward; the right role is notified.</p>
         </div>
@@ -600,7 +646,7 @@ export default function DoctorConsultation() {
       {/* Prescription — medicines + diet/follow-up/imaging, with print + dispatch. */}
       <div className="rounded-2xl bg-white shadow-[0_1px_4px_rgba(15,23,42,0.06)] p-4 space-y-3">
         <div className="flex items-center gap-2">
-          <Pill className="h-4 w-4 text-[#B84A16]" />
+          <Pill className="h-4 w-4 text-[#955408]" />
           <h3 className="text-[14px] font-semibold text-slate-900">Prescription</h3>
           <span className="ml-auto text-[10.5px] text-slate-400">{meds.length} medicine{meds.length === 1 ? '' : 's'}</span>
         </div>
@@ -612,7 +658,7 @@ export default function DoctorConsultation() {
           <Input value={medDraft.frequency} onChange={e => setMedDraft(d => ({ ...d, frequency: e.target.value }))} onKeyDown={e => { if (e.key === 'Enter') addMed() }} placeholder="Frequency" className="col-span-2 h-9 rounded-lg text-[12.5px]" />
           <Input value={medDraft.duration} onChange={e => setMedDraft(d => ({ ...d, duration: e.target.value }))} onKeyDown={e => { if (e.key === 'Enter') addMed() }} placeholder="Duration" className="col-span-2 h-9 rounded-lg text-[12.5px]" />
           <Input value={medDraft.quantity} onChange={e => setMedDraft(d => ({ ...d, quantity: e.target.value }))} onKeyDown={e => { if (e.key === 'Enter') addMed() }} placeholder="Qty" inputMode="numeric" className="col-span-1 h-9 rounded-lg text-[12.5px]" />
-          <button onClick={addMed} aria-label="Add medicine" className="col-span-1 h-9 rounded-lg bg-[#C2481A] hover:bg-[#9A3A14] text-white flex items-center justify-center cursor-pointer"><Plus className="h-4 w-4" /></button>
+          <button onClick={addMed} aria-label="Add medicine" className="col-span-1 h-9 rounded-lg bg-[#196b7e] hover:bg-[#1a5667] text-white flex items-center justify-center cursor-pointer"><Plus className="h-4 w-4" /></button>
         </div>
 
         {meds.length > 0 && (
@@ -631,11 +677,11 @@ export default function DoctorConsultation() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div>
             <label className="flex items-center gap-1 text-[10.5px] font-semibold uppercase tracking-wide text-slate-500 mb-1"><Utensils className="h-3 w-3" /> Food / diet advice</label>
-            <textarea value={diet} onChange={e => setDiet(e.target.value)} rows={2} placeholder="e.g. Low salt, avoid oily food, plenty of fluids" className="w-full px-3 py-2 rounded-lg ring-1 ring-slate-200 bg-white text-[12.5px] focus:outline-none focus:ring-[#EE6B26] resize-none" />
+            <textarea value={diet} onChange={e => setDiet(e.target.value)} rows={2} placeholder="e.g. Low salt, avoid oily food, plenty of fluids" className="w-full px-3 py-2 rounded-lg ring-1 ring-slate-200 bg-white text-[12.5px] focus:outline-none focus:ring-[#1E97B2] resize-none" />
           </div>
           <div>
             <label className="flex items-center gap-1 text-[10.5px] font-semibold uppercase tracking-wide text-slate-500 mb-1"><ScanLine className="h-3 w-3" /> Radiology / imaging advice</label>
-            <textarea value={imagingAdvice} onChange={e => setImagingAdvice(e.target.value)} rows={2} placeholder="e.g. CT Brain plain, USG whole abdomen" className="w-full px-3 py-2 rounded-lg ring-1 ring-slate-200 bg-white text-[12.5px] focus:outline-none focus:ring-[#EE6B26] resize-none" />
+            <textarea value={imagingAdvice} onChange={e => setImagingAdvice(e.target.value)} rows={2} placeholder="e.g. CT Brain plain, USG whole abdomen" className="w-full px-3 py-2 rounded-lg ring-1 ring-slate-200 bg-white text-[12.5px] focus:outline-none focus:ring-[#1E97B2] resize-none" />
           </div>
           <div>
             <label className="flex items-center gap-1 text-[10.5px] font-semibold uppercase tracking-wide text-slate-500 mb-1"><CalendarClock className="h-3 w-3" /> Follow-up</label>
@@ -644,7 +690,7 @@ export default function DoctorConsultation() {
         </div>
 
         <div className="flex gap-2 pt-1">
-          <button onClick={orderRx} className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#C2481A] hover:bg-[#9A3A14] text-white text-[13px] font-semibold cursor-pointer">
+          <button onClick={orderRx} className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#196b7e] hover:bg-[#1a5667] text-white text-[13px] font-semibold cursor-pointer">
             <Send className="h-4 w-4" /> Send Rx to pharmacy
           </button>
           <button onClick={printRx} className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-[13px] font-semibold cursor-pointer">

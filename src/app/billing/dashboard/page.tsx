@@ -24,7 +24,7 @@ const DAILY_REVENUE = [
 
 const STATUS_STYLE: Record<string, { bg: string; border: string; badge: "success" | "warning" | "blue" | "muted" | "danger" }> = {
   draft:    { bg: "bg-yellow-50", border: "border-yellow-200", badge: "warning" },
-  frozen:   { bg: "bg-[rgba(238,107,38,0.07)]",   border: "border-[rgba(238,107,38,0.20)]",   badge: "blue" },
+  frozen:   { bg: "bg-[rgba(30,151,178,0.07)]",   border: "border-[rgba(30,151,178,0.20)]",   badge: "blue" },
   settled:  { bg: "bg-green-50",  border: "border-green-200",  badge: "success" },
   dispute:  { bg: "bg-red-50",    border: "border-red-200",    badge: "danger" },
 }
@@ -73,8 +73,8 @@ export default function BillingDashboard() {
           { label: "Outstanding Balance", value: `₹${totalOutstanding.toLocaleString('en-IN')}`, color: "text-red-600", bg: "bg-red-50 border-red-200" },
           { label: "Collected", value: `₹${totalCollected.toLocaleString('en-IN')}`, color: "text-green-600", bg: "bg-green-50 border-green-200" },
           { label: "Bills Pending Freeze", value: pendingFreeze, color: "text-accent", bg: "bg-primary-soft border-primary/20" },
-          { label: "Bills Settled", value: settled, color: "text-[var(--color-accent)]", bg: "bg-[rgba(238,107,38,0.07)] border-[rgba(238,107,38,0.20)]" },
-          { label: "AI Duplicate Flags", value: duplicates.reduce((s, d) => s + d.alerts.length, 0), color: "text-[var(--color-accent)]", bg: "bg-[rgba(238,107,38,0.07)] border-[rgba(238,107,38,0.20)]" },
+          { label: "Bills Settled", value: settled, color: "text-[var(--color-accent)]", bg: "bg-[rgba(30,151,178,0.07)] border-[rgba(30,151,178,0.20)]" },
+          { label: "AI Duplicate Flags", value: duplicates.reduce((s, d) => s + d.alerts.length, 0), color: "text-[var(--color-accent)]", bg: "bg-[rgba(30,151,178,0.07)] border-[rgba(30,151,178,0.20)]" },
         ].map(({ label, value, color, bg }) => (
           <div key={label} className={cn("rounded-xl border p-4", bg)}>
             <p className={cn("text-xl font-bold", color)}>{value}</p>
@@ -85,12 +85,12 @@ export default function BillingDashboard() {
 
       {/* AI duplicate-charge audit card */}
       {duplicates.length > 0 && (
-        <div className="rounded-xl border border-[rgba(238,107,38,0.20)] p-4 bg-surface-sunken">
+        <div className="rounded-xl border border-[rgba(30,151,178,0.20)] p-4 bg-surface-sunken">
           <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
             <div className="flex items-center gap-2">
               <Sparkles className="h-4 w-4 text-[var(--color-accent)]" />
               <h3 className="text-sm font-bold text-[var(--color-primary-dark)]">AI Duplicate-Charge Audit</h3>
-              <span className="text-[10px] font-bold uppercase tracking-wide bg-[rgba(238,107,38,0.12)] text-[var(--color-accent)] px-2 py-0.5 rounded">
+              <span className="text-[10px] font-bold uppercase tracking-wide bg-[rgba(30,151,178,0.12)] text-[var(--color-accent)] px-2 py-0.5 rounded">
                 ₹{totalDuplicateValue.toLocaleString('en-IN')} flagged
               </span>
             </div>
@@ -98,7 +98,7 @@ export default function BillingDashboard() {
           </div>
           <div className="space-y-2">
             {duplicates.map(({ bill, alerts }) => (
-              <div key={bill.id} className="rounded-lg bg-white border border-[rgba(238,107,38,0.15)] p-3">
+              <div key={bill.id} className="rounded-lg bg-white border border-[rgba(30,151,178,0.15)] p-3">
                 <p className="text-xs font-bold text-slate-800">{bill.patientName} <span className="text-emerald-700">{deriveUhid(bill.patientId)}</span> <span className="text-slate-400">· {bill.id}</span></p>
                 {alerts.map((a) => (
                   <p key={a.groupKey} className="text-[11px] text-[var(--color-accent)] mt-1 flex items-start gap-1">
@@ -161,7 +161,7 @@ export default function BillingDashboard() {
                       <span className="text-xs text-slate-500">{bill.visitType}</span>
                       <span className="text-xs text-slate-500">{bill.payerType}</span>
                       {hasDupes && (
-                        <span className="text-[10px] font-bold uppercase px-1.5 py-0.5 rounded bg-[rgba(238,107,38,0.12)] text-[var(--color-accent)] flex items-center gap-1">
+                        <span className="text-[10px] font-bold uppercase px-1.5 py-0.5 rounded bg-[rgba(30,151,178,0.12)] text-[var(--color-accent)] flex items-center gap-1">
                           <ShieldAlert className="h-2.5 w-2.5" />Dupes
                         </span>
                       )}
@@ -177,13 +177,13 @@ export default function BillingDashboard() {
                     {bill.status === 'draft' && (
                       <button
                         onClick={() => onFreeze(bill.id, bill.patientName)}
-                        className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[rgba(238,107,38,0.07)] hover:bg-[rgba(238,107,38,0.14)] text-[var(--color-accent)] text-xs font-bold cursor-pointer"
+                        className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[rgba(30,151,178,0.07)] hover:bg-[rgba(30,151,178,0.14)] text-[var(--color-accent)] text-xs font-bold cursor-pointer"
                       >
                         <Lock className="h-3.5 w-3.5" />Freeze
                       </button>
                     )}
                     <Link href={`/billing/patient/${bill.patientId}`}>
-                      <button className="px-4 py-2 rounded-xl bg-[var(--color-primary)] text-white text-sm font-bold hover:bg-[var(--color-primary-dark)] transition-colors cursor-pointer">
+                      <button className="px-4 py-2 rounded-xl bg-[var(--color-primary-dark)] text-white text-sm font-bold hover:bg-[#1a5667] transition-colors cursor-pointer">
                         View Bill
                       </button>
                     </Link>

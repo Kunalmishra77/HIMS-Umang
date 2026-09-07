@@ -72,13 +72,14 @@ export function useDialogs() {
 }
 
 function DialogShell({ state, setState }: { state: State; setState: (s: State) => void }) {
+  const titleId = useId()
+  const trapRef = useFocusTrap<HTMLDivElement>(true)
+
   if (state.kind === "idle") return null
 
   const isConfirm = state.kind === "confirm"
-  const opts = state.kind === "confirm" ? state.opts : state.opts
+  const opts = state.opts
   const tone = toneClasses[opts.tone ?? "default"]
-  const titleId = useId()
-  const trapRef = useFocusTrap<HTMLDivElement>(true)
 
   function close(result: boolean | Record<string, string> | null) {
     if (state.kind === "confirm") (state.resolve as (b: boolean) => void)(Boolean(result))

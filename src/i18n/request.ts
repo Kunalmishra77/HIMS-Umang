@@ -12,5 +12,9 @@ export default getRequestConfig(async () => {
   return {
     locale,
     messages: MESSAGES[locale],
+    // Umang Hospital is a single site in India. Pinning the zone keeps server
+    // rendering (Vercel runs UTC) and the browser formatting the same instant,
+    // which is what prevents date/time hydration mismatches.
+    timeZone: 'Asia/Kolkata',
   }
 })

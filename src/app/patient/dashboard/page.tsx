@@ -54,7 +54,7 @@ export default function PatientDashboard() {
       }
       prevStage.current = stage
     }
-  }, [stage, mode])
+  }, [stage, mode, t])
 
   const hour = new Date().getHours()
   const greeting = hour < 12 ? t('dashboard.goodMorning') : hour < 17 ? t('dashboard.goodAfternoon') : t('dashboard.goodEvening')

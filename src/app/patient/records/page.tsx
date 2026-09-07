@@ -47,7 +47,7 @@ function DischargeSummaryTab() {
             </div>
           </div>
           {record.claimDocumentsReady && (
-            <button className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[rgba(238,107,38,0.07)] hover:bg-[rgba(238,107,38,0.14)] text-[var(--color-accent)] text-xs font-bold border border-[rgba(238,107,38,0.20)] transition-colors cursor-pointer flex-shrink-0">
+            <button className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[rgba(30,151,178,0.07)] hover:bg-[rgba(30,151,178,0.14)] text-[var(--color-accent)] text-xs font-bold border border-[rgba(30,151,178,0.20)] transition-colors cursor-pointer flex-shrink-0">
               <Download className="h-3.5 w-3.5" /> Download Claim Docs
             </button>
           )}
@@ -65,7 +65,7 @@ function DischargeSummaryTab() {
         </div>
         <div className="space-y-2">
           {record.medications.map((med, i) => (
-            <div key={i} className="flex items-center gap-3 bg-[rgba(238,107,38,0.07)] rounded-lg px-4 py-3">
+            <div key={i} className="flex items-center gap-3 bg-[rgba(30,151,178,0.07)] rounded-lg px-4 py-3">
               <div className="flex-1">
                 <p className="text-sm font-semibold text-[var(--color-primary-dark)]">{med.name}</p>
                 <p className="text-xs text-[var(--color-accent)] mt-0.5">{med.dose} · {med.frequency} · {med.duration}</p>
@@ -183,7 +183,7 @@ export default function PatientRecords() {
                     <p className="text-xs font-semibold text-slate-500 uppercase mb-2">Prescribed Medicines</p>
                     <div className="grid grid-cols-1 gap-2">
                       {visit.prescriptions.map((p, j) => (
-                        <div key={j} className="flex items-center gap-3 bg-[rgba(238,107,38,0.07)] rounded-lg px-3 py-2">
+                        <div key={j} className="flex items-center gap-3 bg-[rgba(30,151,178,0.07)] rounded-lg px-3 py-2">
                           <Pill className="h-4 w-4 text-[var(--color-accent)] flex-shrink-0" />
                           <div>
                             <p className="text-sm font-semibold text-[var(--color-primary-dark)]">{p.medicine}</p>

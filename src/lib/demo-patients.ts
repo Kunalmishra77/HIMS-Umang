@@ -5,7 +5,7 @@
 // Doctor, OPD and the journey boards all show an actively-used hospital.
 // Generated deterministically (index-based, no Math.random) so the board is
 // stable across reloads. Each record is unique: distinct name, age, gender,
-// phone, UHID, ABHA, condition, department, doctor, vitals and history.
+// phone, UHID, condition, department, doctor, vitals and history.
 import type { Patient } from '@/store/usePatientStore'
 import type { VitalsRecord } from '@/store/useInpatientStore'
 import type { TriageLevel } from '@/store/usePatientStore'
@@ -73,11 +73,6 @@ const STATUS_PLAN: { status: QS; count: number }[] = [
 
 const statusSequence: QS[] = STATUS_PLAN.flatMap((s) => Array<QS>(s.count).fill(s.status))
 
-function abhaFor(i: number): string {
-  const n = (1000000000000 + i * 813579).toString().slice(0, 14).padEnd(14, '0')
-  return `14-${n.slice(2, 6)}-${n.slice(6, 10)}-${n.slice(10, 14)}`
-}
-
 function buildDemoPatients(): Patient[] {
   const out: Patient[] = []
   let male = 0
@@ -124,7 +119,6 @@ function buildDemoPatients(): Patient[] {
       triageLevel: c.triage,
       source: (['walk_in', 'online', 'appointment'] as const)[i % 3],
       aadhaarVerified: true,
-      abhaId: abhaFor(i),
       opdVitals: opd,
       opdVitalsHistory: opd ? [opd] : undefined,
     })

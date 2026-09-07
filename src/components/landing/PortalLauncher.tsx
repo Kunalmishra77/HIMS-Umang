@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
 import {
   Activity, Stethoscope, Users, QrCode,
-  ArrowRight, LayoutDashboard, CreditCard,
+  ArrowRight, LayoutDashboard, CreditCard, Pill,
 } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { type Role } from "@/store/useAuthStore"
@@ -21,6 +21,7 @@ const allRoleGroups: { id: string; label: string; roles: RoleCard[] }[] = [
   ] },
   { id: "operations", label: "Operations", roles: [
     { role: "reception", label: "Reception", desc: "OPD queue, registration, kiosk", icon: LayoutDashboard, href: "/reception/dashboard" },
+    { role: "pharmacy", label: "Pharmacy", desc: "Prescription queue, dispensing, stock", icon: Pill, href: "/pharmacy/dashboard" },
   ] },
   { id: "finance", label: "Finance", roles: [
     { role: "billing", label: "Billing", desc: "Invoices, packages, refunds, discounts", icon: CreditCard, href: "/billing/dashboard" },
@@ -31,13 +32,13 @@ const allRoleGroups: { id: string; label: string; roles: RoleCard[] }[] = [
 ]
 
 const BRAND_COLOR = "var(--color-primary)"
-const BRAND_SOFT = "rgba(238,107,38,0.08)"
+const BRAND_SOFT = "rgba(30,151,178,0.08)"
 
 export function PortalLauncher() {
   const t = useTranslations("landing.launcher")
   const router = useRouter()
-  const [selectedHref, setSelectedHref] = React.useState<string | null>(null)
-  const [loadingHref, setLoadingHref]   = React.useState<string | null>(null)
+  const [selectedHref] = React.useState<string | null>(null)
+  const [loadingHref]   = React.useState<string | null>(null)
   const [activeTab, setActiveTab] = React.useState("clinical")
 
   const handleLaunch = (role: Role, _href: string) => {
@@ -88,7 +89,7 @@ export function PortalLauncher() {
               return (
                 <button key={href} onClick={() => handleLaunch(role, href)} disabled={!!loadingHref}
                   className={cn("group flex items-start gap-3 p-4 rounded-2xl text-left cursor-pointer w-full bg-white border transition-all duration-200",
-                    isSelected ? "border-[var(--color-primary)] shadow-[0_0_0_1px_var(--color-primary),0_8px_24px_rgba(238,107,38,0.12)]"
+                    isSelected ? "border-[var(--color-primary)] shadow-[0_0_0_1px_var(--color-primary),0_8px_24px_rgba(30,151,178,0.12)]"
                       : "border-[#EAECF2] hover:border-[#D0D5DD] hover:shadow-[0_6px_18px_rgba(16,24,40,0.08)] hover:-translate-y-0.5",
                     loadingHref && !isLoading ? "opacity-60" : "")}>
                   <div className="h-10 w-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: BRAND_SOFT, color: BRAND_COLOR }}>

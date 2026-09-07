@@ -2,10 +2,19 @@ import { describe, expect, it } from 'vitest'
 import fs from 'node:fs'
 import path from 'node:path'
 
-const STORES = ['usePharmacyStore', 'useLabOrdersStore', 'useRadiologyStudiesStore']
+const STORES = ['useLabOrdersStore', 'useRadiologyStudiesStore']
 
-// Action-name stems that advance an order past 'ordered'. This project creates
-// orders and never fulfils them — no portal here could act on these.
+// Action-name stems that advance an order past 'ordered'. This build creates
+// lab and radiology orders and never fulfils them — no portal here could act
+// on these. Pharmacy is deliberately exempt: the pharmacy portal shipped
+// per docs/superpowers/specs/2026-09-04-pharmacy-portal-design.md, giving
+// usePharmacyStore a real dispensing-counter pipeline
+// (queued→preparing→ready→collected) at the store level, with the
+// dispensing-counter UI (`/pharmacy/*`) that drives it shipped alongside it
+// — so usePharmacyStore is no longer covered by this invariant.
+// This is a narrowing of scope, not an abandonment of the rule: lab and
+// radiology still have no fulfilment portal in this build, and this test
+// keeps enforcing that for both of them.
 //
 // The brief's initial guesses ('dispense', 'collectSpecimen', 'accession', …)
 // don't match this codebase's real action names and are kept below for
@@ -25,10 +34,15 @@ const FULFILMENT = [
   'verifyResult', 'approveResult', 'runQC', 'recordQC', 'triggerReflex',
   'scheduleScan', 'recordAcquisition', 'startReading', 'authorReport',
   'publishReport', 'distributeReport', 'decrementStock',
-  // usePharmacyStore — dispensing-counter pipeline (queued→preparing→ready→collected).
-  'updateStatus', 'markCollected', 'claim', 'release', 'setMedicineSupply',
-  'substituteMedicine', 'togglePatientModification', 'applyModification',
-  'requestProcurement', 'adjustQuantity', 'approveSupervisorOverride',
+  // Generic fulfilment stems — not specific to any one store's pipeline, so
+  // they aren't listed under a per-store block below. These also used to sit
+  // in the pharmacy-only block removed when pharmacy was exempted from this
+  // test; they stay because they guard useLabOrdersStore and
+  // useRadiologyStudiesStore too (e.g. a future 'markCollected' on
+  // useLabOrdersStore would be exactly the specimen-collection step this
+  // test exists to forbid, and neither store's explicit block below happens
+  // to spell it out under this name).
+  'release', 'markCollected', 'updateStatus', 'claim',
   // useLabOrdersStore — bench pipeline (collect→claim→enter→verify→release) + reflex queue.
   'collectOrder', 'rejectSpecimen', 'recollectOrder', 'unclaim', 'enterAnalyte',
   'finishEntry', 'verifyTest', 'releaseTest', 'rejectTest', 'analyzerAutoFeed',

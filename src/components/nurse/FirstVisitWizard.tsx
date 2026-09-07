@@ -73,11 +73,11 @@ export function FirstVisitWizard({ title, subtitle, meta, initial, onClose, onCo
   const api = useVitalsDraft([])
   const [saving, setSaving] = useState(false)
 
-  const vd: VitalsDraft = {
+  const vd: VitalsDraft = useMemo(() => ({
     hr: api.draft.hr, systolicBP: api.draft.systolicBP, diastolicBP: api.draft.diastolicBP,
     rr: api.draft.rr, spo2: api.draft.spo2, temp: api.draft.temp,
     o2Delivery: api.draft.o2Delivery, consciousness: api.draft.consciousness,
-  }
+  }), [api.draft])
   const missing = useMemo(() => missingMandatory(p, vd), [p, vd])
   const conflicts = useMemo(() => allergyMedConflicts(p), [p])
   const band = bmiBand(p.weightKg, p.heightCm)
@@ -146,7 +146,7 @@ export function FirstVisitWizard({ title, subtitle, meta, initial, onClose, onCo
       )
       case 3: return (
         <div className="space-y-4">
-          <div className="rounded-xl border border-[rgba(238,107,38,0.20)] bg-[rgba(238,107,38,0.07)] p-4">
+          <div className="rounded-xl border border-[rgba(30,151,178,0.20)] bg-[rgba(30,151,178,0.07)] p-4">
             <p className="flex items-center gap-2 text-xs font-bold text-[var(--color-accent)] uppercase tracking-wider mb-1"><Sparkles className="h-4 w-4" /> AI risk snapshot</p>
             <p className="text-sm font-semibold text-slate-800">{snapshot}</p>
           </div>
@@ -191,7 +191,7 @@ export function FirstVisitWizard({ title, subtitle, meta, initial, onClose, onCo
         <div className="px-6 py-4 border-b border-slate-100">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="h-9 w-9 rounded-xl bg-[rgba(238,107,38,0.07)] border border-[rgba(238,107,38,0.15)] flex items-center justify-center"><UserPlus className="h-5 w-5 text-[var(--color-accent)]" /></div>
+              <div className="h-9 w-9 rounded-xl bg-[rgba(30,151,178,0.07)] border border-[rgba(30,151,178,0.15)] flex items-center justify-center"><UserPlus className="h-5 w-5 text-[var(--color-accent)]" /></div>
               <div>
                 <h2 id="wizard-title" className="text-base font-bold text-slate-900">Complete Vitals</h2>
                 <p className="text-sm text-slate-500 font-medium">{title}{subtitle ? ` · ${subtitle}` : ""}</p>
@@ -218,7 +218,7 @@ export function FirstVisitWizard({ title, subtitle, meta, initial, onClose, onCo
             </button>
           )}
           {step < STEP_LABELS.length - 1 ? (
-            <button onClick={() => setStep(s => s + 1)} className="ml-auto flex items-center gap-1.5 h-10 px-5 rounded-xl bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white text-sm font-bold cursor-pointer">
+            <button onClick={() => setStep(s => s + 1)} className="ml-auto flex items-center gap-1.5 h-10 px-5 rounded-xl bg-[var(--color-primary-dark)] hover:bg-[#1a5667] text-white text-sm font-bold cursor-pointer">
               Next <ChevronRight className="h-4 w-4" />
             </button>
           ) : (

@@ -7,22 +7,18 @@ import { usePatientStore, type TriageLevel } from "@/store/usePatientStore"
 import { useBillingStore } from "@/store/useBillingStore"
 import { useNotificationStore } from "@/store/useNotificationStore"
 import { useWhatsAppStore } from "@/store/useWhatsAppStore"
-import {
-  Users, Activity, Stethoscope, CreditCard, Calendar,
-  UserPlus, ArrowRight, AlertTriangle, MessageSquare, Volume2, Clock, ChevronRight,
-  CheckCircle2, Hourglass,
-} from "lucide-react"
+import { Users, Activity, Stethoscope, Pill, CreditCard, Calendar, UserPlus, ArrowRight, AlertTriangle, MessageSquare, Volume2, Clock, ChevronRight, CheckCircle2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 const TRIAGE_RANK: Record<TriageLevel, number> = { Critical: 0, High: 1, Medium: 2, Low: 3 }
 const TRIAGE_TINT: Record<TriageLevel, string> = {
   Critical: 'bg-red-50 text-red-700',
-  High: 'bg-primary-soft text-accent',
+  High: 'bg-urgent-bg text-urgent',
   Medium: 'bg-amber-50 text-amber-700',
   Low: 'bg-green-50 text-green-700',
 }
 const CARD = "rounded-2xl bg-white shadow-[0_1px_4px_rgba(15,23,42,0.06),0_4px_16px_rgba(15,23,42,0.04)]"
-const ACTIVE_STATUSES = ['waiting', 'vitals', 'consulting', 'billing'] as const
+const ACTIVE_STATUSES = ['waiting', 'vitals', 'consulting', 'pharmacy', 'billing'] as const
 
 export default function ReceptionDashboard() {
   const t = useTranslations('reception')
@@ -47,6 +43,7 @@ export default function ReceptionDashboard() {
     waiting:    todayQueue.filter(p => p.queueStatus === 'waiting').length,
     vitals:     todayQueue.filter(p => p.queueStatus === 'vitals').length,
     consulting: todayQueue.filter(p => p.queueStatus === 'consulting').length,
+    pharmacy:   todayQueue.filter(p => p.queueStatus === 'pharmacy').length,
     billing:    todayQueue.filter(p => p.queueStatus === 'billing').length,
     done:       todayQueue.filter(p => p.queueStatus === 'done').length,
   }
@@ -72,11 +69,11 @@ export default function ReceptionDashboard() {
   const dateLabel = new Date().toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' })
 
   const kpis = [
-    { label: t('dashboard.kpiPatientsToday'), value: `${todayPatients.length}`, icon: Users, tint: 'bg-[rgba(238,107,38,0.07)] text-[var(--color-accent)]', href: '/reception/patients' },
+    { label: t('dashboard.kpiPatientsToday'), value: `${todayPatients.length}`, icon: Users, tint: 'bg-[rgba(30,151,178,0.07)] text-[var(--color-accent)]', href: '/reception/patients' },
     { label: t('dashboard.kpiInQueue'), value: `${inQueue.length}`, sub: t('dashboard.kpiInQueueSub', { wait: avgWait }), icon: Activity, tint: 'bg-amber-50 text-amber-600', href: '/reception/opd' },
-    { label: t('dashboard.kpiNowServing'), value: nowServing ? `#${nowServing.token}` : '—', sub: nowServing?.name, icon: Volume2, tint: 'bg-[rgba(238,107,38,0.07)] text-[var(--color-accent)]', href: '/reception/queue' },
+    { label: t('dashboard.kpiNowServing'), value: nowServing ? `#${nowServing.token}` : '—', sub: nowServing?.name, icon: Volume2, tint: 'bg-[rgba(30,151,178,0.07)] text-[var(--color-accent)]', href: '/reception/queue' },
     { label: t('dashboard.kpiPendingBills'), value: `${pendingBills.length}`, sub: t('dashboard.kpiPendingBillsSub', { amount: totalDue.toLocaleString('en-IN') }), icon: CreditCard, tint: 'bg-rose-50 text-rose-600', href: '/reception/billing' },
-    { label: t('dashboard.kpiAppointments'), value: `${todayAppts.length}`, sub: t('dashboard.kpiToday'), icon: Calendar, tint: 'bg-[rgba(238,107,38,0.07)] text-[var(--color-accent)]', href: '/reception/appointments' },
+    { label: t('dashboard.kpiAppointments'), value: `${todayAppts.length}`, sub: t('dashboard.kpiToday'), icon: Calendar, tint: 'bg-[rgba(30,151,178,0.07)] text-[var(--color-accent)]', href: '/reception/appointments' },
   ]
 
   return (
@@ -87,7 +84,7 @@ export default function ReceptionDashboard() {
           <p className="text-[12px] font-semibold uppercase tracking-wider text-amber-500">{greeting} · {dateLabel}</p>
           <h1 className="text-[24px] font-bold text-slate-900 tracking-tight">{t('dashboard.headerTitle', { name: first })}</h1>
         </div>
-        <Link href="/reception/opd" className="flex items-center gap-2 h-10 px-4 rounded-xl bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white text-[13.5px] font-bold shadow-sm active:scale-[0.98] transition">
+        <Link href="/reception/opd" className="flex items-center gap-2 h-10 px-4 rounded-xl bg-[var(--color-primary-dark)] hover:bg-[#1a5667] text-white text-[13.5px] font-bold shadow-sm active:scale-[0.98] transition">
           <UserPlus className="h-4 w-4" /> {t('dashboard.registerWalkIn')}
         </Link>
       </div>
@@ -105,11 +102,12 @@ export default function ReceptionDashboard() {
             {t('dashboard.journeySummary', { count: todayPatients.length, wait: avgWait })}
           </p>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 items-stretch">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 items-stretch">
           {[
             { label: t('dashboard.stageWaiting'),    sub: t('dashboard.stageWaitingSub'),  count: pipelineCounts.waiting,    color: 'border-amber-200 bg-amber-50',     icon: Users,        fg: 'text-amber-700',    href: '/reception/opd',     cta: t('dashboard.ctaSendToVitals') },
             { label: t('dashboard.stageVitals'),     sub: t('dashboard.stageVitalsSub'),       count: pipelineCounts.vitals,     color: 'border-primary/20 bg-primary-soft',   icon: Activity,     fg: 'text-accent',   href: '/reception/opd',     cta: t('dashboard.ctaTrack') },
-            { label: t('dashboard.stageConsulting'), sub: t('dashboard.stageConsultingSub'),      count: pipelineCounts.consulting, color: 'border-[rgba(238,107,38,0.20)] bg-[rgba(238,107,38,0.07)]',   icon: Stethoscope,  fg: 'text-[var(--color-accent)]',   href: '/reception/queue',   cta: t('dashboard.ctaDisplayBoard') },
+            { label: t('dashboard.stageConsulting'), sub: t('dashboard.stageConsultingSub'),      count: pipelineCounts.consulting, color: 'border-[rgba(30,151,178,0.20)] bg-[rgba(30,151,178,0.07)]',   icon: Stethoscope,  fg: 'text-[var(--color-accent)]',   href: '/reception/queue',   cta: t('dashboard.ctaDisplayBoard') },
+            { label: t('dashboard.stagePharmacy'),   sub: t('dashboard.stagePharmacySub'), count: pipelineCounts.pharmacy,   color: 'border-amber-200 bg-amber-50',     icon: Pill,         fg: 'text-amber-700',    href: '/reception/opd',     cta: t('dashboard.ctaTrack') },
             { label: t('dashboard.stageBilling'),    sub: t('dashboard.stageBillingSub'),    count: pipelineCounts.billing,    color: 'border-rose-200 bg-rose-50',       icon: CreditCard,   fg: 'text-rose-700',     href: '/reception/billing', cta: t('dashboard.ctaCollect') },
             { label: t('dashboard.stageDone'),       sub: t('dashboard.stageDoneSub'),  count: pipelineCounts.done,       color: 'border-emerald-200 bg-emerald-50', icon: CheckCircle2, fg: 'text-emerald-700',  href: '/reception/patients',cta: t('dashboard.ctaReview') },
           ].map((s, i, arr) => (
@@ -166,7 +164,7 @@ export default function ReceptionDashboard() {
                   title={t('dashboard.attnBillsPending', { count: pendingBills.length })} sub={t('dashboard.attnBillsOutstanding', { amount: totalDue.toLocaleString('en-IN') })} cta={t('dashboard.attnBilling')} />
               )}
               {escalations.length > 0 && (
-                <AttnRow href="/reception/messages" tint="bg-[rgba(238,107,38,0.07)] text-[var(--color-accent)]" icon={MessageSquare}
+                <AttnRow href="/reception/messages" tint="bg-[rgba(30,151,178,0.07)] text-[var(--color-accent)]" icon={MessageSquare}
                   title={t('dashboard.attnEscalatedChats', { count: escalations.length })} sub={escalations.map(e => e.patientName ?? e.patientPhone).join(', ')} cta={t('dashboard.attnMessages')} />
               )}
               {criticalNotifs.map(n => (
@@ -184,7 +182,7 @@ export default function ReceptionDashboard() {
             </div>
 
             {/* Now serving */}
-            <div className="rounded-2xl p-4 mb-3 bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-dark)] text-white">
+            <div className="rounded-2xl p-4 mb-3 bg-gradient-to-br from-[var(--color-primary-900)] to-[var(--color-primary-800)] text-white">
               <div className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-white/70 mb-1"><Volume2 className="h-3.5 w-3.5" /> {t('dashboard.nowServing')}</div>
               {nowServing ? (
                 <div className="flex items-center justify-between">
@@ -216,7 +214,7 @@ export default function ReceptionDashboard() {
             <div className="grid grid-cols-2 gap-2.5">
               {[
                 { label: t('dashboard.qaRegisterWalkIn'), icon: UserPlus, href: '/reception/opd', tint: 'from-[var(--color-primary)] to-[var(--color-primary-dark)]' },
-                { label: t('dashboard.qaNewAppointment'), icon: Calendar, href: '/reception/appointments', tint: 'from-[var(--color-primary)] to-[var(--color-primary-light)]' },
+                { label: t('dashboard.qaNewAppointment'), icon: Calendar, href: '/reception/appointments', tint: 'from-[var(--color-primary)] to-[var(--color-primary-dark)]' },
                 { label: t('dashboard.qaOpdDisplay'), icon: Volume2, href: '/reception/queue', tint: 'from-amber-500 to-primary' },
               ].map(a => (
                 <Link key={a.label} href={a.href} className="flex flex-col items-center gap-2 p-3 rounded-2xl bg-slate-50 hover:bg-slate-100 transition active:scale-[0.97]">
@@ -241,7 +239,7 @@ export default function ReceptionDashboard() {
                   const pt = patients.find(p => p.id === a.patientId)
                   return (
                     <div key={a.id} className="flex items-center gap-3 rounded-xl bg-slate-50 px-3 py-2.5">
-                      <span className="h-9 w-9 rounded-xl bg-[rgba(238,107,38,0.07)] text-[var(--color-accent)] flex items-center justify-center flex-shrink-0"><Clock className="h-4.5 w-4.5" /></span>
+                      <span className="h-9 w-9 rounded-xl bg-[rgba(30,151,178,0.07)] text-[var(--color-accent)] flex items-center justify-center flex-shrink-0"><Clock className="h-4.5 w-4.5" /></span>
                       <div className="flex-1 min-w-0"><p className="text-[13.5px] font-semibold text-slate-900 truncate">{pt?.name ?? a.patientName ?? a.patientId}</p><p className="text-[11.5px] text-slate-500 truncate">{a.doctorName} · {a.specialty}</p></div>
                       <span className="text-[12px] font-bold text-slate-700 flex-shrink-0">{a.time}</span>
                     </div>

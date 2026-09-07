@@ -8,6 +8,8 @@ import { useMessagingStore } from "@/store/useMessagingStore"
 import { useNotificationStore } from "@/store/useNotificationStore"
 import { useInpatientStore } from "@/store/useInpatientStore"
 import { useDoctorProfileStore } from "@/store/useDoctorProfileStore"
+import { useDrugMasterStore } from "@/store/useDrugMasterStore"
+import { useNarcoticsStore } from "@/store/useNarcoticsStore"
 import { useNursingStore } from "@/store/useNursingStore"
 import { usePatientProfileStore } from "@/store/usePatientProfileStore"
 import { useShiftStore } from "@/store/useShiftStore"
@@ -79,6 +81,8 @@ export function StoreHydrator() {
     usePatientStore.persist.rehydrate()
     usePharmacyInventoryStore.persist.rehydrate()
     usePharmacyStore.persist.rehydrate()
+    useDrugMasterStore.persist.rehydrate()
+    useNarcoticsStore.persist.rehydrate()
     useRadiologyStudiesStore.persist.rehydrate()
     useWardStore.persist.rehydrate()
     useWhatsAppStore.persist.rehydrate()
@@ -195,6 +199,7 @@ export function StoreHydrator() {
               () => useMortuaryStore.getState().hydrateReal(),
               () => usePatientFeedbackStore.getState().hydrateReal(),
               () => useWardStore.getState().hydrateReal(),
+              () => useDrugMasterStore.getState().hydrateReal(),
               () => useNotificationStore.getState().hydrateReal(),
             ]
         await Promise.all(hydrateFns.map(fn => fn()))

@@ -1,39 +1,22 @@
-/* Curated human-centred photography (Unsplash, free license).
- * Used ONLY on landing + patient-facing pages — never clinical worklists.
- * Served through next/image (see src/components/ui/Photo.tsx + next.config.ts).
+/* Umang Hospital's own photography, vendored from the Umang website
+ * (Umang2.0/frontend/public) into /public/umang.
  *
- * Every entry was reviewed visually at the real crop aspect (rendered preview),
- * so alt text matches the actual image and patient-facing surfaces get WARM,
- * reassuring care imagery — never cold equipment/OR shots. */
-
-const U = (id: string, w = 1400) =>
-  `https://images.unsplash.com/${id}?w=${w}&q=80&auto=format&fit=crop`
+ * Used ONLY on landing + patient-facing pages — never clinical worklists.
+ * Served through next/image; local assets need no remotePatterns allowlist.
+ *
+ * Alt text describes the real photograph, so it must be re-checked if a file
+ * is ever swapped. */
 
 export const PHOTOS = {
-  // Doctor in warm conversation with a seated patient — reassuring (check-in).
-  doctorPatient: {
-    src: U("photo-1622253692010-333f2da6031d"),
-    alt: "An Indian doctor consulting with a patient in a clinic",
+  // The reception desk — the first thing a patient meets (check-in).
+  reception: {
+    src: "/umang/reception.webp",
+    alt: "The reception desk at Umang Hospital",
   },
-  // Doctor reviewing results with an older patient — collaborative, gentle.
-  consult: {
-    src: U("photo-1581056771107-24ca5f033842"),
-    alt: "A doctor reviewing results together with an older patient",
-  },
-  // Approachable clinician portrait.
-  clinician: {
-    src: U("photo-1612531386530-97286d97c2d2"),
-    alt: "An approachable doctor in a white coat",
-  },
-  // Surgical team in theatre — capability/expertise (landing CTA).
-  careTeam: {
-    src: U("photo-1631217868264-e5b90bb7e133"),
-    alt: "A surgical team working together in the operating theatre",
-  },
-  // Calm, modern hospital ward.
-  ward: {
-    src: U("photo-1538108149393-fbbd81895907"),
-    alt: "A calm, modern hospital ward",
+  // Modular operating theatre — capability/expertise (landing CTA).
+  operatingTheatre: {
+    src: "/umang/modular-ot.webp",
+    alt: "Umang Hospital's modular operating theatre",
   },
 } as const
 

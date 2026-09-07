@@ -99,7 +99,7 @@ export default function LiveJourneyBoardPage() {
     <div className="p-1 space-y-5">
       <div className="flex items-center justify-between gap-4 flex-wrap">
         <div className="flex items-center gap-2.5">
-          <span className="h-9 w-9 rounded-xl bg-[rgba(238,107,38,0.10)] text-[var(--color-accent)] flex items-center justify-center"><Activity className="h-4.5 w-4.5" /></span>
+          <span className="h-9 w-9 rounded-xl bg-[rgba(30,151,178,0.10)] text-[var(--color-accent)] flex items-center justify-center"><Activity className="h-4.5 w-4.5" /></span>
           <div>
             <h1 className="text-[18px] font-bold text-slate-900 leading-tight">{t('journey.pageTitle')}</h1>
             <p className="text-[12px] text-slate-500">{t('journey.pageSubtitle')}</p>
@@ -123,7 +123,7 @@ export default function LiveJourneyBoardPage() {
           {['All', ...DEPT_ORDER.filter(d => d !== 'Done' && (deptCounts[d] ?? 0) > 0)].map(d => (
             <button key={d} onClick={() => setDept(d)}
               className={cn("text-[11.5px] font-bold px-3 py-1.5 rounded-lg transition cursor-pointer",
-                dept === d ? "bg-[var(--color-primary)] text-white shadow-sm" : "bg-white ring-1 ring-slate-200 text-slate-600 hover:bg-slate-50")}>
+                dept === d ? "bg-[var(--color-primary-dark)] text-white shadow-sm" : "bg-white ring-1 ring-slate-200 text-slate-600 hover:bg-slate-50")}>
               {d === 'All' ? t('journey.filterAll') : t(`journey.${DEPT_KEY[d]}`)}{d !== 'All' && deptCounts[d] ? ` · ${deptCounts[d]}` : ''}
             </button>
           ))}

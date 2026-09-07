@@ -19,7 +19,7 @@ export async function getSupabaseServerClient(): Promise<SupabaseClient> {
           }
         } catch {
           // Called from a Server Component without a mutable cookie store — safe to ignore;
-          // middleware/Route Handlers are where session refresh actually persists.
+          // proxy/Route Handlers are where session refresh actually persists.
         }
       },
     },

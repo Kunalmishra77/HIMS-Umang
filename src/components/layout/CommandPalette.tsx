@@ -79,7 +79,16 @@ const INTENTS: { label: string; href: string; keywords: string }[] = [
 export function CommandPalette() {
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState("")
-  const [cursor, setCursor] = useState(0)
+  // Tying the cursor to the query it was moved in resets it on a new query
+  // without an effect that sets state on every keystroke.
+  const [cursorAt, setCursorAt] = useState({ key: '', idx: 0 })
+  const cursorKey = `${open}:${query}`
+  const cursor = cursorAt.key === cursorKey ? cursorAt.idx : 0
+  const setCursor = (next: number | ((c: number) => number)) =>
+    setCursorAt((cur) => {
+      const base = cur.key === cursorKey ? cur.idx : 0
+      return { key: cursorKey, idx: typeof next === 'function' ? next(base) : next }
+    })
   const router = useRouter()
   const activeRole = useAuthStore((s) => s.activeRole)
   const patients = usePatientStore((s) => s.patients)
@@ -210,8 +219,6 @@ export function CommandPalette() {
     setQuery("")
   }
 
-  useEffect(() => { setCursor(0) }, [query, open])
-
   function selectAt(idx: number) {
     const item = filtered[idx]
     if (!item) return
@@ -275,7 +282,7 @@ export function CommandPalette() {
           {filtered.length === 0 ? (
             <div className="px-4 py-10 text-center text-slate-400">
               <p className="text-[13px] font-medium text-slate-500">No matches</p>
-              <p className="text-[11px] mt-1">Try a patient name, a page name, or "show denial-risk claims".</p>
+              <p className="text-[11px] mt-1">Try a patient name, a page name, or &quot;show denial-risk claims&quot;.</p>
             </div>
           ) : null}
 

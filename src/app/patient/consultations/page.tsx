@@ -69,7 +69,7 @@ function ConsultCard({
     <div className={cn("rounded-2xl bg-slate-50 p-4", cancelled && "opacity-70")}>
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-start gap-3 min-w-0">
-          <span className="h-10 w-10 rounded-2xl flex items-center justify-center flex-shrink-0 bg-[rgba(238,107,38,0.07)] text-[var(--color-accent)]">
+          <span className="h-10 w-10 rounded-2xl flex items-center justify-center flex-shrink-0 bg-[rgba(30,151,178,0.07)] text-[var(--color-accent)]">
             <Building2 className="h-5 w-5" />
           </span>
           <div className="min-w-0">
@@ -151,8 +151,8 @@ function BookingPanel({
         {DOCTORS.map((d, i) => (
           <button key={d.name} onClick={() => setDocIdx(i)}
             className={cn("w-full flex items-center gap-3 p-3 rounded-2xl text-left transition-all active:scale-[0.99]",
-              docIdx === i ? "bg-[rgba(238,107,38,0.07)]/60 ring-1 ring-primary/25" : "bg-slate-50")}>
-            <span className="h-10 w-10 rounded-2xl bg-[rgba(238,107,38,0.07)] text-[var(--color-accent)] flex items-center justify-center flex-shrink-0"><Stethoscope className="h-5 w-5" /></span>
+              docIdx === i ? "bg-[rgba(30,151,178,0.07)]/60 ring-1 ring-primary/25" : "bg-slate-50")}>
+            <span className="h-10 w-10 rounded-2xl bg-[rgba(30,151,178,0.07)] text-[var(--color-accent)] flex items-center justify-center flex-shrink-0"><Stethoscope className="h-5 w-5" /></span>
             <span className="flex-1 min-w-0">
               <span className="block text-[14px] font-semibold text-slate-900">{d.name}</span>
               <span className="block text-[12.5px] text-slate-500">{d.specialty}</span>
@@ -168,7 +168,7 @@ function BookingPanel({
         {DAYS.map((d, i) => (
           <button key={d.key} onClick={() => setDayIdx(i)}
             className={cn("px-3 py-2 rounded-xl text-center transition-all active:scale-[0.97]",
-              dayIdx === i ? "bg-[var(--color-primary)] text-white" : "bg-slate-100 text-slate-700")}>
+              dayIdx === i ? "bg-[var(--color-primary-dark)] text-white" : "bg-slate-100 text-slate-700")}>
             <span className="block text-[12.5px] font-bold leading-none">{d.label}</span>
             <span className={cn("block text-[10.5px] mt-0.5", dayIdx === i ? "text-white/80" : "text-slate-400")}>{d.sub}</span>
           </button>
@@ -181,14 +181,14 @@ function BookingPanel({
         {SLOTS.map(s => (
           <button key={s} onClick={() => setSlot(s)}
             className={cn("px-3 py-1.5 rounded-xl text-[12.5px] font-semibold transition-all active:scale-[0.97]",
-              slot === s ? "bg-[var(--color-primary)] text-white" : "bg-slate-100 text-slate-700")}>
+              slot === s ? "bg-[var(--color-primary-dark)] text-white" : "bg-slate-100 text-slate-700")}>
             {s}
           </button>
         ))}
       </div>
 
       <button onClick={confirm}
-        className="w-full text-[14px] font-semibold text-white bg-[var(--color-primary)] px-4 py-3 rounded-xl flex items-center justify-center gap-2 active:scale-[0.97] transition-transform">
+        className="w-full text-[14px] font-semibold text-white bg-[var(--color-primary-dark)] px-4 py-3 rounded-xl flex items-center justify-center gap-2 active:scale-[0.97] transition-transform">
         <CheckCircle className="h-4.5 w-4.5" /> {isReschedule ? "Confirm reschedule" : <>Confirm booking · <IndianRupee className="h-3.5 w-3.5 -ml-1" />{doc.fee}</>}
       </button>
     </div>
@@ -273,7 +273,7 @@ export default function ConsultationsPage() {
         </div>
         <button
           onClick={() => { setRescheduleId(null); setBooking(b => !b) }}
-          className="text-[13px] font-semibold text-white bg-[var(--color-primary)] px-3.5 py-2.5 rounded-xl flex items-center gap-1.5 active:scale-[0.97] transition-transform flex-shrink-0"
+          className="text-[13px] font-semibold text-white bg-[var(--color-primary-dark)] px-3.5 py-2.5 rounded-xl flex items-center gap-1.5 active:scale-[0.97] transition-transform flex-shrink-0"
         >
           <Plus className="h-4 w-4" /> Book new
         </button>

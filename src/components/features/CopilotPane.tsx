@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback, useEffect } from "react"
+import { useState, useCallback } from "react"
 import { createPortal } from "react-dom"
 import { motion, AnimatePresence } from "framer-motion"
 import { Bot, RefreshCw, X, Zap, AlertTriangle, Info, ChevronRight, Lightbulb } from "lucide-react"
@@ -13,6 +13,7 @@ import { useAuditStore } from "@/store/useAuditStore"
 import { FLAGS } from "@/config/feature-flags"
 import { invokeCopilot, type CopilotRole, type CopilotInsight, type CopilotContext } from "@/ai-services/copilot-orchestrator"
 import type { AiEnvelope } from "@/types/ai"
+import { useIsMounted } from '@/lib/useIsMounted'
 
 interface CopilotPaneProps {
   role: CopilotRole
@@ -87,8 +88,7 @@ export function CopilotPane({ role, patientId, patientName, wardId }: CopilotPan
   const [hasLoaded, setHasLoaded] = useState(false)
 
   const shadowMode = FLAGS.shadowMode
-  const [mounted, setMounted] = useState(false)
-  useEffect(() => setMounted(true), [])
+  const mounted = useIsMounted()
 
   const refresh = useCallback(async () => {
     setLoading(true)
@@ -151,7 +151,7 @@ export function CopilotPane({ role, patientId, patientName, wardId }: CopilotPan
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-white font-bold text-sm leading-tight">AI Copilot</p>
-                <p className="text-[#F58C4E] text-[11px] capitalize">{role} assistant</p>
+                <p className="text-[#6acdd9] text-[11px] capitalize">{role} assistant</p>
               </div>
               {shadowMode && (
                 <span className="text-[10px] font-bold bg-amber-400/30 text-amber-200 px-1.5 py-0.5 rounded uppercase tracking-wide">
@@ -171,7 +171,7 @@ export function CopilotPane({ role, patientId, patientName, wardId }: CopilotPan
             {chips.length > 0 && (
               <div className="flex flex-wrap gap-1 px-3 py-2 border-b border-slate-100 bg-slate-50 flex-shrink-0">
                 {chips.map((chip) => (
-                  <span key={chip} className="text-[10px] font-medium bg-[rgba(238,107,38,0.07)] text-[var(--color-accent)] px-2 py-0.5 rounded-full border border-primary/20">
+                  <span key={chip} className="text-[10px] font-medium bg-[rgba(30,151,178,0.07)] text-[var(--color-accent)] px-2 py-0.5 rounded-full border border-primary/20">
                     {chip}
                   </span>
                 ))}
@@ -183,7 +183,7 @@ export function CopilotPane({ role, patientId, patientName, wardId }: CopilotPan
               {/* Ready state */}
               {!hasLoaded && !loading && (
                 <div className="flex flex-col items-center justify-center h-48 text-center gap-3">
-                  <div className="h-12 w-12 rounded-2xl bg-[rgba(238,107,38,0.12)] flex items-center justify-center">
+                  <div className="h-12 w-12 rounded-2xl bg-[rgba(30,151,178,0.12)] flex items-center justify-center">
                     <Bot className="h-6 w-6 text-[var(--color-accent)]" />
                   </div>
                   <div>
@@ -192,7 +192,7 @@ export function CopilotPane({ role, patientId, patientName, wardId }: CopilotPan
                   </div>
                   <button
                     onClick={refresh}
-                    className="flex items-center gap-1.5 px-5 py-2 bg-[var(--color-primary)] text-white text-sm font-semibold rounded-xl hover:bg-[var(--color-primary-dark)] transition-colors"
+                    className="flex items-center gap-1.5 px-5 py-2 bg-[var(--color-primary-dark)] text-white text-sm font-semibold rounded-xl hover:bg-[#1a5667] transition-colors"
                   >
                     <Zap className="h-3.5 w-3.5" /> Get Insights
                   </button>
@@ -236,7 +236,7 @@ export function CopilotPane({ role, patientId, patientName, wardId }: CopilotPan
               <button
                 onClick={refresh}
                 disabled={loading}
-                className="w-full flex items-center justify-center gap-2 py-2 rounded-xl bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white text-sm font-semibold transition-colors disabled:opacity-50"
+                className="w-full flex items-center justify-center gap-2 py-2 rounded-xl bg-[var(--color-primary-dark)] hover:bg-[#1a5667] text-white text-sm font-semibold transition-colors disabled:opacity-50"
               >
                 <RefreshCw className={cn("h-3.5 w-3.5", loading && "animate-spin")} />
                 {loading ? 'Loading insights…' : 'Refresh Insights'}

@@ -6,7 +6,8 @@
     "reception": "रिसेप्शन",
     "admin": "एडमिन पोर्टल",
     "nurse": "नर्सिंग स्टेशन",
-    "billing": "बिलिंग विभाग"
+    "billing": "बिलिंग विभाग",
+    "pharmacy": "फार्मेसी"
   },
   "section": {
     "care": "केयर",
@@ -19,7 +20,9 @@
     "utilities": "यूटिलिटीज़",
     "clinical": "क्लिनिकल",
     "workspace": "वर्कस्पेस",
-    "insights": "इनसाइट्स"
+    "insights": "इनसाइट्स",
+    "fulfilment": "फुलफिलमेंट",
+    "stock_compliance": "स्टॉक और कम्प्लायंस"
   },
   "item": {
     "patient_dashboard": "डैशबोर्ड",
@@ -61,7 +64,14 @@
     "billing_dashboard": "बिलिंग ओवरव्यू",
     "billing_packages": "पैकेज",
     "billing_refunds": "रिफंड",
-    "billing_discounts": "डिस्काउंट"
+    "billing_discounts": "डिस्काउंट",
+    "pharmacy_dashboard": "ओवरव्यू",
+    "pharmacy_queue": "प्रिस्क्रिप्शन क्यू",
+    "pharmacy_inventory": "इन्वेंटरी",
+    "pharmacy_master": "ड्रग मास्टर",
+    "pharmacy_narcotics": "नार्कोटिक्स लॉग",
+    "pharmacy_messages": "मैसेजिंग",
+    "patient_pharmacy": "मेरी दवाएँ"
   },
   "chrome": {
     "skipToContent": "मुख्य कंटेंट पर जाएं",

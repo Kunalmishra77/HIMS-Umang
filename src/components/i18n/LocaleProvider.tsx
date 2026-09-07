@@ -9,6 +9,12 @@ import hi from "../../../messages/hi"
 
 const BUNDLES = { en, hi } as const
 
+// Umang Hospital is a single site in India. next-intl formats dates in this
+// zone on both sides of the render, so a server running UTC (Vercel does) and
+// a browser in IST produce the same markup — without it next-intl falls back
+// to each environment's own zone and the timestamps hydrate mismatched.
+const TIME_ZONE = 'Asia/Kolkata'
+
 type LocaleContextValue = { locale: Locale; setLocale: (next: Locale) => void }
 
 const LocaleContext = createContext<LocaleContextValue | null>(null)
@@ -33,7 +39,7 @@ export function LocaleProvider({ initialLocale, children }: { initialLocale: Loc
 
   return (
     <LocaleContext.Provider value={{ locale, setLocale }}>
-      <NextIntlClientProvider locale={locale} messages={BUNDLES[locale]}>
+      <NextIntlClientProvider locale={locale} messages={BUNDLES[locale]} timeZone={TIME_ZONE}>
         {children}
       </NextIntlClientProvider>
     </LocaleContext.Provider>

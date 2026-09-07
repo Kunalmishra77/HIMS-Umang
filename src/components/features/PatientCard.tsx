@@ -9,6 +9,7 @@ const statusConfig: Record<QueueStatus, { label: string; color: string; bg: stri
   waiting:    { label: 'Waiting',    color: 'text-accent', bg: 'bg-primary-soft', border: 'border-primary/20' },
   vitals:     { label: 'Vitals',     color: 'text-accent', bg: 'bg-primary-soft', border: 'border-accent/20' },
   consulting: { label: 'Consulting', color: 'text-accent', bg: 'bg-primary-soft', border: 'border-accent/20' },
+  pharmacy:   { label: 'Pharmacy',   color: 'text-warning', bg: 'bg-warning-bg', border: 'border-warning/20' },
   billing:    { label: 'Billing',    color: 'text-success', bg: 'bg-success-bg', border: 'border-success/20' },
   done:       { label: 'Done',       color: 'text-foreground-lighter', bg: 'bg-surface-sunken', border: 'border-border' },
 }
