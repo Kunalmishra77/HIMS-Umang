@@ -4,20 +4,33 @@ import { getSupabaseServerClient } from '@/lib/supabase/server'
 
 // Server-side OPD queue read — returns the live queue (active visits joined with
 // their patients) using the service role, so EVERY staff module sees it
-// regardless of how they logged in. The demo role-switcher login does not create
-// a Supabase auth session, and the per-role RLS SELECT policies on visits/
-// patients require a real authenticated staff session — so a direct browser read
-// returns nothing for demo staff. Reading through this route (service role)
-// bypasses that, which is what makes the queue actually cross-device: a patient
-// checked in on one machine appears in Reception/Nurse/Doctor on every machine.
+// regardless of which portal the user logged into. The per-role RLS SELECT
+// policies on visits/patients scope rows by doctor_id and the like, so a direct
+// browser read shows a partial board; reading through this route bypasses that,
+// which is what makes the queue actually cross-device — a patient checked in on
+// one machine appears in Reception/Nurse/Doctor/Pharmacy on every machine.
 //
-// FOLLOW-UP for production: the queue (patient names, tokens) is still
-// world-readable by design — the anonymous check-in kiosk needs that. The
-// two fields that double as claim factors (`phone`, `authUserId`) are now
-// withheld from unauthenticated callers (see the GET handler below); a
-// further production hardening would be a staff session / API key on the
-// whole route, but that is out of scope here — see C1 in the final-fix
-// report for why a route-wide gate was rejected.
+// Because the service role bypasses RLS, this route IS the access control. It
+// used to run unauthenticated, publishing every queued patient's name, age,
+// symptoms and triage level to anyone who opened the URL. Two rules now apply:
+//
+//   1. No session at all → 401. Nothing here is public. The anonymous check-in
+//      kiosk does not read this route: it writes through /api/opd-register and
+//      shows the patient their own token slip from local state, and the family
+//      tracker at /p/[uhid] reads the same-device store (StoreHydrator skips
+//      hydration entirely when no role is active).
+//   2. A patient session → their own row only. The portal's journey tracker
+//      needs this route for the patient's live stage and token, because
+//      /api/patient/me hardcodes queueStatus 'done' / token 0 for the
+//      no-active-visit case. Scoping by auth_user_id gives the tracker exactly
+//      what it needs and nothing else — before this, every signed-in patient
+//      could read the whole hospital's queue.
+//
+// Staff therefore keep the full board, including `phone` and `authUserId`, which
+// doctor/dashboard, doctor/records (its search filter), journey/[patientId] and
+// p/[uhid] all read. Those two fields double as claim factors for
+// POST /api/patient/claim, which is why they must never reach a caller who
+// isn't already entitled to the row.
 
 export const dynamic = 'force-dynamic'
 
@@ -32,23 +45,24 @@ const VISIT_TO_QUEUE: Record<string, string | undefined> = {
 }
 
 export async function GET() {
+  const supabase = await getSupabaseServerClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) {
+    return NextResponse.json({ error: 'authentication required' }, { status: 401 })
+  }
+
   const admin = getSupabaseAdminClient()
   try {
-    // Vary the payload by caller session — not by gating the route (the
-    // anonymous check-in kiosk depends on this route staying session-free,
-    // see StoreHydrator.tsx) and not by dropping the field outright (doctor/
-    // dashboard, doctor/records — including its search filter — journey/
-    // [patientId] and p/[uhid] all read `phone` from this response). `phone`
-    // is the one factor POST /api/patient/claim matches on that isn't
-    // otherwise derivable: `uhid` is deterministic from `patients.id` via
-    // deriveUhid(), and `name` is already public on this same response — so
-    // publishing `phone` here to an anonymous caller alongside them hands an
-    // attacker a complete claim on any queued patient in one request. Same
-    // reasoning applies to `authUserId`, which identifies whether/which
-    // account already claimed a row.
-    const supabase = await getSupabaseServerClient()
-    const { data: { user } } = await supabase.auth.getUser()
-    const isAuthed = Boolean(user)
+    // Read the role from `profiles` rather than trusting the client's active
+    // role: useAuthStore is localStorage-persisted, so a caller can set it to
+    // anything. This is the only authorization input.
+    const { data: profile, error: profErr } = await admin.from('profiles')
+      .select('role').eq('id', user.id).maybeSingle()
+    if (profErr) throw new Error(`profiles: ${profErr.message}`)
+    if (!profile) {
+      return NextResponse.json({ error: 'no profile for this account' }, { status: 403 })
+    }
+    const isPatient = profile.role === 'patient'
 
     const { data: visits, error: vErr } = await admin.from('visits')
       .select('*').not('status', 'in', '(completed,cancelled)')
@@ -57,7 +71,15 @@ export async function GET() {
     const active = (visits ?? []).filter(v => VISIT_TO_QUEUE[v.status])
     if (!active.length) return NextResponse.json({ patients: [] })
 
-    const patientIds = [...new Set(active.map(v => v.patient_id))]
+    let patientIds = [...new Set(active.map(v => v.patient_id))]
+    if (isPatient) {
+      const { data: own, error: ownErr } = await admin.from('patients')
+        .select('id').eq('auth_user_id', user.id).maybeSingle()
+      if (ownErr) throw new Error(`own patient: ${ownErr.message}`)
+      patientIds = own ? patientIds.filter(id => id === own.id) : []
+    }
+    if (!patientIds.length) return NextResponse.json({ patients: [] })
+
     const { data: patients, error: pErr } = await admin.from('patients')
       .select('*').in('id', patientIds)
     if (pErr) throw new Error(`patients: ${pErr.message}`)
@@ -73,7 +95,7 @@ export async function GET() {
         id: p.id, uhid: p.uhid ?? undefined, name: p.full_name,
         age: p.age ?? 30,
         gender: p.sex === 'Female' ? 'Female' : p.sex === 'Other' ? 'Other' : 'Male',
-        phone: isAuthed ? (p.phone ?? '') : '',
+        phone: p.phone ?? '',
         bloodGroup: p.blood_group ?? 'A+', token: v.token ?? 0,
         queueStatus: qs, estimatedWait: v.estimated_wait_min ?? 0,
         doctor: v.doctor_name ?? 'Dr. Priya Nair', department: v.department ?? 'General Medicine',
@@ -83,9 +105,8 @@ export async function GET() {
         visitId: v.id,
         // Surfaced so usePatientStore.hydrateReal can carry it into the local
         // Patient record — this is what lets usePatientMe resolve a claimed
-        // patient's own row instead of falling through to undefined. Withheld
-        // for anonymous callers for the same reason as `phone` above.
-        authUserId: isAuthed ? (p.auth_user_id ?? undefined) : undefined,
+        // patient's own row instead of falling through to undefined.
+        authUserId: p.auth_user_id ?? undefined,
       }]
     })
 
