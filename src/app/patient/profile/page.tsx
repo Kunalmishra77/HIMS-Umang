@@ -141,7 +141,7 @@ export default function ProfilePage() {
         <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-[var(--color-primary-900)] to-[var(--color-primary-800)] flex items-center justify-center text-white text-[20px] font-bold">{initials}</div>
         <div className="flex-1">
           <p className="text-[18px] font-bold text-slate-900">{name}</p>
-          <p className="text-[13px] text-slate-500">{line([me.id, `${me.age}y`, me.gender, profile?.abhaId ? `ABHA: ${profile.abhaId}` : undefined])}</p>
+          <p className="text-[13px] text-slate-500">{line([me.id, `${me.age}y`, me.gender])}</p>
         </div>
         {profile?.completedAt && (
           <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-100 rounded-full px-2.5 py-1 flex items-center gap-1"><UserCheck className="h-3.5 w-3.5" /> Verified by nursing</span>

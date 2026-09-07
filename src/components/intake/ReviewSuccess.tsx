@@ -115,7 +115,7 @@ export function SuccessStep({ form, token, familyToken, wait, uhid, patientId, a
       if (lang === 'hi') {
         const hon = first ? `${first} जी` : ''
         const when = `${apptDateLabel}${form.apptTime ? ` को ${spokenTime(form.apptTime, 'hi')}` : ''}`
-        speak(`थैंक यू ${hon}। आपकी अपॉइंटमेंट ${when} के लिए बुक हो गई है, और आपका टोकन नंबर ${token} है। हॉस्पिटल आते समय अपना आधार कार्ड और आधार से जुड़ा मोबाइल नंबर साथ ले आइए, ताकि हम आपकी ABHA आईडी वेरिफ़ाई कर सकें, या ज़रूरत हो तो नई बनाकर आपका हॉस्पिटल UHID तैयार कर सकें। थैंक यू।`, 'hi')
+        speak(`थैंक यू ${hon}। आपकी अपॉइंटमेंट ${when} के लिए बुक हो गई है, और आपका टोकन नंबर ${token} है। हॉस्पिटल आते समय अपना आधार कार्ड और आधार से जुड़ा मोबाइल नंबर साथ ले आइए, ताकि हम आपका हॉस्पिटल UHID तैयार कर सकें। थैंक यू।`, 'hi')
       } else {
         const when = `${apptDateEn}${form.apptTime ? ` at ${spokenTime(form.apptTime, 'en')}` : ''}`
         speak(`Thank you${first ? `, ${first}` : ''}. Your appointment is booked for ${when}, and your token number is ${token}. When you visit, please bring your Aadhaar card and the mobile number linked to it, so we can verify your ABHA ID — or create a new one if needed — and generate your hospital UHID. Thank you.`)

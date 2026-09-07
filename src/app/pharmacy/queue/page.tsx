@@ -80,7 +80,6 @@ export default function PharmacyQueue() {
   const addNarcoticEntry = useNarcoticsStore(s => s.addEntry)
   const profiles = usePatientProfileStore(s => s.profiles)
   const setClearance = useDischargeStore(s => s.setClearance)
-  const addNotification = useNotificationStore(s => s.add)
   const currentUser = useAuthStore(s => s.currentUser)
 
   const me: Pharmacist = { id: currentUser?.id ?? "PH-301", name: currentUser?.name ?? "Ritu Sharma" }

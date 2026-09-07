@@ -61,7 +61,7 @@ export function IntakeFlow() {
 
   const stepSummary = (id: StepId): string => {
     switch (id) {
-      case 'aadhaar': return form.abhaId ? `ABHA ${form.abhaId}` : 'Aadhaar scanned'
+      case 'aadhaar': return 'Aadhaar scanned'
       case 'voice': return 'Described symptoms'
       case 'about': return [form.name, form.age && `${form.age}y`, form.gender].filter(Boolean).join(' · ')
       case 'symptoms': return form.symptoms.join(', ') || '—'

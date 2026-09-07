@@ -780,7 +780,6 @@
     "none": "None",
     "remove": "Remove",
     "verifiedByNursingTag": "Verified by nursing",
-    "abhaPrefix": "ABHA: {id}",
     "toastSaved": "Profile saved · your team is notified",
     "toastUploaded": "Uploaded {name}"
   },

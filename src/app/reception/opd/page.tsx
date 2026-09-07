@@ -17,7 +17,7 @@ import { useTranslations } from "next-intl"
 import { cn } from "@/lib/utils"
 import { toast } from "sonner"
 import { notifyAndAuditMany } from "@/lib/notifyAndAudit"
-import { AadhaarAbhaFlow, type AadhaarAbhaResult } from "@/components/reception/AadhaarAbhaFlow"
+import { AadhaarFlow, type AadhaarResult } from "@/components/reception/AadhaarFlow"
 
 const STATUS_TOKEN: Record<QueueStatus, Status> = {
   waiting: 'pending', vitals: 'caution', consulting: 'info', pharmacy: 'caution', billing: 'neutral', done: 'done',
@@ -133,9 +133,9 @@ export default function OpdQueuePage() {
 
   const openVerify = (id: string) => { setVerifyingId(id); setVerifiedDone(false) }
   const closeVerify = () => { setVerifyingId(null); setVerifiedDone(false) }
-  const handleVerified = (r: AadhaarAbhaResult) => {
+  const handleVerified = (r: AadhaarResult) => {
     if (!verifyingId) return
-    linkPatientIdentity(verifyingId, { uhid: r.uhid, abhaId: r.abhaId, aadhaarVerified: true })
+    linkPatientIdentity(verifyingId, { uhid: r.uhid, aadhaarVerified: true })
     setVerifiedDone(true)
     toast.success(t('opd.identityLinkedToast'), { description: t('opd.identityLinkedDesc', { uhid: r.uhid }) })
   }
@@ -299,7 +299,7 @@ export default function OpdQueuePage() {
           </div>
         ) : undefined}
       >
-        {verifyingId && <AadhaarAbhaFlow key={verifyingId} patientName={verifyingPatient?.name} onComplete={handleVerified} />}
+        {verifyingId && <AadhaarFlow key={verifyingId} onComplete={handleVerified} />}
       </SideDrawer>
     </div>
   )

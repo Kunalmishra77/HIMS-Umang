@@ -35,7 +35,6 @@ export function PatientProfileCard() {
   const { me, profile } = usePatientMe()
   if (!me) return null
 
-  const abhaLinked = !!me.abhaId
   const ayushmanStatus = profile?.ayushmanCardStatus ?? "Not enrolled"
   const ayushmanActive = ayushmanStatus === "Active"
 
@@ -76,10 +75,6 @@ export function PatientProfileCard() {
         <span className={me.aadhaarVerified ? "chip chip-success" : "chip chip-warning"}>
           {me.aadhaarVerified ? <BadgeCheck className="h-3.5 w-3.5" /> : <ShieldAlert className="h-3.5 w-3.5" />}
           Aadhaar {me.aadhaarVerified ? "verified" : "pending"}
-        </span>
-        <span className={abhaLinked ? "chip chip-success" : "chip chip-warning"}>
-          {abhaLinked ? <ShieldCheck className="h-3.5 w-3.5" /> : <ShieldAlert className="h-3.5 w-3.5" />}
-          ABHA {abhaLinked ? "linked" : "not linked"}
         </span>
         <span className={ayushmanActive ? "chip chip-success" : "chip chip-warning"}>
           {ayushmanActive ? <ShieldCheck className="h-3.5 w-3.5" /> : <ShieldAlert className="h-3.5 w-3.5" />}

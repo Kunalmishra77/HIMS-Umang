@@ -2,11 +2,7 @@
 
 import { useEffect, useRef, useState } from "react"
 import Link from "next/link"
-import {
-  ScanLine, Upload, PencilLine, Fingerprint, ShieldCheck, IdCard, CheckCircle2,
-  ArrowLeft, ArrowRight, Printer, Sparkles, Activity, UserPlus, Stethoscope,
-  Loader2, RefreshCw, BadgeCheck, MapPin, Phone, Mail, Calendar, User, Camera,
-} from "lucide-react"
+import { ScanLine, Upload, PencilLine, Fingerprint, ShieldCheck, IdCard, CheckCircle2, ArrowLeft, ArrowRight, Printer, Sparkles, Activity, UserPlus, Stethoscope, Loader2, RefreshCw, Camera } from "lucide-react"
 import { toast } from "sonner"
 import { useTranslations } from "next-intl"
 import { PageHeader } from "@/components/ui/PageHeader"
@@ -14,7 +10,6 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select } from "@/components/ui/Select"
 import { Avatar } from "@/components/ui/avatar"
-import { AbhaCard, type AbhaCardData } from "@/components/abha/AbhaCard"
 import { cn } from "@/lib/utils"
 import { usePatientStore, type TriageLevel } from "@/store/usePatientStore"
 import { usePatientProfileStore, emptyProfile } from "@/store/usePatientProfileStore"
@@ -22,12 +17,12 @@ import { useJourneyStore } from "@/store/useJourneyStore"
 import { useAuditStore } from "@/store/useAuditStore"
 import { doctorsForDept, firstDoctorOf, suggestTriage } from "@/lib/opd"
 import { listActiveDoctors, type RealDoctor } from "@/lib/opd-doctors"
-import { generateUhid, findUhidByAbha } from "@/lib/intake/register"
+import { generateUhid } from "@/lib/intake/register"
 import { printableHtml } from "@/lib/fileIO"
 import {
   extractAadhaarFromQr, parseAadhaarUpload, sendAadhaarOtp, verifyAadhaarOtp,
-  fetchAadhaarDemographics, detectAbha, createAbha,
-  type AadhaarDemographics, type AbhaProfile, type Gender,
+  fetchAadhaarDemographics,
+  type AadhaarDemographics, type Gender,
 } from "@/lib/intake/aadhaar-mock"
 
 const DEPARTMENTS = ["General Medicine", "Cardiology", "Orthopaedics", "Gynaecology", "Paediatrics", "Dermatology", "ENT", "Ophthalmology"]
@@ -44,7 +39,7 @@ const VISIT_KEY: Record<string, string> = {
 }
 const GENDER_KEY: Record<string, string> = { Male: "genderMale", Female: "genderFemale", Other: "genderOther" }
 
-type Stage = "method" | "otp" | "detect" | "profile" | "details" | "review" | "done"
+type Stage = "method" | "otp" | "details" | "review" | "done"
 type Method = "scan" | "upload" | "manual"
 
 type RegForm = {
@@ -80,9 +75,6 @@ export default function RegisterPatientPage() {
   const [otp, setOtp] = useState("")
 
   const [aadhaarVerified, setAadhaarVerified] = useState(false)
-  const [detectedExists, setDetectedExists] = useState(false)
-  const [detectedProfile, setDetectedProfile] = useState<AbhaProfile | null>(null)
-  const [abha, setAbha] = useState<AbhaProfile | null>(null)
   const [uhid, setUhid] = useState("")
   const [photoUrl, setPhotoUrl] = useState<string | undefined>(undefined)
 
@@ -90,14 +82,13 @@ export default function RegisterPatientPage() {
   const [result, setResult] = useState<{ id: string; token: number; sentToVitals: boolean } | null>(null)
 
   const isManual = method === "manual"
-  const MACRO = isManual
-    ? [t('register.macroIdentity'), t('register.macroDetails'), t('register.macroReview')]
-    : [t('register.macroIdentity'), t('register.macroAbha'), t('register.macroDetails'), t('register.macroReview')]
+  // Identical for both entry paths since ABHA was removed — the ABHA stage was
+  // the only step the Aadhaar route had that the manual route did not.
+  const MACRO = [t('register.macroIdentity'), t('register.macroDetails'), t('register.macroReview')]
   const macroIdx = (() => {
     if (stage === "method" || stage === "otp") return 0
-    if (stage === "detect" || stage === "profile") return 1
-    if (stage === "details") return isManual ? 1 : 2
-    if (stage === "review") return isManual ? 2 : 3
+    if (stage === "details") return 1
+    if (stage === "review") return 2
     return MACRO.length
   })()
 
@@ -167,15 +158,13 @@ export default function RegisterPatientPage() {
     setBusy(true)
     await new Promise((r) => setTimeout(r, 600))
     const demo = fetchAadhaarDemographics(aadhaar)
-    const detected = detectAbha(aadhaar)
     setBusy(false)
     setAadhaarVerified(true)
     prefillFromDemographics(demo)
-    setDetectedExists(detected.exists)
-    setDetectedProfile(detected.profile ?? null)
+    setUhid(generateUhid(usePatientStore.getState().patients))
     toast.success(t('register.aadhaarVerifiedToast'), { description: t('register.aadhaarVerifiedDesc', { name: demo.name }) })
     audit({ action: "reception_registered", resource: "aadhaar_otp", detail: `Aadhaar verified for ${demo.name}.`, userId: "user", userName: "Reception" })
-    setStage("detect")
+    setStage("details")
   }
 
   function prefillFromDemographics(d: AadhaarDemographics) {
@@ -186,30 +175,8 @@ export default function RegisterPatientPage() {
     if (d.photo) setPhotoUrl(d.photo)
   }
 
-  function genUhid(abhaNumber: string) {
-    const u = findUhidByAbha(abhaNumber) || generateUhid(usePatientStore.getState().patients)
-    setUhid(u)
-    return u
-  }
 
-  function continueExisting() {
-    if (!detectedProfile) return
-    setAbha(detectedProfile)
-    genUhid(detectedProfile.abhaNumber)
-    setStage("profile")
-  }
 
-  async function createNewAbha() {
-    setBusy(true)
-    await new Promise((r) => setTimeout(r, 900))
-    const created = createAbha()
-    setBusy(false)
-    setAbha(created); setDetectedExists(false)
-    genUhid(created.abhaNumber)
-    toast.success(t('register.abhaCreatedToast'), { description: created.abhaNumber })
-    audit({ action: "reception_registered", resource: "abha_create", detail: `New ABHA ${created.abhaNumber} created for ${form.name}.`, userId: "user", userName: "Reception" })
-    setStage("profile")
-  }
 
   function onPhoto(file?: File) {
     if (!file) return
@@ -224,62 +191,20 @@ export default function RegisterPatientPage() {
     setStage("review")
   }
 
-  const abhaCardData = (): AbhaCardData => ({
-    name: form.name,
-    fathersName: form.fathersName || undefined,
-    abhaNumber: abha?.abhaNumber ?? "",
-    abhaAddress: abha?.abhaAddress ?? "",
-    gender: form.gender,
-    dob: fmtDob(aadhaar),
-    mobile: form.phone,
-    address: form.address || undefined,
-    district: form.district || undefined,
-    state: form.state || undefined,
-    pincode: form.pincode || undefined,
-    aadhaarVerified,
-    photoUrl,
-  })
 
   // ── Print ─────────────────────────────────────────────────────────────────
-  function printAbhaCard() {
-    if (!abha) return
-    const body = `
-      <div class="info-row">
-        <div class="info-item"><div class="info-label">${t('register.slipAbhaNumber')}</div><div class="info-value">${abha.abhaNumber}</div></div>
-        <div class="info-item"><div class="info-label">${t('register.slipAbhaAddress')}</div><div class="info-value">${abha.abhaAddress}</div></div>
-      </div>
-      <h3>${t('register.slipPersonalInformation')}</h3>
-      <table><tbody>
-        ${row(t('register.slipFullName'), form.name)}
-        ${row(t('register.slipFathersName'), form.fathersName || "—")}
-        ${row(t('register.slipMobile'), form.phone)}
-        ${row(t('register.slipGender'), t(`register.${GENDER_KEY[form.gender]}`))}
-        ${row(t('register.slipEmail'), form.email || "—")}
-      </tbody></table>
-      <h3>${t('register.slipAddressInformation')}</h3>
-      <table><tbody>
-        ${row(t('register.slipAddress'), form.address || "—")}
-        ${row(t('register.slipCity'), form.city || "—")}
-        ${row(t('register.slipDistrict'), form.district || "—")}
-        ${row(t('register.slipState'), form.state || "—")}
-        ${row(t('register.slipPinCode'), form.pincode || "—")}
-      </tbody></table>`
-    printableHtml(t('register.slipTitleAbhaCard'), body)
-  }
 
   function printSlip() {
     const body = `
       <div class="info-row">
         <div class="info-item"><div class="info-label">${t('register.slipUhid')}</div><div class="info-value">${uhid || t('register.slipUhidPending')}</div></div>
-        <div class="info-item"><div class="info-label">${t('register.slipPatient')}</div><div class="info-value">${form.name}</div></div>
-        <div class="info-item"><div class="info-label">${t('register.slipAbha')}</div><div class="info-value">${abha?.abhaNumber ?? t('register.slipAbhaNotLinked')}</div></div>
+        <div class="info-item"><div class="info-label">${t('register.slipPatient')}</div><div class="info-value">${form.name}</div></div></div>
       </div>
       <h3>${t('register.slipPatientDetails')}</h3>
       <table><tbody>
         ${row(t('register.slipName'), form.name)}
         ${row(t('register.slipAgeGender'), `${form.age || "—"} / ${t(`register.${GENDER_KEY[form.gender]}`)}`)}
         ${row(t('register.slipMobile'), form.phone)}
-        ${row(t('register.slipAbhaAddress'), abha?.abhaAddress ?? "—")}
         ${row(t('register.slipAddress'), `${form.address || "—"}${form.pincode ? ` — ${form.pincode}` : ""}`)}
       </tbody></table>
       <h3>${t('register.slipVisit')}</h3>
@@ -331,7 +256,6 @@ export default function RegisterPatientPage() {
       visitTypes: [form.visitType],
       source: "walk_in",
       uhid: finalUhid || undefined,
-      abhaId: abha?.abhaNumber,
       aadhaarVerified: aadhaarVerified || undefined,
       photoUrl,
     })
@@ -346,7 +270,7 @@ export default function RegisterPatientPage() {
     if (settledUhid !== uhid) setUhid(settledUhid)
     if (settledUhid) {
       saveProfile(id, {
-        ...emptyProfile(), uhid: settledUhid, abhaId: abha?.abhaNumber,
+        ...emptyProfile(), uhid: settledUhid,
         address: form.address, city: form.city, pincode: form.pincode,
         emergencyName: form.emergencyName || undefined,
         emergencyRelation: form.emergencyRelation || undefined,
@@ -363,7 +287,7 @@ export default function RegisterPatientPage() {
 
   function restart() {
     setStage("method"); setMethod(null); setAadhaar(""); setManualAadhaar(""); setOtp("")
-    setAadhaarVerified(false); setDetectedExists(false); setDetectedProfile(null); setAbha(null)
+    setAadhaarVerified(false)
     setUhid(""); setPhotoUrl(undefined); setForm(EMPTY_FORM); setResult(null)
   }
 
@@ -444,106 +368,6 @@ export default function RegisterPatientPage() {
           <div className="flex items-center gap-3">
             <button onClick={resendOtp} className="inline-flex items-center gap-1 text-[11.5px] font-semibold text-[var(--color-accent)] hover:underline"><RefreshCw className="h-3 w-3" /> {t('register.resendOtp')}</button>
             <button onClick={() => setStage("method")} className="text-[11.5px] font-semibold text-slate-400 hover:text-slate-600">{t('register.changeMethod')}</button>
-          </div>
-        </Panel>
-      )}
-
-      {/* ── Stage: ABHA Detection ── */}
-      {stage === "detect" && (
-        <Panel icon={ShieldCheck} title={t('register.abhaAccount')}>
-          <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 flex items-center gap-2 text-[12px] font-bold text-emerald-800">
-            <CheckCircle2 className="h-4 w-4" /> {t('register.aadhaarVerifiedUidai')}
-          </div>
-
-          <div className="rounded-2xl border border-slate-200 overflow-hidden">
-            <div className={cn("px-4 py-2.5 flex items-center gap-2 text-[12px] font-bold", detectedExists ? "bg-[rgba(30,151,178,0.08)] text-[var(--color-primary-dark)]" : "bg-amber-50 text-amber-800")}>
-              <BadgeCheck className="h-4 w-4" />
-              {detectedExists ? t('register.existingAbhaFound') : t('register.noAbhaLinked')}
-            </div>
-            <div className="p-4 grid sm:grid-cols-2 gap-x-4 gap-y-2.5">
-              <ReadRow icon={User} label={t('register.fieldName')} value={form.name} />
-              <ReadRow icon={User} label={t('register.fieldGender')} value={t(`register.${GENDER_KEY[form.gender]}`)} />
-              <ReadRow icon={Calendar} label={t('register.fieldDob')} value={fmtDob(aadhaar)} />
-              <ReadRow icon={Phone} label={t('register.fieldMobile')} value={maskedMobile} />
-              {form.email && <ReadRow icon={Mail} label={t('register.fieldEmail')} value={form.email} />}
-              {detectedExists && detectedProfile && <ReadRow icon={IdCard} label={t('register.fieldAbhaNumber')} value={detectedProfile.abhaNumber} mono />}
-              {detectedExists && detectedProfile && <ReadRow icon={IdCard} label={t('register.fieldAbhaAddress')} value={detectedProfile.abhaAddress} mono />}
-              <ReadRow icon={MapPin} label={t('register.fieldStateDistrict')} value={`${form.state || "—"} / ${form.district || "—"}`} />
-              <ReadRow icon={MapPin} label={t('register.fieldAddress')} value={`${form.address || "—"}${form.pincode ? ` — ${form.pincode}` : ""}`} className="sm:col-span-2" />
-            </div>
-          </div>
-
-          <div className="flex flex-wrap gap-2 pt-1">
-            <Button variant="outline" onClick={() => setStage("otp")} className="h-11 rounded-xl gap-1.5"><ArrowLeft className="h-4 w-4" /> {t('common.back')}</Button>
-            <div className="flex-1" />
-            {detectedExists ? (
-              <>
-                <Button variant="outline" onClick={createNewAbha} disabled={busy} className="h-11 rounded-xl">{t('register.createNewAbha')}</Button>
-                <Button onClick={continueExisting} className="h-11 rounded-xl gap-1.5"><ArrowRight className="h-4 w-4" /> {t('register.continueExistingAbha')}</Button>
-              </>
-            ) : (
-              <Button onClick={createNewAbha} disabled={busy} className="h-11 rounded-xl gap-1.5">
-                {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <ShieldCheck className="h-4 w-4" />} {t('register.createAbhaAccount')}
-              </Button>
-            )}
-          </div>
-        </Panel>
-      )}
-
-      {/* ── Stage: ABHA Profile ── */}
-      {stage === "profile" && abha && (
-        <Panel icon={IdCard} title={t('register.abhaProfileCard')}>
-          <div className="rounded-2xl border border-slate-200 overflow-hidden">
-            <div className="bg-surface-sunken px-5 py-4 flex items-center gap-4">
-              {photoUrl ? (
-                /* eslint-disable-next-line @next/next/no-img-element */
-                <img src={photoUrl} alt={form.name} className="h-16 w-16 rounded-2xl object-cover ring-2 ring-white shadow" />
-              ) : <Avatar name={form.name} size="lg" className="h-16 w-16 text-lg ring-2 ring-white shadow" />}
-              <div className="min-w-0">
-                <p className="text-[16px] font-bold text-slate-900">{form.name}</p>
-                <p className="text-[12.5px] font-mono text-[var(--color-primary-dark)]">{abha.abhaNumber}</p>
-                <p className="text-[12px] font-mono text-slate-500">{abha.abhaAddress}</p>
-                <span className={cn("inline-flex items-center gap-1 mt-1 text-[10.5px] font-bold px-2 py-0.5 rounded-full", detectedExists ? "bg-emerald-100 text-emerald-700" : "bg-[rgba(30,151,178,0.12)] text-[var(--color-primary-dark)]")}>
-                  <BadgeCheck className="h-3 w-3" /> {detectedExists ? t('register.existingAbha') : t('register.newlyCreatedAbha')}
-                </span>
-              </div>
-            </div>
-
-            <div className="p-5 space-y-4">
-              <Section title={t('register.personalInformation')}>
-                <ReadRow icon={User} label={t('register.fieldFullName')} value={form.name} />
-                {form.fathersName && <ReadRow icon={User} label={t('register.fieldFathersName')} value={form.fathersName} />}
-                <ReadRow icon={Phone} label={t('register.fieldMobile')} value={form.phone} />
-                <ReadRow icon={User} label={t('register.fieldGender')} value={t(`register.${GENDER_KEY[form.gender]}`)} />
-                <ReadRow icon={Calendar} label={t('register.fieldDob')} value={fmtDob(aadhaar)} />
-                {form.email && <ReadRow icon={Mail} label={t('register.fieldEmail')} value={form.email} />}
-                <ReadRow icon={ShieldCheck} label={t('register.fieldAadhaar')} value={aadhaarVerified ? t('register.verified') : t('register.notVerified')} />
-              </Section>
-              <Section title={t('register.addressInformation')}>
-                <ReadRow icon={MapPin} label={t('register.fieldState')} value={form.state || "—"} />
-                <ReadRow icon={MapPin} label={t('register.fieldDistrict')} value={form.district || "—"} />
-                <ReadRow icon={MapPin} label={t('register.fieldCity')} value={form.city || "—"} />
-                <ReadRow icon={MapPin} label={t('register.fieldPincode')} value={form.pincode || "—"} />
-                <ReadRow icon={MapPin} label={t('register.fieldAddress')} value={form.address || "—"} className="sm:col-span-2" />
-              </Section>
-            </div>
-          </div>
-
-          <div className="rounded-xl bg-[rgba(30,151,178,0.05)] border border-[rgba(30,151,178,0.15)] px-3 py-2 flex items-center gap-2 text-[12px] text-[var(--color-primary-dark)]">
-            <Sparkles className="h-3.5 w-3.5" /> {t('register.uhidGenerated', { uhid })}
-          </div>
-
-          {/* Official-style ABHA card */}
-          <div>
-            <p className="text-[11px] font-bold uppercase tracking-wide text-slate-400 mb-2">{t('register.abhaCard')}</p>
-            <AbhaCard data={abhaCardData()} showBack={false} />
-          </div>
-
-          <div className="flex flex-wrap gap-2">
-            <Button variant="outline" onClick={() => setStage("detect")} className="h-11 rounded-xl gap-1.5"><ArrowLeft className="h-4 w-4" /> {t('common.back')}</Button>
-            <Button variant="outline" onClick={printAbhaCard} className="h-11 rounded-xl gap-1.5"><Printer className="h-4 w-4" /> {t('register.printAbhaCard')}</Button>
-            <div className="flex-1" />
-            <Button onClick={() => setStage("details")} className="h-11 rounded-xl gap-1.5"><ArrowRight className="h-4 w-4" /> {t('register.continueRegistration')}</Button>
           </div>
         </Panel>
       )}
@@ -639,7 +463,7 @@ export default function RegisterPatientPage() {
           </div>
 
           <div className="flex gap-3 pt-1">
-            <Button variant="outline" onClick={() => setStage(isManual ? "method" : "profile")} className="h-11 rounded-xl gap-1.5"><ArrowLeft className="h-4 w-4" /> {t('common.back')}</Button>
+            <Button variant="outline" onClick={() => setStage(isManual ? "method" : "otp")} className="h-11 rounded-xl gap-1.5"><ArrowLeft className="h-4 w-4" /> {t('common.back')}</Button>
             <Button onClick={gotoReview} className="flex-1 h-11 rounded-xl gap-1.5">{t('register.review')} <ArrowRight className="h-4 w-4" /></Button>
           </div>
         </Panel>
@@ -660,8 +484,6 @@ export default function RegisterPatientPage() {
             </div>
           </div>
           <dl className="grid sm:grid-cols-2 gap-x-4 gap-y-2.5 text-[13px]">
-            <ReviewRow label={t('register.fieldAbhaNumber')} value={abha?.abhaNumber ?? t('register.notLinked')} mono={!!abha} />
-            <ReviewRow label={t('register.fieldAbhaAddress')} value={abha?.abhaAddress ?? "—"} mono={!!abha} />
             {form.fathersName && <ReviewRow label={t('register.labelFathersName')} value={form.fathersName} />}
             <ReviewRow label={t('register.labelDepartment')} value={DEPT_KEY[form.department] ? t(`register.${DEPT_KEY[form.department]}`) : form.department} />
             <ReviewRow label={t('register.slipDoctor')} value={form.doctor} />
@@ -669,14 +491,6 @@ export default function RegisterPatientPage() {
             <ReviewRow label={t('register.labelPriority')} value={t(`register.${TRIAGE_KEY[form.triage]}`)} />
             <ReviewRow label={t('register.slipChiefComplaint')} value={form.symptoms || "—"} className="sm:col-span-2" />
           </dl>
-
-          {/* Generated ABHA card */}
-          {abha && (
-            <div>
-              <p className="text-[11px] font-bold uppercase tracking-wide text-slate-400 mb-2">{t('register.generatedAbhaCard')}</p>
-              <AbhaCard data={abhaCardData()} showBack={false} />
-            </div>
-          )}
 
           <div className="flex flex-wrap gap-3 pt-1">
             <Button variant="outline" onClick={() => setStage("details")} disabled={busy} className="h-11 rounded-xl gap-1.5"><ArrowLeft className="h-4 w-4" /> {t('common.back')}</Button>
@@ -720,9 +534,6 @@ export default function RegisterPatientPage() {
 function row(label: string, value: string) {
   return `<tr><td style="font-weight:600;color:#475569;width:38%">${label}</td><td>${value}</td></tr>`
 }
-function fmtDob(aadhaar: string) {
-  return fetchAadhaarDemographics(aadhaar).dob
-}
 
 function MethodCard({ icon: Icon, title, desc, recommended, recommendedLabel, busy, onClick }: { icon: React.ElementType; title: string; desc: string; recommended?: boolean; recommendedLabel?: string; busy?: boolean; onClick: () => void }) {
   return (
@@ -752,14 +563,6 @@ function Panel({ icon: Icon, title, children }: { icon: React.ElementType; title
   )
 }
 
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <div>
-      <p className="text-[11px] font-bold uppercase tracking-wide text-[var(--color-accent)] mb-2 pb-1.5 border-b border-slate-100">{title}</p>
-      <div className="grid sm:grid-cols-2 gap-x-4 gap-y-2.5">{children}</div>
-    </div>
-  )
-}
 
 function FieldGrid({ children }: { children: React.ReactNode }) {
   return <div className="grid sm:grid-cols-2 gap-3">{children}</div>
@@ -774,17 +577,6 @@ function Field({ label, required, className, children }: { label: string; requir
   )
 }
 
-function ReadRow({ icon: Icon, label, value, mono, className }: { icon: React.ElementType; label: string; value: string; mono?: boolean; className?: string }) {
-  return (
-    <div className={cn("flex items-start gap-2", className)}>
-      <Icon className="h-3.5 w-3.5 text-slate-400 mt-0.5 flex-shrink-0" />
-      <div className="min-w-0">
-        <p className="text-[10.5px] font-bold uppercase tracking-wide text-slate-400">{label}</p>
-        <p className={cn("text-[13px] font-medium text-slate-900 break-words", mono && "font-mono")}>{value}</p>
-      </div>
-    </div>
-  )
-}
 
 function ReviewRow({ label, value, mono, className }: { label: string; value: string; mono?: boolean; className?: string }) {
   return (

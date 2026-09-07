@@ -1,12 +1,12 @@
 "use client"
 
-/* Aadhaar → ABHA → UHID verification flow.
+/* Aadhaar → UHID verification flow.
  *
  * One self-contained state machine used in two places:
  *   1. The reception registration page (step 1).
  *   2. The OPD queue "Complete Aadhaar Verification" drawer.
  *
- * Stages: capture (upload / scan QR / manual) → OTP to linked mobile → ABHA
+ * Stages: capture (upload / scan QR / manual) → OTP to linked mobile → UHID
  * detect-or-create → UHID generation → onComplete. All mocked, no network.
  */
 
@@ -20,31 +20,27 @@ import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
 import { useAuditStore } from "@/store/useAuditStore"
 import { usePatientStore } from "@/store/usePatientStore"
-import { AbhaCard } from "@/components/abha/AbhaCard"
-import { generateUhid, findUhidByAbha } from "@/lib/intake/register"
+import { generateUhid } from "@/lib/intake/register"
 import {
   extractAadhaarFromQr, parseAadhaarUpload, sendAadhaarOtp, verifyAadhaarOtp,
-  fetchAadhaarDemographics, detectAbha, createAbha,
+  fetchAadhaarDemographics,
   type AadhaarDemographics,
 } from "@/lib/intake/aadhaar-mock"
 
-export interface AadhaarAbhaResult {
+export interface AadhaarResult {
   uhid: string
-  abhaId: string
   aadhaarVerified: true
   demographics: AadhaarDemographics
 }
 
 interface Props {
-  onComplete: (r: AadhaarAbhaResult) => void
-  /** The patient being verified, so the ABHA card shows their name. */
-  patientName?: string
+  onComplete: (r: AadhaarResult) => void
   className?: string
 }
 
-type Stage = "capture" | "otp" | "abha" | "done"
+type Stage = "capture" | "otp" | "done"
 
-export function AadhaarAbhaFlow({ onComplete, patientName, className }: Props) {
+export function AadhaarFlow({ onComplete, className }: Props) {
   const audit = useAuditStore((s) => s.log)
   const [stage, setStage] = useState<Stage>("capture")
   const [busy, setBusy] = useState(false)
@@ -57,8 +53,6 @@ export function AadhaarAbhaFlow({ onComplete, patientName, className }: Props) {
   const [otp, setOtp] = useState("")
 
   const [demographics, setDemographics] = useState<AadhaarDemographics | null>(null)
-  const [abhaId, setAbhaId] = useState("")
-  const [abhaExisting, setAbhaExisting] = useState(false)
   const [uhid, setUhid] = useState("")
 
   // ── Stage 1: capture Aadhaar (upload / scan / manual) ────────────────────
@@ -105,52 +99,31 @@ export function AadhaarAbhaFlow({ onComplete, patientName, className }: Props) {
     toast.info(`OTP re-sent to ${maskedMobile}`, { description: `Demo code: ${demoCode}` })
   }
 
-  // ── Stage 2: verify OTP → fetch demographics → detect ABHA ───────────────
+  // ── Stage 2: verify OTP → fetch demographics → issue UHID ────────────────
   async function handleVerify() {
     if (!verifyAadhaarOtp(otp, otpRef)) { toast.error("Incorrect OTP — try again"); return }
     setBusy(true)
     await new Promise((r) => setTimeout(r, 600))
     const demo = fetchAadhaarDemographics(aadhaar)
     setDemographics(demo)
-    const detected = detectAbha(aadhaar)
     setBusy(false)
     toast.success("Aadhaar verified", { description: `${demo.name} · details fetched` })
     audit({ action: "reception_registered", resource: "aadhaar_otp", detail: `Aadhaar verified for ${demo.name}.`, userId: "user", userName: "Reception" })
-    if (detected.exists && detected.profile) {
-      setAbhaId(detected.profile.abhaNumber)
-      setAbhaExisting(true)
-    }
-    setStage("abha")
+    finalize(demo)
   }
 
-  // ── Stage 3: ABHA create (if none) → UHID generation ─────────────────────
-  function finalize(linkedAbha: string) {
+  // ── Stage 3: UHID generation ─────────────────────────────────────────────
+  // Takes the demographics directly rather than reading `demographics` state,
+  // because the caller sets that in the same tick and would still see null.
+  function finalize(demo: AadhaarDemographics) {
     const patients = usePatientStore.getState().patients
-    const resolvedUhid = findUhidByAbha(linkedAbha) || generateUhid(patients)
+    const resolvedUhid = generateUhid(patients)
     setUhid(resolvedUhid)
     setStage("done")
-    onComplete({
-      uhid: resolvedUhid,
-      abhaId: linkedAbha,
-      aadhaarVerified: true,
-      demographics: demographics!,
-    })
+    onComplete({ uhid: resolvedUhid, aadhaarVerified: true, demographics: demo })
   }
 
-  async function handleCreateAbha() {
-    setBusy(true)
-    await new Promise((r) => setTimeout(r, 900))
-    const created = createAbha()
-    setBusy(false)
-    setAbhaId(created.abhaNumber)
-    toast.success("ABHA created", { description: created.abhaNumber })
-    audit({ action: "reception_registered", resource: "abha_create", detail: `New ABHA ${created.abhaNumber} created for ${demographics?.name}.`, userId: "user", userName: "Reception" })
-    finalize(created.abhaNumber)
-  }
 
-  function handleUseExistingAbha() {
-    finalize(abhaId)
-  }
 
   return (
     <div className={cn("rounded-2xl border border-slate-200 bg-white overflow-hidden", className)}>
@@ -159,8 +132,8 @@ export function AadhaarAbhaFlow({ onComplete, patientName, className }: Props) {
         <Fingerprint className="h-4 w-4 text-[var(--color-accent)]" />
         <h3 className="text-[13px] font-bold text-[var(--color-primary-dark)]">Aadhaar verification</h3>
         <div className="ml-auto flex items-center gap-1.5 text-[10.5px] font-bold">
-          {(["Aadhaar", "OTP", "ABHA", "UHID"] as const).map((label, i) => {
-            const order: Stage[] = ["capture", "otp", "abha", "done"]
+          {(["Aadhaar", "OTP", "UHID"] as const).map((label, i) => {
+            const order: Stage[] = ["capture", "otp", "done"]
             const active = order.indexOf(stage) >= i
             return (
               <span key={label} className={cn("px-2 py-0.5 rounded-full", active ? "bg-[var(--color-primary-dark)] text-white" : "bg-slate-100 text-slate-400")}>
@@ -231,40 +204,7 @@ export function AadhaarAbhaFlow({ onComplete, patientName, className }: Props) {
           </>
         )}
 
-        {/* Stage 3 — ABHA */}
-        {stage === "abha" && demographics && (
-          <>
-            <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2.5">
-              <div className="flex items-center gap-1.5 text-[12px] font-bold text-emerald-800">
-                <Check className="h-3.5 w-3.5" /> Aadhaar verified — demographics fetched
-              </div>
-              <div className="mt-1.5 grid grid-cols-2 gap-x-3 gap-y-0.5 text-[11.5px] text-slate-700">
-                <span><b>{demographics.name}</b></span>
-                <span>{demographics.age}y · {demographics.gender}</span>
-                <span className="col-span-2 text-slate-500">{demographics.address} — {demographics.pincode}</span>
-              </div>
-            </div>
-
-            {abhaExisting ? (
-              <div className="rounded-xl border border-[rgba(30,151,178,0.20)] bg-[rgba(30,151,178,0.05)] px-3 py-2.5 space-y-2">
-                <p className="text-[12px] text-slate-700">Existing ABHA found and retrieved:</p>
-                <p className="font-mono text-[14px] font-bold text-[var(--color-primary-dark)]">{abhaId}</p>
-                <Button onClick={handleUseExistingAbha} disabled={busy} className="w-full h-10 rounded-xl gap-1.5">
-                  <ArrowRight className="h-4 w-4" /> Continue & generate UHID
-                </Button>
-              </div>
-            ) : (
-              <div className="rounded-xl border border-amber-200 bg-amber-50 px-3 py-2.5 space-y-2">
-                <p className="text-[12px] text-amber-800">No ABHA account is linked to this Aadhaar yet.</p>
-                <Button onClick={handleCreateAbha} disabled={busy} className="w-full h-10 rounded-xl gap-1.5">
-                  {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <ShieldCheck className="h-4 w-4" />} Create ABHA & generate UHID
-                </Button>
-              </div>
-            )}
-          </>
-        )}
-
-        {/* Stage 4 — done */}
+        {/* Stage 3 — done */}
         {stage === "done" && demographics && (
           <div className="space-y-3">
             <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3.5 text-center space-y-1.5">
@@ -274,33 +214,8 @@ export function AadhaarAbhaFlow({ onComplete, patientName, className }: Props) {
               <p className="text-[13px] font-bold text-emerald-800">Hospital identity established</p>
               <div className="text-[12px] text-slate-600 space-y-0.5">
                 <p>UHID <b className="font-mono">{uhid}</b></p>
-                <p>ABHA <b className="font-mono">{abhaId}</b> {abhaExisting ? "(retrieved)" : "(new)"}</p>
               </div>
             </div>
-
-            {/* Full official ABHA card (front + instructions back, nothing
-                skipped), just in compact sizing so it fits the drawer.
-                `nameHindi`/`genderHindi` are explicitly cleared so the
-                component's placeholder defaults never leak onto a real card. */}
-            <AbhaCard
-              compact
-              data={{
-                name: patientName ?? demographics.name,
-                nameHindi: undefined,
-                fathersName: demographics.fathersName,
-                abhaNumber: abhaId,
-                abhaAddress: `${abhaId.replace(/\D/g, "")}@abdm`,
-                gender: demographics.gender,
-                genderHindi: undefined,
-                dob: demographics.dob,
-                mobile: demographics.phone,
-                address: demographics.address,
-                district: demographics.district,
-                state: demographics.state,
-                pincode: demographics.pincode,
-                aadhaarVerified: true,
-              }}
-            />
           </div>
         )}
       </div>

@@ -88,24 +88,23 @@ describe('usePatientStore.addPatient — real backend write', () => {
     expect(remoteVisits.data?.[0].status).toBe('waiting')
   })
 
-  // AABHA/UHID bridge — register/page.tsx's normal flow (Aadhaar/ABHA
+  // Aadhaar/UHID bridge — register/page.tsx's normal flow (Aadhaar/ABHA
   // completes BEFORE "Add to Queue" is clicked) stamps these onto the local
   // patient object before calling addPatient. Before this bridge they were
   // silently dropped from the real Patients.create call.
-  it('forwards uhid/abhaId/aadhaarVerified onto the real patients row when already set locally', async () => {
+  it('forwards uhid/aadhaarVerified onto the real patients row when already set locally', async () => {
     usePatientStore.setState({ patients: [], queue: [] })
     await usePatientStore.getState().addPatient({
-      name: 'AABHA Bridge Test Patient', phone: '9444444401', age: 27, gender: 'Female', department: 'General Medicine',
-      uhid: 'PUH-2026-88001', abhaId: '14-8800-1900-2900', aadhaarVerified: true,
+      name: 'Identity Bridge Test Patient', phone: '9444444401', age: 27, gender: 'Female', department: 'General Medicine',
+      uhid: 'PUH-2026-88001', aadhaarVerified: true,
     })
     const created = usePatientStore.getState().patients[0]
     expect(created.visitId).toBeTruthy()
     createdPatientId = created.id
     expect(created.uhid).toBe('PUH-2026-88001')
 
-    const remote = await admin.from('patients').select('uhid, abha_id, aadhaar_verified').eq('id', created.id).single()
+    const remote = await admin.from('patients').select('uhid, aadhaar_verified').eq('id', created.id).single()
     expect(remote.data?.uhid).toBe('PUH-2026-88001')
-    expect(remote.data?.abha_id).toBe('14-8800-1900-2900')
     expect(remote.data?.aadhaar_verified).toBe(true)
   })
 

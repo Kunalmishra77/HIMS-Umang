@@ -40,7 +40,6 @@ export async function GET() {
         vitals: null, symptoms: [], history: [],
         registeredAt: '', registeredDate: today, triageLevel: 'Low',
         source: 'appointment', aadhaarVerified: p.aadhaar_verified ?? false,
-        abhaId: p.abha_id ?? undefined,
         authUserId: p.auth_user_id ?? undefined,
       },
     })

@@ -19,7 +19,6 @@ type Body = {
   gender?: 'Male' | 'Female' | 'Other'
   bloodGroup?: string
   uhid?: string
-  abhaId?: string
   aadhaarVerified?: boolean
   department?: string
   doctor?: string
@@ -46,7 +45,7 @@ export async function POST(req: NextRequest) {
     const { error: pErr } = await admin.from('patients').upsert({
       id: body.id, hn: body.id, full_name: body.name, phone: body.phone,
       age: body.age ?? 30, sex: body.gender ?? 'Male', blood_group: body.bloodGroup ?? 'A+',
-      uhid: body.uhid ?? null, abha_id: body.abhaId ?? null,
+      uhid: body.uhid ?? null,
       aadhaar_verified: body.aadhaarVerified ?? false, updated_at: now,
     }, { onConflict: 'id' })
     if (pErr) throw new Error(`patient: ${pErr.message}`)

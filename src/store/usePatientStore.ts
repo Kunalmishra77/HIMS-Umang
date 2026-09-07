@@ -92,7 +92,6 @@ export type Patient = {
   phoneVerified?: boolean        // mobile verified via OTP at the desk
   source?: 'walk_in' | 'online' | 'appointment'  // how the patient entered the queue
   aadhaarVerified?: boolean      // Aadhaar OTP verified → hospital identity established
-  abhaId?: string                // linked ABHA number (14-XXXX-XXXX-XXXX)
   familyAccessToken?: string
   familyPhones?: string[]
   dishaConsentGiven?: boolean
@@ -154,8 +153,8 @@ interface PatientState {
   setSelectedPatient: (patient: Patient | null) => void
   updateStatus: (id: string, status: QueueStatus) => Promise<void>
   reassignPatient: (id: string, patch: { department?: string; doctor?: string }) => void
-  /** Link a verified hospital identity (UHID/ABHA) onto a queued patient. */
-  linkPatientIdentity: (id: string, patch: { uhid?: string; abhaId?: string; aadhaarVerified?: boolean }) => Promise<void>
+  /** Link a verified hospital identity (UHID) onto a queued patient. */
+  linkPatientIdentity: (id: string, patch: { uhid?: string; aadhaarVerified?: boolean }) => Promise<void>
   sendToEmergency: (id: string) => void
   recordOpdVitals: (id: string, rec: Omit<VitalsRecord, 'id' | 'at'>) => Promise<void>
   /** Read the real OPD queue (patients + active visits) from Postgres and merge
@@ -221,7 +220,7 @@ const MOCK_PATIENTS: Patient[] = [
     vitals: { bp: '120/80', temp: '98.6°F', weight: '75 kg', spo2: '98%', pulse: '80 bpm' },
     symptoms: ['Persistent cough for 3 days', 'Mild fever', 'Fatigue'], history: ['Hypertension (managed)', 'No known drug allergies'], registeredAt: '09:35 AM', registeredDate: TODAY,
     triageLevel: 'Low', latestBP: '146/92',
-    source: 'walk_in', uhid: 'PUH-2026-00021', aadhaarVerified: true, abhaId: '14-7731-5520-8841',
+    source: 'walk_in', uhid: 'PUH-2026-00021', aadhaarVerified: true,
   },
   {
     id: 'PT-20393', name: 'Sonal Desai', age: 28, gender: 'Female', phone: '9823456780', bloodGroup: 'B+', token: 3,
@@ -249,7 +248,7 @@ const MOCK_PATIENTS: Patient[] = [
     vitals: undefined,
     symptoms: ['Chest tightness', 'Shortness of breath'], history: ['Diabetes Type 2', 'Hypertension'], registeredAt: '10:05 AM', registeredDate: TODAY,
     triageLevel: 'High', latestHbA1c: 8.2, latestBP: '138/88',
-    source: 'online', uhid: 'PUH-2026-00012', abhaId: '14-2841-7762-9012', aadhaarVerified: true,
+    source: 'online', uhid: 'PUH-2026-00012', aadhaarVerified: true,
   },
   {
     id: 'PT-20395', name: 'Nalini Kumar', age: 19, gender: 'Female', phone: '9712345678', bloodGroup: 'O-', token: 5,
@@ -315,7 +314,7 @@ const MOCK_PATIENTS: Patient[] = [
     vitals: undefined,
     symptoms: ['Fever 102°F · 2 days', 'Throat pain'], history: ['Vaccinations up to date'], registeredAt: '10:35 AM', registeredDate: TODAY,
     triageLevel: 'Medium',
-    source: 'walk_in', uhid: 'PUH-2026-00031', abhaId: '14-3120-8845-2201', aadhaarVerified: true,
+    source: 'walk_in', uhid: 'PUH-2026-00031', aadhaarVerified: true,
   },
   {
     id: 'PT-20403', name: 'Suresh Pillai', age: 58, gender: 'Male', phone: '9890112233', bloodGroup: 'O+', token: 12,
@@ -344,7 +343,7 @@ const MOCK_PATIENTS: Patient[] = [
     vitals: undefined,
     symptoms: ['Hair loss', 'Scalp itching'], history: ['Anaemia'], registeredAt: '10:50 AM', registeredDate: TODAY,
     triageLevel: 'Low',
-    source: 'walk_in', uhid: 'PUH-2026-00032', abhaId: '14-4471-9930-5510', aadhaarVerified: true,
+    source: 'walk_in', uhid: 'PUH-2026-00032', aadhaarVerified: true,
   },
   {
     id: 'PT-20407', name: 'Mohan Iyengar', age: 73, gender: 'Male', phone: '9866554433', bloodGroup: 'B+', token: 16,
@@ -363,7 +362,7 @@ const MOCK_PATIENTS: Patient[] = [
     vitals: undefined,
     symptoms: ['Antenatal · 28 weeks', 'Routine review'], history: ['Gravida 2 Para 1'], registeredAt: '11:00 AM', registeredDate: TODAY,
     triageLevel: 'Low',
-    source: 'walk_in', uhid: 'PUH-2026-00033', abhaId: '14-5582-2214-7788', aadhaarVerified: true,
+    source: 'walk_in', uhid: 'PUH-2026-00033', aadhaarVerified: true,
   },
   {
     id: 'PT-20409', name: 'Devansh Singh', age: 4, gender: 'Male', phone: '9890900011', bloodGroup: 'A+', token: 18,
@@ -378,7 +377,7 @@ const MOCK_PATIENTS: Patient[] = [
     vitals: undefined,
     symptoms: ['Low back pain · radiating L leg', 'Numbness L foot'], history: ['Nil significant'], registeredAt: '11:10 AM', registeredDate: TODAY,
     triageLevel: 'Medium',
-    source: 'walk_in', uhid: 'PUH-2026-00034', abhaId: '14-6690-4471-9023', aadhaarVerified: true,
+    source: 'walk_in', uhid: 'PUH-2026-00034', aadhaarVerified: true,
   },
   {
     id: 'PT-20411', name: 'Ishita Malhotra', age: 41, gender: 'Female', phone: '9876549988', bloodGroup: 'B+', token: 20,
@@ -394,7 +393,7 @@ const MOCK_PATIENTS: Patient[] = [
     vitals: undefined,
     symptoms: ['Persistent dry cough · 3 weeks'], history: ['Ex-smoker'], registeredAt: '11:20 AM', registeredDate: TODAY,
     triageLevel: 'High',
-    source: 'walk_in', uhid: 'PUH-2026-00035', abhaId: '14-7712-6650-3341', aadhaarVerified: true,
+    source: 'walk_in', uhid: 'PUH-2026-00035', aadhaarVerified: true,
   },
   {
     id: 'PT-20413', name: 'Geeta Sharma', age: 60, gender: 'Female', phone: '9866443322', bloodGroup: 'A+', token: 22,
@@ -402,9 +401,9 @@ const MOCK_PATIENTS: Patient[] = [
     vitals: undefined,
     symptoms: ['Routine BP review', 'Mild giddiness'], history: ['HTN', 'T2DM'], registeredAt: '11:25 AM', registeredDate: TODAY,
     triageLevel: 'Low', latestHbA1c: 6.9, latestBP: '142/88',
-    source: 'walk_in', uhid: 'PUH-2026-00036', abhaId: '14-8830-1129-4456', aadhaarVerified: true,
+    source: 'walk_in', uhid: 'PUH-2026-00036', aadhaarVerified: true,
   },
-  // Walk-ins without ABHA / Aadhaar linkage — surface under "Needs Aadhaar".
+  // Walk-ins without Aadhaar linkage — surface under "Needs Aadhaar".
   {
     id: 'PT-20414', name: 'Ramesh Yadav', age: 44, gender: 'Male', phone: '9835551201', bloodGroup: 'B+', token: 23,
     queueStatus: 'waiting', estimatedWait: 58, doctor: 'Dr. Priya Nair', department: 'General Medicine',
@@ -419,7 +418,7 @@ const MOCK_PATIENTS: Patient[] = [
     vitals: undefined,
     symptoms: ['Recurrent skin allergy'], history: ['Nil significant'], registeredAt: '11:35 AM', registeredDate: TODAY,
     triageLevel: 'Low',
-    source: 'walk_in', uhid: 'PUH-2026-00037', abhaId: '14-9945-7781-6620', aadhaarVerified: true,
+    source: 'walk_in', uhid: 'PUH-2026-00037', aadhaarVerified: true,
   },
   {
     id: 'PT-20416', name: 'Mohd Aslam', age: 34, gender: 'Male', phone: '9899334417', bloodGroup: 'A+', token: 25,
@@ -427,7 +426,7 @@ const MOCK_PATIENTS: Patient[] = [
     vitals: undefined,
     symptoms: ['Wrist pain after fall', 'Swelling'], history: ['No known allergies'], registeredAt: '11:40 AM', registeredDate: TODAY,
     triageLevel: 'Medium',
-    source: 'walk_in', uhid: 'PUH-2026-00038', abhaId: '14-1057-3392-8874', aadhaarVerified: true,
+    source: 'walk_in', uhid: 'PUH-2026-00038', aadhaarVerified: true,
   },
   {
     id: 'PT-20417', name: 'Kamla Prasad', age: 68, gender: 'Female', phone: '9866120099', bloodGroup: 'B-', token: 26,
@@ -642,32 +641,32 @@ export const usePatientStore = create<PatientState>()(persist((set, get) => ({
   },
 
   // Aadhaar verification at the desk (or via the queue quick-action) establishes a
-  // hospital identity for an online/appointment patient: stamp the UHID + ABHA on the
-  // record and persist the UHID↔ABHA link so future visits resolve the same patient.
+  // hospital identity for an online/appointment patient: stamp the UHID on the
+  // record and persist it so future visits resolve the same patient.
   linkPatientIdentity: async (id, patch) => {
     set((state) => ({
       patients: state.patients.map(p => p.id === id ? { ...p, ...patch } : p),
       queue: state.queue.map(p => p.id === id ? { ...p, ...patch } : p),
     }))
     const p = get().patients.find(x => x.id === id)
-    if (p && patch.abhaId && patch.uhid) {
+    if (p && patch.uhid) {
       const store = usePatientProfileStore.getState()
-      store.saveProfile(id, { ...(store.getProfile(id) ?? emptyProfile()), uhid: patch.uhid, abhaId: patch.abhaId }, 'Reception')
+      store.saveProfile(id, { ...(store.getProfile(id) ?? emptyProfile()), uhid: patch.uhid }, 'Reception')
     }
     if (p) {
       useAuditStore.getState().log({
         userId: 'RC-1101', userName: 'Reception',
         action: 'reception_registered',
         resource: 'patient_identity', resourceId: p.id,
-        detail: `${p.name} identity linked · UHID ${patch.uhid ?? '—'}${patch.abhaId ? ` · ABHA ${patch.abhaId}` : ''}`,
+        detail: `${p.name} identity linked · UHID ${patch.uhid ?? '—'}`,
       })
     }
 
-    // Phase 2 (AABHA/UHID bridge) — mirror into the real `patients` row when
+    // Phase 2 (UHID bridge) — mirror into the real `patients` row when
     // this patient already has one (visitId set — proof from addPatient's
     // bridge that Patients.create/Visits.create already succeeded for them)
     // and a live staff session exists. This is the mirror-image case to
-    // addPatient's bridge: here, Aadhaar/ABHA verification completes AFTER
+    // addPatient's bridge: here, Aadhaar verification completes AFTER
     // the patient already exists in the queue (opd/page.tsx's "Complete
     // Aadhaar" drawer), rather than before "Add to Queue" is clicked. Same
     // live-session gate as every other bridge in this store — see the
@@ -681,7 +680,7 @@ export const usePatientStore = create<PatientState>()(persist((set, get) => ({
       if (patch.uhid) {
         const { writeWithUhidRetry } = await import('@/lib/intake/register')
         const { uhid: finalUhid } = await writeWithUhidRetry(get().patients, patch.uhid, (candidateUhid) =>
-          Patients.update(p.id, { uhid: candidateUhid, abhaId: patch.abhaId, aadhaarVerified: patch.aadhaarVerified }),
+          Patients.update(p.id, { uhid: candidateUhid, aadhaarVerified: patch.aadhaarVerified }),
         )
         // A collision on the very first candidate is exceedingly rare (see
         // writeWithUhidRetry's ADR comment) but if the real, persisted UHID
@@ -694,7 +693,7 @@ export const usePatientStore = create<PatientState>()(persist((set, get) => ({
           }))
         }
       } else {
-        await Patients.update(p.id, { abhaId: patch.abhaId, aadhaarVerified: patch.aadhaarVerified })
+        await Patients.update(p.id, { aadhaarVerified: patch.aadhaarVerified })
       }
     } catch (err) {
       console.error('[usePatientStore] linkPatientIdentity real backend update failed (local record still updated):', err)
@@ -834,7 +833,6 @@ export const usePatientStore = create<PatientState>()(persist((set, get) => ({
         hasReports: existing?.hasReports ?? false,
         source: 'appointment',
         uhid: existing?.uhid,
-        abhaId: existing?.abhaId,
         aadhaarVerified: existing?.aadhaarVerified,
       }
 
@@ -943,7 +941,6 @@ export const usePatientStore = create<PatientState>()(persist((set, get) => ({
       phoneVerified: partial.phoneVerified,
       source: partial.source ?? 'walk_in',
       aadhaarVerified: partial.aadhaarVerified,
-      abhaId: partial.abhaId,
       departments: partial.departments,
       visitTypes: partial.visitTypes,
       insurer: partial.insurer,
@@ -976,7 +973,7 @@ export const usePatientStore = create<PatientState>()(persist((set, get) => ({
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             id: p.id, name: p.name, phone: p.phone, age: p.age, gender: p.gender,
-            bloodGroup: p.bloodGroup, uhid: p.uhid, abhaId: p.abhaId,
+            bloodGroup: p.bloodGroup, uhid: p.uhid,
             aadhaarVerified: p.aadhaarVerified, department: p.department, doctor: p.doctor,
             token: p.token, symptoms: p.symptoms, triageLevel: p.triageLevel, estimatedWait: p.estimatedWait,
           }),
@@ -998,7 +995,7 @@ export const usePatientStore = create<PatientState>()(persist((set, get) => ({
     name: 'agentix-patientstore', version: 7,
     storage: createJSONStorage(() => localStorage),
     skipHydration: true,
-    // v3 added identity fields (source / uhid / abhaId) and reseeded the demo board.
+    // v3 added identity fields (source / uhid) and reseeded the demo board.
     // v4 seeds prior-visit OPD vitals (opdVitalsHistory) so the Vitals Requests
     // screen shows a real history. v5 seeds recorded-today opdVitals so the Vitals
     // Requests "Done" tab is populated. v6 appends the unlinked (Needs-Aadhaar)

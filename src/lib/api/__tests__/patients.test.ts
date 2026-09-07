@@ -53,30 +53,27 @@ describe('Patients repository (Supabase-backed)', () => {
     expect(saved.createdAt).toBeTruthy()
   })
 
-  // AABHA/UHID bridge (Reception's Aadhaar -> ABHA -> UHID flow) — the real
+  // Aadhaar/UHID bridge (Reception's Aadhaar -> UHID flow) — the real
   // columns added in supabase/migrations/20260706070000_patients_identity_columns.sql.
-  it('creates a patient with uhid/abhaId/aadhaarVerified and round-trips them via get()', async () => {
+  it('creates a patient with uhid/aadhaarVerified and round-trips them via get()', async () => {
     const saved = await Patients.create({
       id: testId, hn: 'HN-PATIENTSTEST-1', fullName: 'Patients Test', phone: '9111111111', sex: 'Male',
-      uhid: 'PUH-2026-90001', abhaId: '14-1111-2222-3333', aadhaarVerified: true,
+      uhid: 'PUH-2026-90001', aadhaarVerified: true,
     } as Parameters<typeof Patients.create>[0])
     expect(saved.uhid).toBe('PUH-2026-90001')
-    expect(saved.abhaId).toBe('14-1111-2222-3333')
     expect(saved.aadhaarVerified).toBe(true)
 
     const fetched = await Patients.get(testId)
     expect(fetched?.uhid).toBe('PUH-2026-90001')
-    expect(fetched?.abhaId).toBe('14-1111-2222-3333')
     expect(fetched?.aadhaarVerified).toBe(true)
   })
 
-  it('defaults aadhaarVerified to false and leaves uhid/abhaId unset when not provided', async () => {
+  it('defaults aadhaarVerified to false and leaves uhid unset when not provided', async () => {
     const saved = await Patients.create({
       id: testId, hn: 'HN-PATIENTSTEST-1', fullName: 'Patients Test', phone: '9111111111', sex: 'Male',
     } as Parameters<typeof Patients.create>[0])
     expect(saved.aadhaarVerified).toBe(false)
     expect(saved.uhid).toBeUndefined()
-    expect(saved.abhaId).toBeUndefined()
   })
 
   it('rejects a second patient with the same uhid (partial unique index) — the real backstop behind writeWithUhidRetry', async () => {
